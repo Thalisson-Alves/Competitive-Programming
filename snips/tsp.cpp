@@ -15,5 +15,5 @@ ll tsp(int i, int mask, const vector<vector<ll>> &dist, vector<vector<ll>> &memo
     ans = min(ans, tsp(j, mask | (1 << j), dist, memo) + dist[i][j]);
   }
 
-  return ans;
+  return memo[i][mask] = ans;
 }
