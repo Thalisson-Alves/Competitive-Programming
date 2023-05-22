@@ -1,6 +1,8 @@
 #include <bits/stdc++.h>
 using namespace std;
 /******** Debug Code *******/
+template<size_t T>
+void __print(bitset<T> x) { cerr << x; }
 void __print(short x) { cerr << x; }
 void __print(int x) { cerr << x; }
 void __print(long x) { cerr << x; }
