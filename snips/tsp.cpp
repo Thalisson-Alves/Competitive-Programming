@@ -6,7 +6,7 @@ ll tsp(int i, int mask, const vector<vector<ll>> &dist, vector<vector<ll>> &memo
   if (memo[i][mask] != -1)
     return memo[i][mask];
 
-  ll ans = oo;
+  ll ans = 1e18;
   for (int j = 0; j < (int)dist.size(); j++)
   {
     if (mask & (1 << j))
