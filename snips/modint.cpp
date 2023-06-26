@@ -62,9 +62,10 @@ public:
     s << x.value();
     return s;
   }
-  friend istream& operator<<(istream& s, const modint<mod>& x)
+
+  friend istream& operator>>(istream& s, modint<mod>& x)
   {
-    s >> x.value();
+    s >> x.v;
     return s;
   }
 };
