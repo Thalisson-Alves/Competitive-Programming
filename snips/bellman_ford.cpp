@@ -1,7 +1,7 @@
 bool bellman_ford(const vector<vector<pair<int, ll>>> &g, int s, vector<ll> &dist)
 {
   int n = (int)g.size();
-  dist.assign(n, INT_MAX);
+  dist.assign(n, LLONG_MAX);
 
   vector<int> count(n);
   vector<char> in_queue(n);
