@@ -1,16 +1,16 @@
 #define F(expr) [](auto a, auto b) { return expr; }
-template <typename T, const T neutral = T()>
-struct SparseTable
+template <typename T> struct SparseTable
 {
   using Operation = T(*)(T, T);
 
-  const int LOGN;
+  int LOGN;
   vector<vector<T>> st;
   Operation f;
+  T identity;
 
   static constexpr int log2_floor(unsigned long long i) noexcept { return i ? __builtin_clzll(1) - __builtin_clzll(i) : -1; }
 
-  SparseTable(const vector<T> &v, Operation op) : LOGN(log2_floor(v.size())), st(LOGN+1, vector<T>(v.size())), f(op)
+  SparseTable(const vector<T> &v, Operation op, const T neutral = T()) : LOGN(log2_floor(v.size())), st(LOGN+1, vector<T>(v.size())), f(op), identity(neutral)
   {
     st[0] = v;
     for (int i = 1; i <= LOGN; i++)
@@ -18,11 +18,11 @@ struct SparseTable
         st[i][j] = f(st[i-1][j], st[i-1][j+(1 << (i-1))]);
   }
 
-  SparseTable(const vector<T> &v) : SparseTable(v, F(min(a,b))) { }
+  SparseTable(const vector<T> &v) : SparseTable(v, F(max(a,b))) { }
 
   T query(int l, int r) const
   {
-    T acc = neutral;
+    T acc = identity;
     for (int i = LOGN; ~i; --i)
       if ((1 << i) <= r - l + 1)
       {

@@ -1,19 +1,19 @@
 #define F(expr) [](auto a, auto b) { return expr; }
-template <typename T, const T neutral = T()>
-struct DisjointSparseTable
+template <typename T> struct DisjointSparseTable
 {
   using Operation = T(*)(T, T);
 
   vector<vector<T>> st;
-  const Operation f;
+  Operation f;
+  T identity;
 
   static constexpr int log2_floor(unsigned long long i) noexcept { return i ? __builtin_clzll(1) - __builtin_clzll(i) : -1; }
 
-  DisjointSparseTable(vector<T> v) : DisjointSparseTable(v, F(a+b)) { }
+  DisjointSparseTable(vector<T> v) : DisjointSparseTable(v, F(min(a,b))) { }
 
-  DisjointSparseTable(vector<T> v, Operation op) : st(log2_floor(v.size())+1, vector<T>(1ll << (log2_floor(v.size())+1))), f(op)
+  DisjointSparseTable(vector<T> v, Operation op, const T neutral = T()) : st(log2_floor(v.size())+1, vector<T>(1ll << (log2_floor(v.size())+1))), f(op), identity(neutral)
   {
-    v.resize(st[0].size(), neutral);
+    v.resize(st[0].size(), identity);
     for (int level = 0; level < (int)st.size(); ++level)
     {
       for (int block = 0; block < (1 << level); ++block)
@@ -34,7 +34,7 @@ struct DisjointSparseTable
 
   T query(int l, int r) const
   {
-    if (l > r) return neutral;
+    if (l > r) return identity;
     if (l == r) return st.back()[l];
 
     const auto k = log2_floor(l^r);
