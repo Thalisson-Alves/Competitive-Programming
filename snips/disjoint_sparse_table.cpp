@@ -1,17 +1,17 @@
-template<typename T>
+#define F(expr) [](auto a, auto b) { return expr; }
+template <typename T, const T neutral = T()>
 struct DisjointSparseTable
 {
+  using Operation = T(*)(T, T);
+
   vector<vector<T>> st;
+  const Operation f;
 
   static constexpr int log2_floor(unsigned long long i) noexcept { return i ? __builtin_clzll(1) - __builtin_clzll(i) : -1; }
 
-  const T neutral = 0;
-  inline T f(const T &a, const T &b) const
-  {
-    return a + b;
-  }
+  DisjointSparseTable(vector<T> v) : DisjointSparseTable(v, F(a+b)) { }
 
-  DisjointSparseTable(vector<T> v) : st(log2_floor(v.size())+1, vector<T>(1ll << (log2_floor(v.size())+1)))
+  DisjointSparseTable(vector<T> v, Operation op) : st(log2_floor(v.size())+1, vector<T>(1ll << (log2_floor(v.size())+1))), f(op)
   {
     v.resize(st[0].size(), neutral);
     for (int level = 0; level < (int)st.size(); ++level)

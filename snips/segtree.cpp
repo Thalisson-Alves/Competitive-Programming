@@ -1,19 +1,26 @@
-template <typename T, T neutral = T(), typename operation_t = T (*)(T, T)>
+#define F(expr) [](auto a, auto b) { return expr; }
+template <typename T, const T neutral = T()>
 struct SegTree {
+  using Operation = T(*)(T, T);
+
   int N;
   vector<T> ns;
-  operation_t operation;
+  Operation operation;
 
-  SegTree(int n, operation_t op) : N(n), ns(2 * N, neutral), operation(op) {}
+  SegTree(int n, Operation op = F(a+b)) : N(n), ns(2 * N, neutral), operation(op) {}
 
-  SegTree(const vector<T> &v, operation_t op) : SegTree((int)v.size(), op) {
+  SegTree(const vector<T> &v, Operation op = F(a+b)) : SegTree((int)v.size(), op) {
     copy(v.begin(), v.end(), ns.begin() + N);
 
     for (int i = N - 1; i > 0; --i)
       ns[i] = operation(ns[2 * i], ns[2 * i + 1]);
   }
 
-  T RQ(size_t l, size_t r) {
+  T query(size_t i) const {
+    return ns[i + N];
+  }
+
+  T query(size_t l, size_t r) const {
     auto a = l + N, b = r + N;
     auto ans = neutral;
 
