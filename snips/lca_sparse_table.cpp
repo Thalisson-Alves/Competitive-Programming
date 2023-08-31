@@ -1,14 +1,14 @@
 struct LCA {
   vector<int> height, euler, first;
-  DisjointSparseTable<pair<int, int>> table;
+  SparseTable<pair<int, int>> table;
  
-  LCA(vector<vector<int>> &g, int root = 0) : height(g.size()), euler(g.size() * 2), first(g.size()), table(vector<pair<int, int>>(1)) {
+  LCA(vector<vector<int>> &g, int root = 0) : height(g.size()), euler(g.size() * 2), first(g.size()), table(F(min(a,b)),{INT_MAX,INT_MAX}) {
     vector<bool> visited(len(g));
     dfs(g, root, visited);
     int m = (int)euler.size();
     vector<pair<int, int>> v(m);
     for (int i = 0; i < m; i++) v[i] = {height[euler[i]], euler[i]};
-    table = DisjointSparseTable<pair<int, int>>(v, [](auto a, auto b) { return min(a, b); }, {INT_MAX, INT_MAX});
+    table.build(v);
   }
  
   void dfs(vector<vector<int>> &adj, int node, vector<bool> &visited, int h = 0) {
@@ -23,7 +23,7 @@ struct LCA {
       }
     }
   }
-
+ 
   int lca(int u, int v) {
     int left = first[u], right = first[v];
     if (left > right) swap(left, right);
