@@ -17,25 +17,3 @@ vector<int> topological_order(const vector<vector<int>> &g)
   reverse(order.begin(), order.end());
   return order;
 }
-
-void mark_component(const vector<vector<int>> &gr, vector<int> &component, int s)
-{
-  for (auto x : gr[s])
-    if (component[x] == -1)
-    {
-      component[x] = component[s];
-      mark_component(gr, component, x);
-    }
-}
-
-vector<int> mark_components(const vector<vector<int>> &gr, const vector<int> &order)
-{
-  vector<int> components(gr.size(), -1);
-  for (auto x : order)
-    if (components[x] == -1)
-    {
-      components[x] = x;
-      mark_component(gr, components, x);
-    }
-  return components;
-}
