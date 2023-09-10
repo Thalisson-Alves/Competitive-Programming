@@ -1,6 +1,5 @@
 #define F(expr) [](auto a, auto b) { return expr; }
-template <typename T>
-struct SegTree {
+template <typename T> struct SegTree {
   using Operation = T(*)(T, T);
 
   int N;
@@ -24,16 +23,20 @@ struct SegTree {
   T query(size_t l, size_t r) const {
     auto a = l + N, b = r + N;
     auto ans = identity;
-
+    // Non-associative operations needs to be processed backwards
+    stack<T> st;
     while (a <= b) {
       if (a & 1)
         ans = operation(ans, ns[a++]);
-      if (not(b & 1))
-        ans = operation(ans, ns[b--]);
+      if (not (b & 1))
+        st.push(ns[b--]);
 
-      a /= 2;
-      b /= 2;
+      a >>= 1;
+      b >>= 1;
     }
+
+    for (; !st.empty(); st.pop())
+      ans = operation(ans, st.top());
 
     return ans;
   }
