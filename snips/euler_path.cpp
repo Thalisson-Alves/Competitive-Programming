@@ -1,5 +1,5 @@
 // Directed Edges
-vector<int> euler_cycle(vector<vector<int>> &g, int u)
+vector<int> euler_cycle_directed(vector<vector<int>> &g, int u)
 {
   vector<int> res;
  
@@ -26,37 +26,8 @@ vector<int> euler_cycle(vector<vector<int>> &g, int u)
   return res;
 }
  
-// Undirected Edges
-vector<int> euler_cycle(vector<set<int>> &g, int u)
-{
-  vector<int> res;
- 
-  stack<int> st;
-  st.push(u);
-  while (!st.empty())
-  {
-    auto cur = st.top();
-    if (g[cur].empty()) {
-      res.push_back(cur);
-      st.pop();
-    } else {
-      auto next = *g[cur].begin();
-      st.push(next);
- 
-      g[cur].erase(next);
-      g[next].erase(cur);
-    }
-  }
- 
-  for (auto &x : g)
-    if (!x.empty())
-      return {};
- 
-  return res;
-}
-
 // Directed Edges
-vector<int> euler_path(vector<vector<int>> &g, int first)
+vector<int> euler_path_directed(vector<vector<int>> &g, int first)
 {
   {
     int n = (int)g.size();
@@ -74,15 +45,53 @@ vector<int> euler_path(vector<vector<int>> &g, int first)
     if (c != n-2 or a != 1 or b != 1) return {};
   }
 
-  auto res = euler_cycle(g, first);
+  auto res = euler_cycle_directed(g, first);
   if (res.empty()) return res;
  
   reverse(all(res));
   return res;
 }
 
+// Undirected Edges
+vector<int> euler_cycle_undirected(vector<vector<int>> &g, int u)
+{
+  vector<int> res;
+  multiset<pair<int, int>> vis;
+
+  stack<int> st;
+  st.push(u);
+  while (!st.empty())
+  {
+    auto cur = st.top();
+
+    while (!g[cur].empty()) {
+      auto it = vis.find(make_pair(cur, g[cur].back()));
+      if (it == vis.end()) break;
+      g[cur].pop_back();
+      vis.erase(it);
+    }
+
+    if (g[cur].empty()) {
+      res.push_back(cur);
+      st.pop();
+    } else {
+      auto next = g[cur].back();
+      st.push(next);
+
+      vis.emplace(next, cur);
+      g[cur].pop_back();
+    }
+  }
+ 
+  for (auto &x : g)
+    if (!x.empty())
+      return {};
+ 
+  return res;
+}
+
 // Undirected edges
-vector<int> euler_path(vector<set<int>> &g, int first)
+vector<int> euler_path_undirected(vector<vector<int>> &g, int first)
 {
   int n = (int)g.size();
   int v1 = -1, v2 = -1;
@@ -99,14 +108,14 @@ vector<int> euler_path(vector<set<int>> &g, int first)
     if (bad or (v1 != -1 and v2 == -1)) return {};
   }
 
-  if (v1 != -1)
+  if (v2 != -1)
   {
     // insert cycle
-    g[v1].insert(v2);
-    g[v2].insert(v1);
+    g[v1].push_back(v2);
+    g[v2].push_back(v1);
   }
  
-  auto res = euler_cycle(g, first);
+  auto res = euler_cycle_undirected(g, first);
   if (res.empty()) return res;
  
   if (v1 != -1)
