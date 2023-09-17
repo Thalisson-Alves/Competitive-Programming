@@ -3,7 +3,7 @@ struct UFDS
   vector<int> ps, sz;
   int components;
 
-  UFDS(int n) : ps(n+1), sz(n+1, 1), components(n)
+  UFDS(int n) : ps(n), sz(n, 1), components(n)
   {
     iota(all(ps), 0);
   }
