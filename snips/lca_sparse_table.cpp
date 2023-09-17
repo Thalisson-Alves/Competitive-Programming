@@ -3,7 +3,7 @@ struct LCA {
   SparseTable<pair<int, int>> table;
  
   LCA(vector<vector<int>> &g, int root = 0) : height(g.size()), euler(g.size() * 2), first(g.size()), table(F(min(a,b)),{INT_MAX,INT_MAX}) {
-    vector<bool> visited(len(g));
+    vector<bool> visited(g.size());
     dfs(g, root, visited);
     int m = (int)euler.size();
     vector<pair<int, int>> v(m);
@@ -14,7 +14,7 @@ struct LCA {
   void dfs(vector<vector<int>> &adj, int node, vector<bool> &visited, int h = 0) {
     visited[node] = true;
     height[node] = h;
-    first[node] = len(euler);
+    first[node] = (int)euler.size();
     euler.push_back(node);
     for (auto to : adj[node]) {
       if (!visited[to]) {
