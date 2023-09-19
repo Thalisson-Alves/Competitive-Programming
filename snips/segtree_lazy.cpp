@@ -9,10 +9,9 @@ template <typename T> struct SegTree {
   }
 
   void update(int i, T value) { update(i, i, value); }
-
   void update(int a, int b, T value) { update(1, 0, N - 1, a, b, value); }
-
-  T range_sum(int a, int b) { return range_sum(1, 0, N - 1, a, b); }
+  T query(int a, int b) { return query(1, 0, N - 1, a, b); }
+  T query(int i) { return query(1, 0, N - 1, i, i); }
 
 private:
   void apply_propagation(int node, int l, int r) {
@@ -49,7 +48,7 @@ private:
     v[node] = v[2 * node] + v[2 * node + 1];
   }
 
-  T range_sum(int node, int l, int r, int a, int b) {
+  T query(int node, int l, int r, int a, int b) {
     if (lazy[node])
       apply_propagation(node, l, r);
 
@@ -60,8 +59,8 @@ private:
       return v[node];
 
     auto m = l + (r - l) / 2;
-    auto x = range_sum(2 * node, l, m, a, b);
-    auto y = range_sum(2 * node + 1, m + 1, r, a, b);
+    auto x = query(2 * node, l, m, a, b);
+    auto y = query(2 * node + 1, m + 1, r, a, b);
     return x + y;
   }
 };
