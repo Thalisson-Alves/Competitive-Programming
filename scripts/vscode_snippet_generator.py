@@ -37,10 +37,21 @@ if __name__ == "__main__":
 
     if snippets_path.exists() and not opts.overwrite:
         with open(snippets_path, "r") as f:
-            snippets = json.loads(re.sub(r"\s*//.*", "", f.read(), flags=re.MULTILINE))
+            snippets = json.loads(re.sub(r"^\s*//.*", "", f.read(), flags=re.MULTILINE))
     else:
         snippets = {}
 
-    snippets.update(gen_snippet())
+    failed = []
+    for k, v in gen_snippet().items():
+        if k not in snippets:
+            snippets[k] = v
+        else:
+            failed.append(k)
+
     with open(snippets_path, "w") as f:
         json.dump(snippets, f, indent=4)
+
+    if failed:
+        print("Failed to add snippets: {}".format(", ".join(failed)))
+    else:
+        print("Successfully added snippets")
