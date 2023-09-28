@@ -7,8 +7,6 @@ concept Printable = requires(T t) {
 };
 template<Printable T>
 void __print(const T &x) { cerr << x; }
-template<size_t T>
-void __print(const bitset<T> &x) { cerr << x; }
 template <typename A, typename B>
 void __print(const pair<A, B> &p);
 template <typename... A>
