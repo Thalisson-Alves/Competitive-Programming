@@ -1,28 +1,22 @@
 struct LCA {
-  vector<int> height, euler, first, segtree;
-  vector<bool> visited;
   int n;
+  vector<int> height, euler, first, segtree;
 
-  LCA(vector<vector<int>> &adj, int root = 0) {
-    n = adj.size();
-    height.resize(n);
-    first.resize(n);
+  LCA(vector<vector<int>> &adj, int root = 0) : n((int)adj.size()), height(n), first(n) {
     euler.reserve(n * 2);
-    visited.assign(n, false);
     dfs(adj, root);
-    int m = euler.size();
+    int m = (int)euler.size();
     segtree.resize(m * 4);
     build(1, 0, m - 1);
   }
 
-  void dfs(vector<vector<int>> &adj, int node, int h = 0) {
-    visited[node] = true;
+  void dfs(vector<vector<int>> &adj, int node, int h = 0, int p = -1) {
     height[node] = h;
-    first[node] = euler.size();
+    first[node] = (int)euler.size();
     euler.push_back(node);
     for (auto to : adj[node]) {
-      if (!visited[to]) {
-        dfs(adj, to, h + 1);
+      if (to != p) {
+        dfs(adj, to, h + 1, node);
         euler.push_back(node);
       }
     }
@@ -55,6 +49,6 @@ struct LCA {
   int lca(int u, int v) {
     int left = first[u], right = first[v];
     if (left > right) swap(left, right);
-    return query(1, 0, euler.size() - 1, left, right);
+    return query(1, 0, (int)euler.size() - 1, left, right);
   }
 };
