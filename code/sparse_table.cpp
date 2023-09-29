@@ -31,7 +31,8 @@ template <typename T> struct SparseTable
         st[i][j] = f(st[i-1][j], st[i-1][j+(1 << (i-1))]);
   }
 
-  T query(int l, int r) const
+  // Non RMQ query
+  T query_complete(int l, int r) const
   {
     T acc = identity;
     for (int i = LOGN; ~i; --i)
@@ -43,7 +44,7 @@ template <typename T> struct SparseTable
     return acc;
   }
 
-  T RMQ(int l, int r) const
+  T query(int l, int r) const
   {
     auto lg = log2_floor(r-l+1);
     return f(st[lg][l], st[lg][r - (1 << lg) + 1]);
