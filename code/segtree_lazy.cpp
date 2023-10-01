@@ -3,12 +3,12 @@ template <typename T, auto op, typename L, auto mapping, auto composition>
 struct SegTreeLazy {
   static_assert(is_convertible_v<decltype(op), function<T(T, T)>>,
                 "op must be a function T(T, T)");
-  static_assert(is_convertible_v<decltype(mapping), function<T(L, T)>>,
-                "mapping must be a function T(L, T)");
+  static_assert(is_convertible_v<decltype(mapping), function<T(L, T, int, int)>>,
+                "mapping must be a function T(L, T, int, int)");
   static_assert(is_convertible_v<decltype(composition), function<L(L, L)>>,
                 "compostiion must be a function L(L, L)");
 
-  int N, size, log;
+  int N, size, height;
   const T eT;
   const L eL;
   vector<T> d;
@@ -17,9 +17,8 @@ struct SegTreeLazy {
   SegTreeLazy(const T &eT_ = T(), const L &eL_ = L()) : SegTreeLazy(0, eT_, eL_) {}
   explicit SegTreeLazy(int n, const T &eT_ = T(), const L &eL_ = L()) : SegTreeLazy(vector<T>(n, eT_), eT_, eL_) {}
   explicit SegTreeLazy(const vector<T>& v, const T &eT_ = T(), const L &eL_ = L()) : N(int(v.size())), eT(eT_), eL(eL_) {
-    size = 1;
-    while (size < N) size<<=1;
-    log = countr_zero((unsigned int)size);
+    size = 1; height = 0;
+    while (size < N) size<<=1, height++;
     d = vector<T>(2 * size, eT);
     lz = vector<L>(size, eL);
     for (int i = 0; i < N; i++) d[size + i] = v[i];
@@ -31,15 +30,15 @@ struct SegTreeLazy {
   void set(int p, T x) {
     assert(0 <= p && p < N);
     p += size;
-    for (int i = log; i >= 1; i--) push(p >> i);
+    for (int i = height; i >= 1; i--) push(p >> i);
     d[p] = x;
-    for (int i = 1; i <= log; i++) update(p >> i);
+    for (int i = 1; i <= height; i++) update(p >> i);
   }
 
   T get(int p) {
     assert(0 <= p && p < N);
     p += size;
-    for (int i = log; i >= 1; i--) push(p >> i);
+    for (int i = height; i >= 1; i--) push(p >> i);
     return d[p];
   }
 
@@ -49,7 +48,7 @@ struct SegTreeLazy {
     l += size;
     r += size;
 
-    for (int i = log; i >= 1; i--) {
+    for (int i = height; i >= 1; i--) {
       if (((l >> i) << i) != l) push(l >> i);
       if ((((r+1) >> i) << i) != (r+1)) push(r >> i);
     }
@@ -70,9 +69,9 @@ struct SegTreeLazy {
   void update(int p, L f) {
     assert(0 <= p && p < N);
     p += size;
-    for (int i = log; i >= 1; i--) push(p >> i);
+    for (int i = height; i >= 1; i--) push(p >> i);
     d[p] = mapping(f, d[p]);
-    for (int i = 1; i <= log; i++) update(p >> i);
+    for (int i = 1; i <= height; i++) update(p >> i);
   }
   void update(int l, int r, L f) {
     assert(0 <= l && l <= r && r < N);
@@ -80,7 +79,7 @@ struct SegTreeLazy {
     l += size;
     r += size;
 
-    for (int i = log; i >= 1; i--) {
+    for (int i = height; i >= 1; i--) {
       if (((l >> i) << i) != l) push(l >> i);
       if ((((r+1) >> i) << i) != (r+1)) push(r >> i);
     }
@@ -97,7 +96,7 @@ struct SegTreeLazy {
       r = r2;
     }
 
-    for (int i = 1; i <= log; i++) {
+    for (int i = 1; i <= height; i++) {
       if (((l >> i) << i) != l) update(l >> i);
       if ((((r+1) >> i) << i) != (r+1)) update(r >> i);
     }
@@ -106,7 +105,11 @@ struct SegTreeLazy {
 private:
   void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
   void all_apply(int k, L f) {
-    d[k] = mapping(f, d[k]);
+    int remain = height;
+    for (int kk = k; kk>>=1; --remain);
+    int start = k << remain;
+    int end = min(start + (1 << remain) - 1, size + N - 1);
+    d[k] = mapping(f, d[k], start, end);
     if (k < size) lz[k] = composition(f, lz[k]);
   }
   void push(int k) {
