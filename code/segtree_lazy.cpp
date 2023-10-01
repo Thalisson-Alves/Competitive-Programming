@@ -1,66 +1,116 @@
-template <typename T> struct SegTree {
-  int N;
-  vector<T> v, lazy;
+template <typename T, auto op, typename L, auto mapping, auto composition>
+struct SegTreeLazy {
+  static_assert(is_convertible_v<decltype(op), function<T(T, T)>>,
+                "op must be a function T(T, T)");
+  static_assert(is_convertible_v<decltype(mapping), function<T(L, T)>>,
+                "mapping must be a function T(L, T)");
+  static_assert(is_convertible_v<decltype(composition), function<L(L, L)>>,
+                "compostiion must be a function L(L, L)");
 
-  SegTree(int n) : N(n), v(4 * N), lazy(4 * N) {}
-  SegTree(const vector<T> &xs) : N((int)xs.size()), v(4 * N), lazy(4 * N, 0) {
-    for (int i = 0; i < N; i++)
-      update(i, xs[i]);
+  int N, size, log;
+  const T eT;
+  const L eL;
+  vector<T> d;
+  vector<L> lz;
+
+  SegTreeLazy(const T &eT_ = T(), const L &eL_ = L()) : SegTreeLazy(0, eT_, eL_) {}
+  explicit SegTreeLazy(int n, const T &eT_ = T(), const L &eL_ = L()) : SegTreeLazy(vector<T>(n, eT_), eT_, eL_) {}
+  explicit SegTreeLazy(const vector<T>& v, const T &eT_ = T(), const L &eL_ = L()) : N(int(v.size())), eT(eT_), eL(eL_) {
+    size = 1;
+    while (size < N) size<<=1;
+    log = countr_zero((unsigned int)size);
+    d = vector<T>(2 * size, eT);
+    lz = vector<L>(size, eL);
+    for (int i = 0; i < N; i++) d[size + i] = v[i];
+    for (int i = size - 1; i >= 1; i--) {
+      update(i);
+    }
   }
 
-  void update(int i, T value) { update(i, i, value); }
-  void update(int a, int b, T value) { update(1, 0, N - 1, a, b, value); }
-  T query(int a, int b) { return query(1, 0, N - 1, a, b); }
-  T query(int i) { return query(1, 0, N - 1, i, i); }
-
-private:
-  void apply_propagation(int node, int l, int r) {
-    v[node] += (r - l + 1) * lazy[node];
-    propagate(node, l, r, lazy[node]);
-    lazy[node] = 0;
+  void set(int p, T x) {
+    assert(0 <= p && p < N);
+    p += size;
+    for (int i = log; i >= 1; i--) push(p >> i);
+    d[p] = x;
+    for (int i = 1; i <= log; i++) update(p >> i);
   }
 
-  void propagate(int node, int l, int r, T value) {
-    if (l >= r)
-      return;
-
-    lazy[2 * node] += value;
-    lazy[2 * node + 1] += value;
+  T get(int p) {
+    assert(0 <= p && p < N);
+    p += size;
+    for (int i = log; i >= 1; i--) push(p >> i);
+    return d[p];
   }
 
-  void update(int node, int l, int r, int a, int b, T value) {
-    if (lazy[node])
-      apply_propagation(node, l, r);
+  T query(int l, int r) {
+    assert(0 <= l && l <= r && r < N);
 
-    if (a > r or b < l)
-      return;
+    l += size;
+    r += size;
 
-    if (a <= l and b >= r) {
-      v[node] += (r - l + 1) * value;
-      propagate(node, l, r, value);
-      return;
+    for (int i = log; i >= 1; i--) {
+      if (((l >> i) << i) != l) push(l >> i);
+      if ((((r+1) >> i) << i) != (r+1)) push(r >> i);
     }
 
-    auto m = l + (r - l) / 2;
-    update(2 * node, l, m, a, b, value);
-    update(2 * node + 1, m + 1, r, a, b, value);
+    T sml = eT, smr = eT;
+    while (l <= r) {
+      if (l & 1) sml = op(sml, d[l++]);
+      if (!(r & 1)) smr = op(d[r--], smr);
+      l >>= 1;
+      r >>= 1;
+    }
 
-    v[node] = v[2 * node] + v[2 * node + 1];
+    return op(sml, smr);
   }
 
-  T query(int node, int l, int r, int a, int b) {
-    if (lazy[node])
-      apply_propagation(node, l, r);
+  T query_all() { return d[1]; }
 
-    if (a > r or b < l)
-      return 0;
+  void update(int p, L f) {
+    assert(0 <= p && p < N);
+    p += size;
+    for (int i = log; i >= 1; i--) push(p >> i);
+    d[p] = mapping(f, d[p]);
+    for (int i = 1; i <= log; i++) update(p >> i);
+  }
+  void update(int l, int r, L f) {
+    assert(0 <= l && l <= r && r < N);
 
-    if (a <= l and b >= r)
-      return v[node];
+    l += size;
+    r += size;
 
-    auto m = l + (r - l) / 2;
-    auto x = query(2 * node, l, m, a, b);
-    auto y = query(2 * node + 1, m + 1, r, a, b);
-    return x + y;
+    for (int i = log; i >= 1; i--) {
+      if (((l >> i) << i) != l) push(l >> i);
+      if ((((r+1) >> i) << i) != (r+1)) push(r >> i);
+    }
+
+    {
+      int l2 = l, r2 = r;
+      while (l <= r) {
+        if (l & 1) all_apply(l++, f);
+        if (!(r & 1)) all_apply(r--, f);
+        l >>= 1;
+        r >>= 1;
+      }
+      l = l2;
+      r = r2;
+    }
+
+    for (int i = 1; i <= log; i++) {
+      if (((l >> i) << i) != l) update(l >> i);
+      if ((((r+1) >> i) << i) != (r+1)) update(r >> i);
+    }
+  }
+
+private:
+  void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
+  void all_apply(int k, L f) {
+    d[k] = mapping(f, d[k]);
+    if (k < size) lz[k] = composition(f, lz[k]);
+  }
+  void push(int k) {
+    all_apply(2 * k, lz[k]);
+    all_apply(2 * k + 1, lz[k]);
+    lz[k] = eL;
   }
 };
