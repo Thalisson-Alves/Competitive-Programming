@@ -14,6 +14,7 @@ void graph_cycles(const vector<vector<int>> &g, int u, int p, vector<int> &ps, v
       cur = ps[cur];
       v.push_back(cur);
     }
+    reverse(all(v));
     return;
   }
 
