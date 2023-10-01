@@ -1,3 +1,4 @@
+#define F(expr) [](auto a, auto b) { return expr; }
 template <typename T, auto op, typename L, auto mapping, auto composition>
 struct SegTreeLazy {
   static_assert(is_convertible_v<decltype(op), function<T(T, T)>>,
