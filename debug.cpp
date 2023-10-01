@@ -17,6 +17,10 @@ template <typename T>
 void __print(queue<T> q);
 template <typename T, typename... U>
 void __print(priority_queue<T, U...> q);
+void __print(char x) {
+  if (x < 31) cerr << static_cast<int>(x);
+  else cerr << x;
+}
 template <typename A>
 void __print(const A &x) {
     bool first = true;
