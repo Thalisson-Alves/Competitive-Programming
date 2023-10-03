@@ -6,7 +6,7 @@ struct SegTreeLazy {
   static_assert(is_convertible_v<decltype(mapping), function<T(L, T, int, int)>>,
                 "mapping must be a function T(L, T, int, int)");
   static_assert(is_convertible_v<decltype(composition), function<L(L, L)>>,
-                "compostiion must be a function L(L, L)");
+                "composition must be a function L(L, L)");
 
   int N, size, height;
   const T eT;
@@ -101,15 +101,19 @@ struct SegTreeLazy {
       if ((((r+1) >> i) << i) != (r+1)) update(r >> i);
     }
   }
+  pair<int, int> node_range(int k) const {
+    int remain = height;
+    for (int kk = k; kk>>=1; --remain);
+    int fst = k << remain;
+    int lst = min(fst + (1 << remain) - 1, size + N - 1);
+    return {fst - size, lst - size};
+  }
 
 private:
   void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
   void all_apply(int k, L f) {
-    int remain = height;
-    for (int kk = k; kk>>=1; --remain);
-    int start = k << remain;
-    int end = min(start + (1 << remain) - 1, size + N - 1);
-    d[k] = mapping(f, d[k], start, end);
+    auto [fst, lst] = node_range(k);
+    d[k] = mapping(f, d[k], fst, lst);
     if (k < size) lz[k] = composition(f, lz[k]);
   }
   void push(int k) {
