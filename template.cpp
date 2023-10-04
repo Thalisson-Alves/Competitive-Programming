@@ -26,8 +26,9 @@ int main()
  
   int t = 1;
   // cin >> t; cin.ignore();
-  for (auto i = 1; i <= t; i++)
+  for (auto i = 1; i <= t; i++) {
     solve();
+  }
  
   return 0;
 }
