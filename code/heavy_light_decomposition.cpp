@@ -1,8 +1,9 @@
 struct HeavyLightDecomposition {
   vector<int> parent, depth, size, heavy, head, pos;
 
-  static int op(int a, int b) { return max(a, b); }
-  SegTree<int, op> seg;
+  using SegT = int;
+  static SegT op(SegT a, SegT b) { return max(a, b); }
+  SegTree<SegT, op> seg;
 
   HeavyLightDecomposition(const vector<vector<int>> &g, const vector<int> &v, int root=0) : parent(g.size()), depth(g.size()), size(g.size()), heavy(g.size(), -1), head(g.size()), pos(g.size()), seg((int)g.size()) {
     dfs(g, root);
@@ -14,7 +15,7 @@ struct HeavyLightDecomposition {
     }
   }
 
-  int query_path(int a, int b) const {
+  SegT query_path(int a, int b) const {
     int res = 0;
     for (; head[a] != head[b]; b = parent[head[b]]) {
       if (depth[head[a]] > depth[head[b]])
@@ -26,7 +27,7 @@ struct HeavyLightDecomposition {
     return op(res, seg.query(pos[a], pos[b]));
   }
 
-  int query_subtree(int a) const {
+  SegT query_subtree(int a) const {
     return seg.query(pos[a], pos[a]+size[a]-1);
   }
 
