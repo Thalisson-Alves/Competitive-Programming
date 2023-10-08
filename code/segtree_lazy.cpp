@@ -1,13 +1,6 @@
 #define F(expr) [](auto a, auto b) { return expr; }
 template <typename T, auto op, typename L, auto mapping, auto composition>
 struct SegTreeLazy {
-  static_assert(is_convertible_v<decltype(op), function<T(T, T)>>,
-                "op must be a function T(T, T)");
-  static_assert(is_convertible_v<decltype(mapping), function<T(L, T, int, int)>>,
-                "mapping must be a function T(L, T, int, int)");
-  static_assert(is_convertible_v<decltype(composition), function<L(L, L)>>,
-                "composition must be a function L(L, L)");
-
   int N, size, height;
   const T eT;
   const L eL;
@@ -112,13 +105,37 @@ struct SegTreeLazy {
 private:
   void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
   void all_apply(int k, L f) {
-    auto [fst, lst] = node_range(k);
-    d[k] = mapping(f, d[k], fst, lst);
-    if (k < size) lz[k] = composition(f, lz[k]);
+    auto [fst, lst] = [&]() {
+      if constexpr (decltype(arg_count(mapping))() + decltype(arg_count(composition))() > 4)
+        return node_range(k);
+      else
+        return make_pair(0, 0);
+    }();
+
+    d[k] = call_args<mapping>(f, d[k], fst, lst);
+    if (k < size) {
+      lz[k] = call_args<composition>(f, lz[k], fst, lst);
+    }
   }
   void push(int k) {
     all_apply(2 * k, lz[k]);
     all_apply(2 * k + 1, lz[k]);
     lz[k] = eL;
   }
+
+  template <typename R, typename ... Types> 
+  constexpr static std::integral_constant<unsigned, sizeof ...(Types)> arg_count( R(*)(Types ...)) { return std::integral_constant<unsigned, sizeof ...(Types)>{}; }
+  template <auto f, typename Tuple, size_t... idx>
+  constexpr static auto call_args(Tuple&& tuple, std::index_sequence<idx...>) { return f(std::get<idx>(std::forward<Tuple>(tuple))...); }
+  template <auto f, typename... Args>
+  constexpr static auto call_args(Args&&... tuple) { return call_args<f>(std::forward_as_tuple(std::forward<Args>(tuple)...), std::make_index_sequence<arg_count(f)()>{}); }
+  static_assert(is_convertible_v<decltype(op), function<T(T, T)>>, "op must be a function T(T, T)");
+  static_assert(is_convertible_v<decltype(mapping), function<T(L, T)>> or
+                is_convertible_v<decltype(mapping), function<T(L, T, int)>> or
+                is_convertible_v<decltype(mapping), function<T(L, T, int, int)>>,
+                "mapping must be a function T(L, T) or T(L, T, int, int)");
+  static_assert(is_convertible_v<decltype(composition), function<L(L, L)>> or
+                is_convertible_v<decltype(composition), function<L(L, L, int)>> or
+                is_convertible_v<decltype(composition), function<L(L, L, int, int)>>,
+                "composition must be a function L(L, L) or L(L, L, int, int)");
 };
