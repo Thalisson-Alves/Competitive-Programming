@@ -1,4 +1,3 @@
-#define F(expr) [](auto a, auto b) { return expr; }
 template <typename T, auto op, typename L, auto mapping, auto composition>
 struct SegTreeLazy {
   int N, size, height;
@@ -112,9 +111,9 @@ private:
         return make_pair(0, 0);
     }();
 
-    d[k] = call_args<mapping>(f, d[k], fst, lst);
+    d[k] = arg_dispatch<mapping>(f, d[k], fst, lst);
     if (k < size) {
-      lz[k] = call_args<composition>(f, lz[k], fst, lst);
+      lz[k] = arg_dispatch<composition>(f, lz[k], fst, lst);
     }
   }
   void push(int k) {
@@ -126,9 +125,9 @@ private:
   template <typename R, typename ... Types> 
   constexpr static std::integral_constant<unsigned, sizeof ...(Types)> arg_count( R(*)(Types ...)) { return std::integral_constant<unsigned, sizeof ...(Types)>{}; }
   template <auto f, typename Tuple, size_t... idx>
-  constexpr static auto call_args(Tuple&& tuple, std::index_sequence<idx...>) { return f(std::get<idx>(std::forward<Tuple>(tuple))...); }
+  constexpr static auto arg_dispatch(Tuple&& tuple, std::index_sequence<idx...>) { return f(std::get<idx>(std::forward<Tuple>(tuple))...); }
   template <auto f, typename... Args>
-  constexpr static auto call_args(Args&&... tuple) { return call_args<f>(std::forward_as_tuple(std::forward<Args>(tuple)...), std::make_index_sequence<arg_count(f)()>{}); }
+  constexpr static auto arg_dispatch(Args&&... tuple) { return arg_dispatch<f>(std::forward_as_tuple(std::forward<Args>(tuple)...), std::make_index_sequence<arg_count(f)()>{}); }
   static_assert(is_convertible_v<decltype(op), function<T(T, T)>>, "op must be a function T(T, T)");
   static_assert(is_convertible_v<decltype(mapping), function<T(L, T)>> or
                 is_convertible_v<decltype(mapping), function<T(L, T, int)>> or
@@ -139,3 +138,13 @@ private:
                 is_convertible_v<decltype(composition), function<L(L, L, int, int)>>,
                 "composition must be a function L(L, L) or L(L, L, int, int)");
 };
+
+struct Node {};
+
+Node op(Node a, Node b) {}
+
+struct Lazy {};
+
+Node mapping(Lazy f, Node x) {}
+
+Lazy composition(Lazy f, Lazy g) {}
