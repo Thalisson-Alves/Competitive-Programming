@@ -1,11 +1,12 @@
 struct BinaryLifting {
   vector<int> far, level, parent;
 
-  BinaryLifting(const vector<vector<int>> &g, int root=0) : far(g.size(), -1), level(g.size()), parent(g.size()) {
+  BinaryLifting(const vector<vector<int>> &g, int root=0) : far(g.size(), -1), level(g.size()), parent(g.size(), -1) {
     level[root] = 1;
     vector<int> q{root};
     q.reserve(g.size());
-    for (int u = 0; u < (int)q.size(); u++) {
+    for (int i = 0; i < (int)q.size(); i++) {
+      auto u = q[i];
       for (auto x : g[u]) if (x != parent[u]) {
         parent[x] = u;
         level[x] = level[u] + 1;
