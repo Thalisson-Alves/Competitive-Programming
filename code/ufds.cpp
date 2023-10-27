@@ -1,5 +1,4 @@
-struct UFDS
-{
+struct UFDS {
   vector<int> ps, sz;
   int components;
 
@@ -18,12 +17,12 @@ struct UFDS
     return find_set(x) == find_set(y);
   }
 
-  void union_set(int x, int y)
+  bool union_set(int x, int y)
   {
     x = find_set(x);
     y = find_set(y);
     
-    if (x == y) return;
+    if (x == y) return false;
 
     if (sz[x] < sz[y])
       swap(x, y);
@@ -32,5 +31,6 @@ struct UFDS
     sz[x] += sz[y];
 
     components--;
+    return true;
   }
 };
