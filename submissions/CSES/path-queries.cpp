@@ -2,7 +2,7 @@
 using namespace std;
  
 #ifdef DEBUG
-#include "debug.cpp"
+#include "./Competitive-Programming/debug.cpp"
 #else
 #define dbg(...)
 #endif
@@ -14,24 +14,23 @@ using ull = unsigned long long;
 
 const vector<pair<int, int>> dir4{{1,0},{-1,0},{0,1},{0,-1}};
 
-void tree_flatten(const vector<vector<int>> &g, int u, int p, vector<int> &pre, vector<int> &pos, int &idx) {
+void tree_flatten(const vector<vector<int>> &g, int u, int p, vector<int> &pre, vector<pair<int,int>> &pos, int &idx) {
   ++idx;
   pre.push_back(u);
   for (auto x : g[u])
     if (x != p)
       tree_flatten(g, x, u, pre, pos, idx);
-  pos[u] = idx;
+  pos[u].second = idx;
 }
 
-vector<pair<int,int>> tree_flatten(const vector<vector<int>> &g, int root=0) {
-  vector<int> last(g.size()), pre;
+vector<pair<int, int>> tree_flatten(const vector<vector<int>> &g, int root=0) {
+  vector<int> pre;
+  vector<pair<int, int>> flat(g.size());
   int timer = -1;
-  tree_flatten(g, root, -1, pre, last, timer);
-
-  vector<pair<int, int>> res(g.size());
+  tree_flatten(g, root, -1, pre, flat, timer);
   for (int i = 0; i < (int)g.size(); i++)
-    res[pre[i]] = {i, last[i]};
-  return res;
+    flat[pre[i]].first = i;
+  return flat;
 }
 
 template <typename T> struct SegTree {
