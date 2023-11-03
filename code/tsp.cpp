@@ -1,5 +1,4 @@
-ll tsp(int i, int mask, const vector<vector<ll>> &dist, vector<vector<ll>> &memo)
-{
+ll tsp(int i, int mask, const vector<vector<ll>> &dist, vector<vector<ll>> &memo) {
   if (mask == (1 << dist.size()) - 1)
     return dist[i][0];
 
@@ -16,4 +15,9 @@ ll tsp(int i, int mask, const vector<vector<ll>> &dist, vector<vector<ll>> &memo
   }
 
   return memo[i][mask] = ans;
+}
+
+ll tsp(int i, const vector<vector<ll>> &dist) {
+  vector<vector<ll>> memo(dist.size(), vector<ll>(1ll << dist.size(), -1));
+  return tsp(i, 1ll << i, dist, memo);
 }
