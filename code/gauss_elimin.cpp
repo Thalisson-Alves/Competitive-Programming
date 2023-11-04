@@ -1,19 +1,14 @@
-template<size_t Dim>
-struct GaussianElimination
-{
+template<size_t Dim> struct GaussianElimination {
   vector<ll> basis;
   size_t size;
 
   GaussianElimination() : basis(Dim+1), size(0) {}
 
-  void insert(ll x)
-  {
-    for (ll i = Dim; i >= 0; i--)
-    {
+  void insert(ll x) {
+    for (ll i = Dim; i >= 0; i--) {
       if ((x & 1ll << i) == 0) continue;
 
-      if (!basis[i])
-      {
+      if (!basis[i]) {
         basis[i] = x;
         size++;
         break;
@@ -23,18 +18,15 @@ struct GaussianElimination
     }
   }
 
-  void normalize()
-  {
+  void normalize() {
     for (ll i = Dim; i >= 0; i--)
       for (ll j = i - 1; j >= 0; j--)
         if (basis[i] & 1ll << j)
           basis[i] ^= basis[j];
   }
 
-  bool check(ll x)
-  {
-    for (ll i = Dim; i >= 0; i--)
-    {
+  bool check(ll x) const {
+    for (ll i = Dim; i >= 0; i--) {
       if ((x & 1ll << i) == 0) continue;
 
       if (!basis[i])
@@ -46,14 +38,12 @@ struct GaussianElimination
     return true;
   }
 
-  auto operator[](ll k) { return at(k); }
+  auto operator[](ll k) const { return at(k); }
 
-  ll at(ll k)
-  {
+  ll at(ll k) const {
     ll ans = 0;
     ll total = 1ll << size;
-    for (ll i = Dim; ~i; i--)
-    {
+    for (ll i = Dim; ~i; i--) {
       if (!basis[i]) continue;
 
       ll mid = total >> 1ll;
@@ -69,16 +59,18 @@ struct GaussianElimination
     return ans;
   }
 
-  ll at_normalized(ll k)
-  {
+  ll at_normalized(ll k) const {
     ll ans = 0;
     k--;
-    for (size_t i = 0; i <= Dim; i++)
-    {
+    for (size_t i = 0; i <= Dim; i++) {
       if (!basis[i]) continue;
       if (k & 1) ans ^= basis[i];
       k >>= 1;
     }
     return ans;
+  }
+
+  ll max() const {
+    return at(1ll << size);
   }
 };
