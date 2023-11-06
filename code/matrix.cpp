@@ -182,13 +182,24 @@ template <typename T> struct Matrix {
     return res;
   }
 
+  Matrix<T> pow(ll e) const {
+    assert(n() == m());
+    Matrix<T> res = identity(n());
+    Matrix<T> b = *this;
+    while (e) {
+      if (e & 1) res *= b;
+      b *= b;
+      e >>= 1;
+    }
+    return res;
+  }
+
   friend istream &operator>>(istream &is, Matrix<T> &mat) {
     for (auto &row : mat)
       for (auto &x : row)
         is >> x;
     return is;
   }
-
   friend ostream &operator<<(ostream &os, const Matrix<T> &mat) {
     bool frow = 1;
     for (auto &row : mat) {
