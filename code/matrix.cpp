@@ -21,7 +21,7 @@ template <typename T> struct Matrix {
     return res;
   }
 
-  Matrix<T> fpow(int power) const {
+  Matrix<T> pow(int power) const {
     assert(n() == m());
 
     auto res = Matrix<T>::identity(n());
@@ -178,18 +178,6 @@ template <typename T> struct Matrix {
           x += (d[i][k] * o[k][j]);
         }
       }
-    }
-    return res;
-  }
-
-  Matrix<T> pow(ll e) const {
-    assert(n() == m());
-    Matrix<T> res = identity(n());
-    Matrix<T> b = *this;
-    while (e) {
-      if (e & 1) res *= b;
-      b *= b;
-      e >>= 1;
     }
     return res;
   }
