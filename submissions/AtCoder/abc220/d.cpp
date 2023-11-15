@@ -1,0 +1,93 @@
+#include <bits/stdc++.h>
+#include <numeric>
+using namespace std;
+
+#ifdef DEBUG
+#include "debug.cpp"
+#else
+#define dbg(...) 4269
+#endif
+
+#define all(x) x.begin(), x.end()
+
+using ll = long long;
+using ii = pair<int, int>;
+
+const vector<pair<int, int>> dir4{{1,0},{-1,0},{0,1},{0,-1}};
+const vector<pair<int, int>> dir8{{1,0},{-1,0},{0,1},{0,-1},{-1,-1},{-1,1},{1,-1},{1,1}};
+
+template<typename T> vector<T> split(const string &s);
+ll fpow(ll x, ll p);
+
+const ll MOD = 998244353;
+map<pair<int, int>, set<int>> cong;
+ll dp(const vector<ll> &v, int cur, ll k, map<pair<int, ll>, ll> &memo)
+{
+  auto it = memo.find(pair<int, ll>(cur, k));
+  if (it != memo.end()) return it->second;
+
+  if (cur == 0) return v[cur] == k;
+  ll prod = dp(v, cur-1, (k-v[cur]+10)%10, memo);
+
+  for (auto c : cong[make_pair(v[cur], k)])
+  {
+    ll mul = dp(v, cur-1, c, memo);
+    prod = (prod + mul) % MOD;
+  }
+
+  return memo[make_pair(cur, k)] = prod;
+}
+
+void solve()
+{
+  ll n;
+  cin >> n;
+  vector<ll> v(n);
+  for (auto &x : v) cin >> x;
+
+  for (int i = 0; i < 10; i++)
+  {
+    for (int j = 0; j < 10; j++)
+    {
+      int ans = (i * j) % 10;
+      cong[make_pair(i, ans)].insert(j);
+      cong[make_pair(j, ans)].insert(i);
+    }
+  }
+
+  map<pair<int, ll>, ll> memo;
+  for (int i = 0; i < 10; i++)
+    cout << dp(v, n-1, i, memo) << '\n';
+}
+
+int main()
+{
+  ios_base::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+
+  int t = 1;
+  // cin >> t;
+  for (auto i = 1; i <= t; i++)
+    solve();
+
+  return 0;
+}
+
+template<typename T> vector<T> split(const string &s)
+{
+  vector<T> ans;
+  stringstream ss(s);
+  for (T x; ss >> x; ans.push_back(x));
+  return ans;
+}
+
+ll fpow(ll x, ll p)
+{
+  if (p == 0) return 1;
+  auto ans = fpow(x, p >> 1);
+  ans *= ans;
+  if (p & 1) ans *= x;
+  return ans;
+}
+
