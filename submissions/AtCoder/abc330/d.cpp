@@ -1,0 +1,57 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#ifdef DEBUG
+#include "Competitive-Programming/debug.cpp"
+#else
+#define dbg(...)
+#endif
+
+#define all(x) x.begin(), x.end()
+
+using ll = long long;
+
+const vector<pair<int, int>> dir4{{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+const vector<pair<int, int>> dir8{{1, 0}, {-1, 0}, {0, 1}, {0, -1}, {-1, -1}, {-1, 1}, {1, -1}, {1, 1}};
+
+void solve()
+{
+  int n;
+  cin >> n;
+  vector<int> row(n), col(n);
+  vector<vector<int>> g(n, vector<int>(n));
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      char x;
+      cin >> x;
+      row[i] += x == 'o';
+      col[j] += x == 'o';
+      g[i][j] = x == 'o';
+    }
+  }
+
+  ll res = 0;
+  for (int i = 0; i < n; i++) {
+    for (int j = 0; j < n; j++) {
+      if (g[i][j] and row[i] and col[j]) {
+        res += (row[i]-1) * (col[j]-1);
+      }
+    }
+  }
+  cout << res << '\n';
+}
+
+int32_t main()
+{
+  ios_base::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
+
+  int t = 1;
+  // cin >> t; cin.ignore();
+  for (auto i = 1; i <= t; i++) {
+    solve();
+  }
+
+  return 0;
+}
