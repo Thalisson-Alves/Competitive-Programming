@@ -1,3 +1,4 @@
+#define SegTree SegTreeLazy<Node, op, Lazy, mapping, composition>
 template <typename T, auto op, typename L, auto mapping, auto composition>
 struct SegTreeLazy {
   int N, size, height;
@@ -122,7 +123,7 @@ private:
     lz[k] = eL;
   }
 
-  template <typename R, typename ... Types> 
+  template <typename R, typename ... Types>
   constexpr static std::integral_constant<unsigned, sizeof ...(Types)> arg_count( R(*)(Types ...)) { return std::integral_constant<unsigned, sizeof ...(Types)>{}; }
   template <auto f, typename Tuple, size_t... idx>
   constexpr static auto arg_dispatch(Tuple&& tuple, std::index_sequence<idx...>) { return f(std::get<idx>(std::forward<Tuple>(tuple))...); }

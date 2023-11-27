@@ -47,7 +47,7 @@ template<size_t Dim> struct GaussianElimination {
       if (!basis[i]) continue;
 
       ll mid = total >> 1ll;
-      if ((mid < k and (ans & 1ll << i) == 0) || 
+      if ((mid < k and (ans & 1ll << i) == 0) ||
           (k <= mid and (ans & 1ll << i)))
         ans ^= basis[i];
 

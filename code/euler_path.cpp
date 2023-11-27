@@ -2,7 +2,7 @@
 vector<int> euler_cycle_directed(vector<vector<int>> &g, int u)
 {
   vector<int> res;
- 
+
   stack<int> st;
   st.push(u);
   while (!st.empty())
@@ -14,18 +14,18 @@ vector<int> euler_cycle_directed(vector<vector<int>> &g, int u)
     } else {
       auto next = g[cur].back();
       st.push(next);
- 
+
       g[cur].pop_back();
     }
   }
- 
+
   for (auto &x : g)
     if (!x.empty())
       return {};
- 
+
   return res;
 }
- 
+
 // Directed Edges
 vector<int> euler_path_directed(vector<vector<int>> &g, int first)
 {
@@ -47,7 +47,7 @@ vector<int> euler_path_directed(vector<vector<int>> &g, int first)
 
   auto res = euler_cycle_directed(g, first);
   if (res.empty()) return res;
- 
+
   reverse(all(res));
   return res;
 }
@@ -82,11 +82,11 @@ vector<int> euler_cycle_undirected(vector<vector<int>> &g, int u)
       g[cur].pop_back();
     }
   }
- 
+
   for (auto &x : g)
     if (!x.empty())
       return {};
- 
+
   return res;
 }
 
@@ -104,7 +104,7 @@ vector<int> euler_path_undirected(vector<vector<int>> &g, int first)
         else if (v2 == -1) v2 = i;
         else bad = true;
       }
- 
+
     if (bad or (v1 != -1 and v2 == -1)) return {};
   }
 
@@ -114,10 +114,10 @@ vector<int> euler_path_undirected(vector<vector<int>> &g, int first)
     g[v1].push_back(v2);
     g[v2].push_back(v1);
   }
- 
+
   auto res = euler_cycle_undirected(g, first);
   if (res.empty()) return res;
- 
+
   if (v1 != -1)
   {
     for (int i = 0; i + 1 < (int)res.size(); i++)
@@ -134,7 +134,7 @@ vector<int> euler_path_undirected(vector<vector<int>> &g, int first)
       }
     }
   }
- 
+
   reverse(all(res));
   return res;
 }

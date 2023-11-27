@@ -2,7 +2,7 @@ template<const bool include_collinear=false, typename T>
 vector<Point<T>> convex_hull(vector<Point<T>> pts)
 {
   if (pts.size() == 1) return pts;
- 
+
   sort(all(pts));
   auto p1 = pts[0], p2 = pts.back();
   vector<Point<T>> up, down;
@@ -23,7 +23,7 @@ vector<Point<T>> convex_hull(vector<Point<T>> pts)
       down.push_back(pts[i]);
     }
   }
- 
+
   if constexpr (include_collinear)
   {
     if (up.size() == pts.size())
@@ -32,7 +32,7 @@ vector<Point<T>> convex_hull(vector<Point<T>> pts)
       return pts;
     }
   }
- 
+
   up.insert(up.end(), down.rbegin() + 1, down.rend() - 1);
   return up;
 }

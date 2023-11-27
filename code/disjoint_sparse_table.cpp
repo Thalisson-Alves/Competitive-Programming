@@ -2,18 +2,18 @@
 template <typename T> struct DisjointSparseTable
 {
   using Operation = T(*)(T, T);
- 
+
   vector<vector<T>> st;
   Operation f;
   T identity;
- 
+
   static constexpr int log2_floor(unsigned long long i) noexcept { return i ? __builtin_clzll(1) - __builtin_clzll(i) : -1; }
 
   // Lazy loading constructor. Needs to call build!
   DisjointSparseTable(Operation op, const T neutral = T()) : st(), f(op), identity(neutral) {}
- 
+
   DisjointSparseTable(vector<T> v) : DisjointSparseTable(v, F(min(a,b))) { }
- 
+
   DisjointSparseTable(vector<T> v, Operation op, const T neutral = T()) : st(), f(op), identity(neutral)
   {
     build(v);
@@ -30,7 +30,7 @@ template <typename T> struct DisjointSparseTable
         const auto l = block << (st.size() - level);
         const auto r = (block + 1) << (st.size() - level);
         const auto m = l + (r - l) / 2;
- 
+
         st[level][m] = v[m];
         for (int i = m + 1; i < r; i++)
           st[level][i] = f(st[level][i-1], v[i]);
@@ -40,12 +40,12 @@ template <typename T> struct DisjointSparseTable
       }
     }
   }
- 
+
   T query(int l, int r) const
   {
     if (l > r) return identity;
     if (l == r) return st.back()[l];
- 
+
     const auto k = log2_floor(l^r);
     const auto level = (int)st.size() - 1 - k;
     return f(st[level][l], st[level][r]);

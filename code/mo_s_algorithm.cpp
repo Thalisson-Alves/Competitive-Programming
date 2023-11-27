@@ -44,6 +44,6 @@ private:
   // remove value at idx from data structure
   inline void remove(int idx) { }
 
-  // extract current answer of the data structure 
+  // extract current answer of the data structure
   inline auto get_answer() { }
 };

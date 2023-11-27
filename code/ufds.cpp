@@ -21,7 +21,7 @@ struct UFDS {
   {
     x = find_set(x);
     y = find_set(y);
-    
+
     if (x == y) return false;
 
     if (sz[x] < sz[y])
