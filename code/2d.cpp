@@ -41,6 +41,7 @@ template<typename T=double> struct Point {
   inline double angle() const { return atan2(y, x); }
   inline double norm() const { return sqrt(dot(*this)); }
   inline Point rot90() const { return Point(-y, x); }
+  inline Point to(const Point &p) const { return p - *this; }
 };
 
 template<typename T> int orientation(const Point<T> &a, const Point<T> &b, const Point<T> &c) {
@@ -112,6 +113,47 @@ template<typename T=double> struct Segment {
   inline double dist2(const Point<T> &p) const { return (p-closest(p)).dist2(); }
   inline double dist(const Point<T> &p) const { return sqrt(dist2(p)); }
 
+  bool operator<(const Segment &l) const {
+    if (a.x < l.a.x) return a.to(b).cross(a.to(l.a)) < 0;
+    else return l.a.to(l.b).cross(l.a.to(a)) > 0;
+  }
+
   friend ostream& operator<<(ostream &os, const Segment &l) { return os << l.a << ' ' << l.b; }
   friend istream& operator>>(istream &is, Segment &l) { return is >> l.a >> l.b; }
 };
+
+template <typename T> void sort_segments(vector<Segment<T>> &segments) {
+  sort(all(segments), [](const auto &a, const auto &b) {
+    return a.a.x < b.a.x;
+  });
+
+  vector<vector<int>> g(segments.size()+1);
+  set<pair<Segment<T>, int>> st;
+  priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> events;
+
+  for (int i = 0; i < (int)segments.size(); i++) {
+    while (not events.empty() and events.top().first < segments[i].a.x) {
+      auto [x, y] = events.top();
+      events.pop();
+      st.erase({segments[y], y});
+    }
+
+    auto it = st.insert({segments[i], i}).first;
+    g[it == st.begin() ? segments.size() : prev(it)->second].push_back(i);
+    events.push({segments[i].b.x, i});
+  }
+
+  stack<int> dfs;
+  dfs.push((int)segments.size());
+  vector<Segment<T>> res;
+
+  while (not dfs.empty()) {
+    auto u = dfs.top();
+    dfs.pop();
+
+    if (u != (int)segments.size()) res.push_back(segments[u]);
+    for (auto v : g[u]) dfs.push(v);
+  }
+
+  swap(segments, res);
+}
