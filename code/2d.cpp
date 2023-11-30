@@ -77,49 +77,49 @@ template<const bool include_collinear=false, typename T> bool ccw(const Point<T>
 }
 
 template<typename T=double> struct Segment {
-  Point<T> a, b;
+  Point<T> p, q;
 
-  Segment() : a(), b() {}
-  Segment(Point<T> a_, Point<T> b_) : a(a_), b(b_) {}
+  Segment() : p(), q() {}
+  Segment(Point<T> a_, Point<T> b_) : p(a_), q(b_) {}
 
-  inline bool operator==(const Segment &l) const { return a == l.a and b == l.b; }
+  inline bool operator==(const Segment &l) const { return p == l.p and q == l.q; }
 
   inline bool intersects(const Segment &l) const {
-    if (eq(a.cross(b, l.a), (T)0) and eq(a.cross(b, l.b), (T)0)) {
-      return min(a, b) <= max(l.a, l.b) and min(l.a, l.b) <= max(a, b);
+    if (eq(p.cross(q, l.p), (T)0) and eq(p.cross(q, l.q), (T)0)) {
+      return min(p, q) <= max(l.p, l.q) and min(l.p, l.q) <= max(p, q);
     }
-    return (a.cross(b, l.a) * a.cross(b, l.b) <= 0) and (l.a.cross(l.b, a) * l.a.cross(l.b, b) <= 0);
+    return (p.cross(q, l.p) * p.cross(q, l.q) <= 0) and (l.p.cross(l.q, p) * l.p.cross(l.q, q) <= 0);
   }
 
-  inline bool intersects(const Point<T> &p) const {
-    return eq(a.cross(b, p), (T)0) and min(a, b) <= p and p <= max(a, b);
+  inline bool intersects(const Point<T> &r) const {
+    return eq(p.cross(q, r), (T)0) and min(p, q) <= r and r <= max(p, q);
   }
 
   inline Point<T> intersection(const Segment &l) const {
     assert(intersects(l));
-    if (eq(a.cross(b, l.a), (T)0) and eq(a.cross(b, l.b), (T)0)) {
-      return min(a, b) <= max(l.a, l.b) ? max(a, l.a) : min(a, l.a);
+    if (eq(p.cross(q, l.p), (T)0) and eq(p.cross(q, l.q), (T)0)) {
+      return min(p, q) <= max(l.p, l.q) ? max(p, l.p) : min(p, l.p);
     }
-    return a + (b - a) * (l.a.cross(l.b, l.a) / l.a.cross(l.b, a - b));
+    return p + (q - p) * (l.p.cross(l.q, l.p) / l.p.cross(l.q, p - q));
   }
 
-  inline Point<T> closest(const Point<T> & p) const {
-    if ((p - a).dot(b - a) < EPS) return a;
-    if ((p - b).dot(a - b) < EPS) return b;
+  inline Point<T> closest(const Point<T> &r) const {
+    if ((r - p).dot(q - p) < EPS) return p;
+    if ((r - q).dot(p - q) < EPS) return q;
 
-    return a + (b - a) * ((p - a).dot(b - a) / (b - a).dist2());
+    return p + (q - p) * ((r - p).dot(q - p) / (q - p).dist2());
   }
 
-  inline double dist2(const Point<T> &p) const { return (p-closest(p)).dist2(); }
-  inline double dist(const Point<T> &p) const { return sqrt(dist2(p)); }
+  inline double dist2(const Point<T> &r) const { return (r-closest(r)).dist2(); }
+  inline double dist(const Point<T> &r) const { return sqrt(dist2(r)); }
 
   bool operator<(const Segment &l) const {
-    if (a.x < l.a.x) return a.to(b).cross(a.to(l.a)) < 0;
-    else return l.a.to(l.b).cross(l.a.to(a)) > 0;
+    if (p.x < l.p.x) return p.to(q).cross(p.to(l.p)) < 0;
+    else return l.p.to(l.q).cross(l.p.to(p)) > 0;
   }
 
-  friend ostream& operator<<(ostream &os, const Segment &l) { return os << l.a << ' ' << l.b; }
-  friend istream& operator>>(istream &is, Segment &l) { return is >> l.a >> l.b; }
+  friend ostream& operator<<(ostream &os, const Segment &l) { return os << l.p << ' ' << l.q; }
+  friend istream& operator>>(istream &is, Segment &l) { return is >> l.p >> l.q; }
 };
 
 template <typename T> void sort_segments(vector<Segment<T>> &segments) {
