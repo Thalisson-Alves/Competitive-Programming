@@ -5,9 +5,18 @@ namespace rng {
   inline void set_seed(int seed) { mt.seed(seed); }
 
   inline double next_double() { return dist(mt); }
-  inline double next_double(double l, double r) { return l + (r - l) * next_double(); }
-  inline int next_int(int n) { return mt() % n; }
-  inline int next_int(int l, int r) { return l + mt() % (r - l + 1); }
+  inline double next_double(double l, double r) {
+    assert(l <= r);
+    return l + next_double() * (r - l);
+  }
+  template<typename T, typename = typename enable_if<is_integral<T>::value>::type> inline T next_int(T r) {
+    assert(r > 0);
+    return T(mt() % r);
+  }
+  template<typename T, typename = typename enable_if<is_integral<T>::value>::type> inline T next_int(T l, T r) {
+    assert(l <= r);
+    return l + (T)(mt() % (r - l + 1));
+  }
 
   template<typename T> inline void shuffle(vector<T> &v) {
     for (int i = 0; i < (int)v.size(); i++) {
