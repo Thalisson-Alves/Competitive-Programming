@@ -5,6 +5,7 @@ template<size_t Dim> struct GaussianElimination {
   GaussianElimination() : basis(Dim+1), size(0) {}
 
   void insert(ll x) {
+    if (size == Dim) return;
     for (ll i = Dim; i >= 0; i--) {
       if ((x & 1ll << i) == 0) continue;
 
@@ -16,6 +17,14 @@ template<size_t Dim> struct GaussianElimination {
 
       x ^= basis[i];
     }
+  }
+
+  void merge(const GaussianElimination &other) {
+    for (ll i = Dim; i >= 0; i--)
+      if (size == Dim)
+        break;
+      else if (other.basis[i])
+        insert(other.basis[i]);
   }
 
   void normalize() {
