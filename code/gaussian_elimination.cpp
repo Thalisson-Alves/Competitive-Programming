@@ -43,6 +43,9 @@ template<size_t Dim> struct GaussianElimination {
   }
 
   T max() const {
-    return at((1ll << size()) - 1);
+    T res = 0;
+    for (const auto &b : basis)
+      res = std::max(res, res ^ b);
+    return res;
   }
 };
