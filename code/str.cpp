@@ -11,35 +11,40 @@ namespace str {
     return ss.str();
   }
 
-  vector<string> split(const string &s, const string_view &sep=" ") {
-    vector<string> res;
+  void split_for_each(const string &s, const string_view &sep, auto f) {
+    static_assert(is_invocable_r_v<void, decltype(f), string>);
+
     size_t pos = 0, last = 0;
     while ((pos = s.find(sep, last)) != string::npos) {
       if (pos > last)
-        res.push_back(s.substr(last, pos - last));
+        f(s.substr(last, pos - last));
       last = pos + sep.size();
     }
-    res.push_back(s.substr(last));
+    if (last < s.size())
+      f(s.substr(last));
+  }
+  vector<string> split(const string &s, const string_view &sep=" ") {
+    vector<string> res;
+    split_for_each(s, sep, [&](const string &x) { res.push_back(x); });
     return res;
   }
   template <typename T> vector<T> split(const string &s, const string_view &sep=" ") {
     vector<T> res;
-    for (const auto &x : split(s, sep)) {
+    split_for_each(s, sep, [&](const string &x) {
       stringstream ss(x);
       T val;
       ss >> val;
       res.emplace_back(val);
-    }
+    });
     return res;
   }
-  template <typename T> void split_into(const string &s, const string_view &sep, T out) {
-    stringstream ss(s);
-    string token;
-    while (getline(ss, token, sep[0])) {
-      stringstream ss2(token);
-      typename T::container_type::value_type val;
-      ss2 >> val;
+  template <typename Out> void split_into(const string &s, const string_view &sep, Out out) {
+    using T = typename Out::container_type::value_type;
+    split_for_each(s, sep, [&](const string &x) {
+      stringstream ss(x);
+      T val;
+      ss >> val;
       *out++ = val;
-    }
+    });
   }
 };
