@@ -2,7 +2,8 @@ struct HeavyLightDecomposition {
   int V;
   int id;
   int nb_heavy_path;
-  std::vector<std::vector<int>> e;
+  std::vector<std::vector<int>> g;
+  std::vector<pair<int, int>> edges; // edges of the tree
   std::vector<int> par;         // par[i] = parent of vertex i (Default: -1)
   std::vector<int> depth;       // depth[i] = distance between root and vertex i
   std::vector<int> subtree_sz;  // subtree_sz[i] = size of subtree whose root is i
@@ -14,17 +15,18 @@ struct HeavyLightDecomposition {
   std::vector<int> heavy_path_id; // heavy_path_id[i] = heavy_path_id for vertex [i]
 
 
-  HeavyLightDecomposition(const std::vector<std::vector<int>> &g, vector<int> roots = {0}) : HeavyLightDecomposition((int)g.size()) {
-    this->e = g;
+  HeavyLightDecomposition(const std::vector<std::vector<int>> &e, vector<int> roots = {0}) : HeavyLightDecomposition((int)e.size()) {
+    g = e;
     build(roots);
   }
   HeavyLightDecomposition(int sz = 0)
-      : V(sz), id(0), nb_heavy_path(0), e(sz), par(sz), depth(sz), subtree_sz(sz), heavy_child(sz),
+      : V(sz), id(0), nb_heavy_path(0), g(sz), par(sz), depth(sz), subtree_sz(sz), heavy_child(sz),
         tree_id(sz, -1), aligned_id(sz), aligned_id_inv(sz), head(sz), heavy_path_id(sz, -1) {}
 
   void add_edge(int u, int v) {
-    e[u].emplace_back(v);
-    e[v].emplace_back(u);
+    edges.emplace_back(u, v);
+    g[u].emplace_back(v);
+    g[v].emplace_back(u);
   }
 
   void _build_dfs(int root) {
@@ -35,8 +37,8 @@ struct HeavyLightDecomposition {
     while (!st.empty()) {
       int now = st.top().first;
       int &i = st.top().second;
-      if (i < (int)e[now].size()) {
-        int nxt = e[now][i++];
+      if (i < (int)g[now].size()) {
+        int nxt = g[now][i++];
         if (nxt == par[now]) continue;
         par[nxt] = now;
         depth[nxt] = depth[now] + 1;
@@ -46,7 +48,7 @@ struct HeavyLightDecomposition {
         int max_sub_sz = 0;
         subtree_sz[now] = 1;
         heavy_child[now] = -1;
-        for (auto nxt : e[now]) {
+        for (auto nxt : g[now]) {
           if (nxt == par[now]) continue;
           subtree_sz[now] += subtree_sz[nxt];
           if (max_sub_sz < subtree_sz[nxt])
@@ -68,7 +70,7 @@ struct HeavyLightDecomposition {
         aligned_id_inv[aligned_id[now]] = now;
         heavy_path_id[now] = nb_heavy_path;
         head[now] = h;
-        for (int nxt : e[now])
+        for (int nxt : g[now])
           if (nxt != par[now] and nxt != heavy_child[now]) q.push(nxt);
       }
       nb_heavy_path++;
@@ -76,8 +78,8 @@ struct HeavyLightDecomposition {
   }
 
   void build(std::vector<int> roots = {0}) {
-      int tree_id_now = 0;
-      for (auto r : roots) _build_dfs(r), _build_bfs(r, tree_id_now++);
+    int tree_id_now = 0;
+    for (auto r : roots) _build_dfs(r), _build_bfs(r, tree_id_now++);
   }
 
   template <class T> std::vector<T> segtree_rearrange(const std::vector<T> &data) const {
@@ -86,6 +88,22 @@ struct HeavyLightDecomposition {
     ret.reserve(V);
     for (int i = 0; i < V; i++) ret.emplace_back(data[aligned_id_inv[i]]);
     return ret;
+  }
+  template <class T> std::vector<T> segtree_rearrange_weighted(const std::vector<T> &data) const {
+    assert(int(data.size()) == V-1);
+    vector<T> ret(V);
+    for (int i = 0; i < V-1; i++) {
+      auto [u, v] = edges[i];
+      if (depth[u] > depth[v]) swap(u, v);
+      ret[aligned_id[v]] = data[i];
+    }
+    return ret;
+  }
+
+  int segtree_edge_index(int i) const {
+    auto [u, v] = edges[i];
+    if (depth[u] > depth[v]) swap(u, v);
+    return aligned_id[v];
   }
 
   // query for vertices on path [u, v] (INCLUSIVE)
