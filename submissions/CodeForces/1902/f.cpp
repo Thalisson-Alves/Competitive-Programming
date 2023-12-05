@@ -12,140 +12,51 @@ using namespace std;
 using ll = long long;
 
 template<size_t Dim> struct GaussianElimination {
-  vector<ll> basis;
-  size_t size;
+  using T = conditional_t<Dim <= 32, uint32_t, uint64_t>;
+  vector<T> basis;
 
-  GaussianElimination() : basis(Dim+1), size(0) {}
-
-  void insert(ll x) {
-    if (size == Dim) return;
-    for (ll i = Dim; i >= 0; i--) {
-      if ((x & 1ll << i) == 0) continue;
-
-      if (!basis[i]) {
-        basis[i] = x;
-        size++;
-        break;
-      }
-
-      x ^= basis[i];
-    }
+  void insert(T x) {
+    for (const auto &b : basis)
+      x = min(x, x ^ b);
+    if (x) basis.push_back(x);
   }
 
   void merge(const GaussianElimination &other) {
-    for (ll i = Dim; i >= 0; i--)
-      if (size == Dim)
-        break;
-      else if (other.basis[i])
-        insert(other.basis[i]);
+    for (int i = 0; basis.size() < Dim and i < other.size(); i++)
+      insert(other.basis[i]);
   }
 
   void normalize() {
-    for (ll i = Dim; i >= 0; i--)
-      for (ll j = i - 1; j >= 0; j--)
-        if (basis[i] & 1ll << j)
+    sort(all(basis));
+    for (int i = size() - 1; ~i; --i) {
+      for (int j = i - 1; ~j; --j) {
+        if (basis[i] & (1ll << (63 - __builtin_clzll(basis[j]))))
           basis[i] ^= basis[j];
-  }
-
-  bool check(ll x) const {
-    for (ll i = Dim; i >= 0; i--) {
-      if ((x & 1ll << i) == 0) continue;
-
-      if (!basis[i])
-        return false;
-
-      x ^= basis[i];
+      }
     }
-
-    return true;
   }
 
-  auto operator[](ll k) const { return at(k); }
-
-  ll at(ll k) const {
-    ll ans = 0;
-    ll total = 1ll << size;
-    for (ll i = Dim; ~i; i--) {
-      if (!basis[i]) continue;
-
-      ll mid = total >> 1ll;
-      if ((mid < k and (ans & 1ll << i) == 0) ||
-          (k <= mid and (ans & 1ll << i)))
-        ans ^= basis[i];
-
-      if (mid < k)
-        k -= mid;
-
-      total >>= 1ll;
-    }
-    return ans;
+  bool check(T x) const {
+    for (const auto &b : basis)
+      x = min(x, x ^ b);
+    return !x;
   }
 
-  ll at_normalized(ll k) const {
-    ll ans = 0;
-    k--;
-    for (size_t i = 0; i <= Dim; i++) {
-      if (!basis[i]) continue;
+  auto operator[](T k) const { return at(k); }
+  int size() const { return (int) basis.size(); }
+
+  // Need to call normalize() first
+  T at(T k) const {
+    T ans = 0;
+    for (int i = 0; i <= size(); i++) {
       if (k & 1) ans ^= basis[i];
       k >>= 1;
     }
     return ans;
   }
 
-  ll max() const {
-    return at(1ll << size);
-  }
-};
-
-#define F(expr) [](auto a, auto b) { return expr; }
-template <typename T, auto op>
-struct SegTree {
-  static_assert(std::is_convertible_v<decltype(op), std::function<T(T, T)>>,
-                "Operation must be convertible to std::function<T(T, T)>");
-
-  int N;
-  const T identity = T();
-  vector<T> ns;
-
-  SegTree(int n, const T identity_ = T()) : N(n), identity(identity_), ns(2 * N, identity)  {}
-
-  SegTree(const vector<T> &v) : SegTree((int)v.size()) {
-    copy(v.begin(), v.end(), ns.begin() + N);
-
-    for (int i = N - 1; i > 0; --i)
-      ns[i] = op(ns[2 * i], ns[2 * i + 1]);
-  }
-
-  T query(size_t i) const {
-    return ns[i + N];
-  }
-
-  T query(size_t l, size_t r) const {
-    l = l + N;
-    r = r + N;
-
-    auto ml = identity, mr = identity;
-    while (l <= r) {
-      if (l & 1) ml = op(ml, ns[l++]);
-      if (not (r & 1)) mr = op(ns[r--], mr);
-
-      l >>= 1;
-      r >>= 1;
-    }
-
-    return op(ml, mr);
-  }
-
-  void update(size_t i, T value) {
-    set(i, op(ns[i + N], value));
-  }
-
-  void set(size_t i, T value) {
-    auto a = i + N;
-
-    ns[a] = value;
-    while (a >>= 1)
-      ns[a] = op(ns[2 * a], ns[2 * a + 1]);
+  T max() const {
+    return at((1ll << size()) - 1);
   }
 };
 
@@ -159,15 +70,14 @@ struct HeavyLightDecomposition {
   std::vector<int> subtree_sz;  // subtree_sz[i] = size of subtree whose root is i
   std::vector<int> heavy_child; // heavy_child[i] = child of vertex i on heavy path (Default: -1)
   std::vector<int> tree_id;     // tree_id[i] = id of tree vertex i belongs to
-  std::vector<int> aligned_id,
-      aligned_id_inv;    // aligned_id[i] =  aligned id for vertex i (consecutive on heavy edges)
+  std::vector<int> aligned_id, aligned_id_inv;    // aligned_id[i] =  aligned id for vertex i (consecutive on heavy edges)
   std::vector<int> head; // head[i] = id of vertex on heavy path of vertex i, nearest to root
   std::vector<int> head_ids;      // consist of head vertex id's
   std::vector<int> heavy_path_id; // heavy_path_id[i] = heavy_path_id for vertex [i]
 
 
-  HeavyLightDecomposition(const std::vector<std::vector<int>> &e, vector<int> roots = {0}) : HeavyLightDecomposition((int)e.size()) {
-    this->e = e;
+  HeavyLightDecomposition(const std::vector<std::vector<int>> &g, vector<int> roots = {0}) : HeavyLightDecomposition((int)g.size()) {
+    this->e = g;
     build(roots);
   }
   HeavyLightDecomposition(int sz = 0)
@@ -322,35 +232,88 @@ struct HeavyLightDecomposition {
   }
 };
 
-using Node = GaussianElimination<20>;
-Node op(const Node &a, const Node &b)
+#define F(expr) [](auto a, auto b) { return expr; }
+template <typename T> struct DisjointSparseTable
 {
-  auto res = a;
-  res.merge(b);
-  return res;
+  using Operation = T(*)(const T&, const T&);
+
+  vector<vector<T>> st;
+  Operation f;
+  T identity;
+
+  static constexpr int log2_floor(unsigned long long i) noexcept { return i ? __builtin_clzll(1) - __builtin_clzll(i) : -1; }
+
+  // Lazy loading constructor. Needs to call build!
+  DisjointSparseTable(Operation op, const T neutral = T()) : st(), f(op), identity(neutral) {}
+
+  DisjointSparseTable(vector<T> v) : DisjointSparseTable(v, F(min(a,b))) { }
+
+  DisjointSparseTable(vector<T> v, Operation op, const T neutral = T()) : st(), f(op), identity(neutral)
+  {
+    build(v);
+  }
+
+  void build(vector<T> v)
+  {
+    st.resize(log2_floor(v.size())+1, vector<T>(1ll << (log2_floor(v.size())+1)));
+    v.resize(st[0].size(), identity);
+    for (int level = 0; level < (int)st.size(); ++level)
+    {
+      for (int block = 0; block < (1 << level); ++block)
+      {
+        const auto l = block << (st.size() - level);
+        const auto r = (block + 1) << (st.size() - level);
+        const auto m = l + (r - l) / 2;
+
+        st[level][m] = v[m];
+        for (int i = m + 1; i < r; i++)
+          st[level][i] = f(st[level][i-1], v[i]);
+        st[level][m-1] = v[m-1];
+        for (int i = m-2; i >= l; i--)
+          st[level][i] = f(st[level][i+1], v[i]);
+      }
+    }
+  }
+
+  T query(int l, int r) const
+  {
+    if (l > r) return identity;
+    if (l == r) return st.back()[l];
+
+    const auto k = log2_floor(l^r);
+    const auto level = (int)st.size() - 1 - k;
+    return f(st[level][l], st[level][r]);
+  }
+};
+
+using S = GaussianElimination<20>;
+S op(const S &a, const S &b)
+{
+  S c = a;
+  c.merge(b);
+  return c;
 }
 
 void solve()
 {
   int n;
   cin >> n;
-  vector<Node> values(n);
+  vector<S> a(n);
   for (int i = 0; i < n; i++) {
     int x;
     cin >> x;
-    values[i].insert(x);
+    a[i].insert(x);
   }
-  vector<vector<int>> g(n);
+  HeavyLightDecomposition hld(n);
   for (int i = 0; i < n-1; i++) {
     int u, v;
     cin >> u >> v;
     --u, --v;
-    g[u].push_back(v);
-    g[v].push_back(u);
+    hld.add_edge(u, v);
   }
+  hld.build();
 
-  HeavyLightDecomposition hld(g);
-  SegTree<Node, op> seg(hld.segtree_rearrange(values));
+  DisjointSparseTable<S> seg(hld.segtree_rearrange(a), op);
 
   int q;
   cin >> q;
@@ -358,9 +321,9 @@ void solve()
     int x, y, k;
     cin >> x >> y >> k;
     --x, --y;
-    Node ans;
+    S ans;
     hld.for_each_vertex(x, y, [&](int l, int r) {
-      ans.merge(seg.query(l, r));
+      ans = op(ans, seg.query(l, r));
     });
     cout << (ans.check(k) ? "YES" : "NO") << '\n';
   }
