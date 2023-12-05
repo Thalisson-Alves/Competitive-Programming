@@ -8,15 +8,14 @@ struct HeavyLightDecomposition {
   std::vector<int> subtree_sz;  // subtree_sz[i] = size of subtree whose root is i
   std::vector<int> heavy_child; // heavy_child[i] = child of vertex i on heavy path (Default: -1)
   std::vector<int> tree_id;     // tree_id[i] = id of tree vertex i belongs to
-  std::vector<int> aligned_id,
-      aligned_id_inv;    // aligned_id[i] =  aligned id for vertex i (consecutive on heavy edges)
+  std::vector<int> aligned_id, aligned_id_inv;    // aligned_id[i] =  aligned id for vertex i (consecutive on heavy edges)
   std::vector<int> head; // head[i] = id of vertex on heavy path of vertex i, nearest to root
   std::vector<int> head_ids;      // consist of head vertex id's
   std::vector<int> heavy_path_id; // heavy_path_id[i] = heavy_path_id for vertex [i]
 
 
-  HeavyLightDecomposition(const std::vector<std::vector<int>> &e, vector<int> roots = {0}) : HeavyLightDecomposition((int)e.size()) {
-    this->e = e;
+  HeavyLightDecomposition(const std::vector<std::vector<int>> &g, vector<int> roots = {0}) : HeavyLightDecomposition((int)g.size()) {
+    this->e = g;
     build(roots);
   }
   HeavyLightDecomposition(int sz = 0)
