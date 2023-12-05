@@ -1,20 +1,18 @@
-template<typename T, auto f, auto comp> inline T bin_bound(T x, T l = 0, T r = 1e18) {
-  static_assert(std::is_convertible_v<decltype(f), std::function<T(T)>>,
-                "f must be convertible to std::function<T(T)>");
-  static_assert(std::is_convertible_v<decltype(comp), std::function<bool(T,T)>>,
-                "comp must be convertible to std::function<bool(T,T)>");
+template<typename T, enable_if_t<is_integral_v<T>>> T lower_bound(auto f, T l, T r) {
+  static_assert(std::is_invocable_r_v<bool, decltype(f), T>, "f must be convertible to std::function<T(T)>");
 
-  while (comp(l, r)) {
-    auto mid = l + (r - l) / 2;
-    if (comp(f(mid), x)) {
-      l = mid + 1;
-    } else {
-      r = mid - 1;
-    }
+  while (l <= r) {
+    auto mid = midpoint(l, r);
+    (f(mid) ? r = mid - 1 : l = mid + 1);
   }
-
-  return r;
+  return l;
 }
+template<typename T> T lower_bound(auto f, T l, T r, int max_iter=100) {
+  static_assert(std::is_invocable_r_v<bool, decltype(f), T>, "f must be convertible to std::function<T(T)>");
 
-template<typename T, auto f> inline T lower_bound(T x, T l = 0, T r = 1e18) { return bin_bound<T, f, (less<T>())>(x, l, r); }
-template<typename T, auto f> inline T upper_bound(T x, T l = 0, T r = 1e18) { return bin_bound<T, f, (less_equal<T>())>(x, l, r); }
+  while (max_iter--) {
+    auto mid = midpoint(l, r);
+    (f(mid) ? l : r) = mid;
+  }
+  return l;
+}
