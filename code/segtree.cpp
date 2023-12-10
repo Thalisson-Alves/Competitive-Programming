@@ -1,8 +1,7 @@
 #define F(expr) [](auto a, auto b) { return expr; }
 template <typename T, auto op>
 struct SegTree {
-  static_assert(std::is_convertible_v<decltype(op), std::function<T(T, T)>>,
-                "Operation must be convertible to std::function<T(T, T)>");
+  static_assert(std::is_invocable_r_v<T, decltype(op), T, T>);
 
   int N;
   const T identity = T();
