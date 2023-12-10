@@ -7,8 +7,7 @@ struct SegTreeLazy {
   vector<T> d;
   vector<L> lz;
 
-  SegTreeLazy(const T &eT_ = T(), const L &eL_ = L()) : SegTreeLazy(0, eT_, eL_) {}
-  explicit SegTreeLazy(int n, const T &eT_ = T(), const L &eL_ = L()) : SegTreeLazy(vector<T>(n, eT_), eT_, eL_) {}
+  explicit SegTreeLazy(int n=0, const T &eT_ = T(), const L &eL_ = L()) : SegTreeLazy(vector<T>(n, eT_), eT_, eL_) {}
   explicit SegTreeLazy(const vector<T>& v, const T &eT_ = T(), const L &eL_ = L()) : N(int(v.size())), eT(eT_), eL(eL_) {
     size = 1; height = 0;
     while (size < N) size<<=1, height++;
