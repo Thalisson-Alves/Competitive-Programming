@@ -99,6 +99,31 @@ struct SuffixAutomaton {
       res += st[i].len - st[st[i].link].len;
     return res;
   }
+  vector<ll> diff_substrings_by_size() const {
+    vector<int> hs(sz, -1);
+    hs[0] = 0;
+    queue<int> q;
+    q.push(0);
+    int mx = 0;
+    while (!q.empty()) {
+      auto u = q.front(); q.pop();
+      for (auto [_, v] : st[u].next) if (hs[v] == -1) {
+        q.push(v);
+        hs[v] = hs[u] + 1;
+        mx = max(mx, st[v].len);
+      }
+    }
+
+    vector<ll> res(mx);
+    for (int i = 1; i < sz; i++) {
+      ++res[hs[i]-1];
+      if (st[i].len < mx)
+        --res[st[i].len];
+    }
+    for (int i = 1; i < mx; i++)
+      res[i] += res[i-1];
+    return res;
+  }
 
   ll paths(int u) {
     auto &x = paths_dp[u];
