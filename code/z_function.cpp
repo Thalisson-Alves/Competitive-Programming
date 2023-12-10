@@ -1,4 +1,4 @@
-vector<int> z_function(const string &s) {
+template <typename T> vector<int> z_function(const T &s) {
   vector<int> z(s.size());
   int l = 0, r = 0;
   for(int i = 1; i < (int)s.size(); i++) {
