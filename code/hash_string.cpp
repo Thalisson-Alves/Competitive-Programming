@@ -1,4 +1,4 @@
-template <int p1=31, int q1=1000000007, int p2=29, int q2=1000000009>
+template <int p1=31, int p2=29, int q1=1000000007, int q2=1000000009>
 struct HashString {
   vector<pair<int, int>> suf, powers;
 
