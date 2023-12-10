@@ -29,6 +29,7 @@ namespace rng {
   template<typename T> inline T choose(const initializer_list<T> &v) { return *next(v.begin(), next_int((int)v.size())); }
 
   template<typename T> inline vector<T> sample(const vector<T> &v, int k) {
+    k = min(k, (int)v.size());
     vector<int> idx((int)v.size());
     iota(idx.begin(), idx.end(), 0);
     shuffle(idx);
