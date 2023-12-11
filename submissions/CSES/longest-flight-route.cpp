@@ -4,76 +4,86 @@ using namespace std;
 #ifdef DEBUG
 #include "debug.cpp"
 #else
-#define dbg(...) 4269
+#define dbg(...)
 #endif
 
 #define all(x) x.begin(), x.end()
- 
+
 using ll = long long;
-using ull = unsigned long long;
- 
-const vector<pair<int, int>> dir4{{1,0},{-1,0},{0,1},{0,-1}};
-const vector<pair<int, int>> dir8{{1,0},{-1,0},{0,1},{0,-1},{-1,-1},{-1,1},{1,-1},{1,1}};
 
-vector<int> bfs(const vector<unordered_set<int>> &g, int s)
-{
-  vector<int> dist(g.size(), -1);
-  dist[s] = 0;
-  queue<int> q;
-  q.push(s);
-  vector<int> came_from(g.size(), -1);
+/*
+Used to define recursive lambdas,  first argument is the function itself
 
-  while (not q.empty())
-  {
-    auto cur = q.front();
-    q.pop();
+auto value = y_combinator([](auto &&gcd, int a, int b) -> int {
+  return b ? gcd(b, a % b) : a;
+});
+*/
+template <class Fun> class y_combinator_result {
+  Fun fun_;
 
-    for (auto x : g[cur])
-    {
-      if (dist[x] >= dist[cur] + 1)
-        continue;
+  public:
+  template <class T>
+  explicit y_combinator_result(T &&fun) : fun_(std::forward<T>(fun)) {}
 
-      dist[x] = dist[cur] + 1;
-      came_from[x] = cur;
-      q.push(x);
-    }
+  template <class... Args> decltype(auto) operator()(Args &&...args) {
+    return fun_(std::ref(*this), std::forward<Args>(args)...);
   }
+};
 
-  return came_from;
+template <class Fun> decltype(auto) y_combinator(Fun &&fun) {
+  return y_combinator_result<std::decay_t<Fun>>(std::forward<Fun>(fun));
 }
 
-void solve()
-{
+void solve() {
   int n, m;
   cin >> n >> m;
-  vector<unordered_set<int>> g(n), gr(n);
-  for (int i = 0; i < m; i++)
-  {
-    int a, b;
-    cin >> a >> b;
-    --a, --b;
-    g[a].insert(b);
-    gr[b].insert(a);
+  vector<vector<int>> g(n);
+  for (int i = 0; i < m; i++) {
+    int u, v;
+    cin >> u >> v;
+    g[--u].push_back(--v);
   }
 
-  auto came = bfs(g, 0);
+  vector<int> pos(n, -1);
+  y_combinator([&](auto &&dfs, int u) {
+    if (u == n-1) {
+      pos[u] = 0;
+      return;
+    }
+    if (~pos[u]) return;
+    pos[u] = -2;
+    for (auto x : g[u]) {
+      dfs(x);
+      if (pos[x] >= 0)
+        pos[u] = max(pos[u], pos[x]+1);
+    }
+  })(0);
 
-  if (came.back() == -1)
+  if (pos[n-1]) {
     cout << "IMPOSSIBLE\n";
-  else
-  {
-    vector<int> path;
-    for (int i = n - 1; i != -1; i = came[i])
-      path.push_back(i);
-    reverse(all(path));
-    cout << path.size() << '\n';
-    for (auto x : path)
-      cout << x + 1 << ' ';
-    cout << '\n';
+    return;
   }
+
+  vector<int> path;
+  for (int cur = 0; cur != n-1;) {
+    path.push_back(cur);
+    int best = -1;
+    for (auto x : g[cur]) if (pos[x] >= 0) {
+      if (best == -1 or pos[best] < pos[x])
+        best = x;
+    }
+    assert(~best);
+    cur = best;
+  }
+
+  cout << path.size()+1 << '\n';
+  for (auto x : path) {
+    cout << x+1 << ' ';
+  }
+  cout << n << '\n';
 }
 
-int main()
+int32_t main()
 {
   ios_base::sync_with_stdio(false);
   cin.tie(nullptr);
@@ -81,9 +91,9 @@ int main()
 
   int t = 1;
   // cin >> t; cin.ignore();
-  for (auto i = 1; i <= t; i++)
+  for (auto i = 1; i <= t; i++) {
     solve();
- 
+  }
+
   return 0;
 }
- 
