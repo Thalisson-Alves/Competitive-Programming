@@ -13,10 +13,13 @@ using ll = long long;
 using ull = unsigned long long;
 
 void solve() {
-  string s;
-  cin >> s;
-  s += s.back() == 's' ? "es" : "s";
-  cout << s << '\n';
+  int n;
+  cin >> n;
+  int res = 0;
+  for (int i = 1; i <= n; i++) {
+    res += (n + i-1) / i - 1;
+  }
+  cout << res << '\n';
 }
 
 int32_t main()
@@ -33,4 +36,3 @@ int32_t main()
 
   return 0;
 }
-

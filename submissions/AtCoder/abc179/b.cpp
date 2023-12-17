@@ -1,37 +1,46 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-#define debug(x) cerr << #x << ": " << x << '\n'
-#define debugv(v)         \
-    cerr << #v << ": ";   \
-    for (auto x : v)      \
-        cerr << x << ' '; \
-    cerr << '\n'
+#ifdef DEBUG
+#include "debug.cpp"
+#else
+#define dbg(...)
+#endif
 
-const double EPS{1e-9};
+#define all(x) x.begin(), x.end()
 
-void solve()
-{
-    int n, c = 0, mx = 0;
-    cin >> n;
-    for (int i = 0, x, y; i < n; i++)
-    {
-        cin >> x >> y;
-        if (x == y)
-            c++;
-        else
-            c = 0;
-        mx = max(mx, c);
+using ll = long long;
+using ull = unsigned long long;
+
+void solve() {
+  int n;
+  cin >> n;
+  vector<bool> g(n);
+  for (int i = 0; i < n; i++) {
+    int a, b;
+    cin >> a >> b;
+    g[i] = a == b;
+  }
+  for (int i = 2; i < n; i++) {
+    if (g[i-2] and g[i-1] and g[i]) {
+      cout << "Yes\n";
+      return;
     }
-    cout << (mx >= 3 ? "Yes" : "No") << '\n';
+  }
+  cout << "No\n";
 }
 
-int main()
+int32_t main()
 {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
+  ios_base::sync_with_stdio(false);
+  cin.tie(nullptr);
+  cout.tie(nullptr);
 
+  int t = 1;
+  // cin >> t; cin.ignore();
+  for (auto i = 1; i <= t; i++) {
     solve();
+  }
 
-    return 0;
+  return 0;
 }
