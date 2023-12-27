@@ -1,26 +1,23 @@
-vector<ll> dijkstra(const vector<vector<pair<int, ll>>> &g, int s)
-{
-  vector<ll> min_cost(g.size(), LLONG_MAX);
-  min_cost[s] = 0;
-
-  priority_queue<pair<ll, int>, vector<pair<ll, int>>, greater<pair<ll, int>>> pq;
+// Returns: {dist, prev}
+template <typename Graph> auto dijkstra(const Graph &g, int s) {
+  using Weight = typename Graph::Weight;
+  vector<Weight> dist(g.size(), numeric_limits<Weight>::max());
+  vector<int> prev(g.size(), -1);
+  dist[s] = 0;
+  priority_queue<pair<Weight, int>, vector<pair<Weight, int>>, greater<pair<Weight, int>>> pq;
   pq.emplace(0, s);
+  while (not pq.empty()) {
+    auto [cost, u] = pq.top(); pq.pop();
+    if (cost != dist[u]) continue;
 
-  while (not pq.empty())
-  {
-    auto [cost, cur] = pq.top(); pq.pop();
-    if (cost != min_cost[cur]) continue;
-
-    for (auto [x, y] : g[cur])
-    {
-      auto new_cost = min_cost[cur] + y;
-      if (new_cost < min_cost[x])
-      {
-        min_cost[x] = new_cost;
-        pq.emplace(new_cost, x);
+    for (auto [v, w] : g.next(u)) {
+      if (dist[v] > dist[u] + w) {
+        dist[v] = dist[u] + w;
+        prev[v] = u;
+        pq.emplace(dist[u] + w, v);
       }
     }
   }
 
-  return min_cost;
+  return make_pair(dist, prev);
 }
