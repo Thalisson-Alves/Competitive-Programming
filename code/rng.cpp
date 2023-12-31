@@ -19,10 +19,7 @@ namespace rng {
   }
 
   template<typename T> inline void shuffle(vector<T> &v) {
-    for (int i = 0; i < (int)v.size(); i++) {
-      int j = next_int(i, (int)v.size() - 1);
-      swap(v[i], v[j]);
-    }
+    std::shuffle(v.begin(), v.end(), mt);
   }
 
   template<typename T> inline T choose(const vector<T> &v) { return v[next_int((int)v.size())]; }
