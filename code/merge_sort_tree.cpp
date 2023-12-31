@@ -15,7 +15,7 @@ template <typename T> struct MergeSortTree {
   }
   int count_in_range(int l, int r, T mn, T mx) const {
     constexpr auto f = [](const auto &a, auto x) {
-      return (int)(lower_bound(all(a), x.second) - lower_bound(all(a), x.first));
+      return (int)(upper_bound(all(a), x.second) - lower_bound(all(a), x.first));
     };
     constexpr auto op = [](int a, int b) {
       return a + b;
