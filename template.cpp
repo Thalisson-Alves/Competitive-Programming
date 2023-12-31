@@ -11,9 +11,6 @@ using namespace std;
 
 using ll = long long;
 
-const vector<pair<int, int>> dir4{{1,0},{-1,0},{0,1},{0,-1}};
-const vector<pair<int, int>> dir8{{1,0},{-1,0},{0,1},{0,-1},{-1,-1},{-1,1},{1,-1},{1,1}};
-
 void solve()
 {
 }
