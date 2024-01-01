@@ -9,9 +9,9 @@ template <typename T> struct WaveletTree {
 
   vector<Node> nodes;
   WaveletTree(vector<T> &v) {
+    // TODO: maybe make it 2*distinc(v). Don't know if it's worth it tho.
+    nodes.reserve(2*v.size());
     auto [mn, mx] = minmax_element(all(v));
-    // TODO: better estimative
-    nodes.reserve(1e7);
     build(nodes[make_node(*mn, *mx)], v.begin(), v.end());
   }
 
@@ -50,22 +50,24 @@ template <typename T> struct WaveletTree {
     return count_query<pair<T, T>, base>(nodes[0], l, r, pair<T, T>(a, b));
   }
 private:
-  static constexpr int log2_floor(unsigned long long i) noexcept { return i ? __builtin_clzll(1) - __builtin_clzll(i) : -1; }
   void build(Node &node, typename vector<T>::iterator from, typename vector<T>::iterator to) {
     if (node.lo == node.hi or from >= to) return;
     auto mid = midpoint(node.lo, node.hi);
     auto f = [&mid](T x) { return x <= mid; };
     node.b.reserve(to - from + 1);
     node.b.push_back(0);
-    for (auto it = from; it != to; it++)
-      node.b.push_back(node.b.back() + f(*it));
+    T left_upper = node.lo, right_lower = node.hi;
+    for (auto it = from; it != to; it++) {
+      auto value = f(*it);
+      node.b.push_back(node.b.back() + value);
+      if (value) left_upper = max(left_upper, *it);
+      else right_lower = min(right_lower, *it);
+    }
 
     auto pivot = stable_partition(from, to, f);
-    // TODO: use pivot to shrink node range
-    //   Maybe it will break the queries tho
-    node.left_child = make_node(node.lo, mid);
-    node.right_child = make_node(mid+1, node.hi);
+    node.left_child = make_node(node.lo, left_upper);
     build(nodes[node.left_child], from, pivot); 
+    node.right_child = make_node(right_lower, node.hi);
     build(nodes[node.right_child], pivot, to); 
   }
 
@@ -90,7 +92,6 @@ private:
   }
 
   int make_node(T lo, T hi) {
-    assert(nodes.size() < nodes.capacity());
     int id = (int)nodes.size();
     nodes.emplace_back(lo, hi);
     return id;
