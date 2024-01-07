@@ -16,7 +16,7 @@ private:
   }
 
 public:
-  constexpr modint(const u64 x = 0) noexcept : v(x % mod) {}
+  constexpr modint(const ll x = 0) noexcept : v(x % (int)mod + mod) { if (v >= mod) v -= mod; }
   constexpr u64 &value() noexcept { return v; }
   constexpr const u64 &value() const noexcept { return v; }
   constexpr modint operator+() const noexcept { return modint(*this); }
@@ -48,23 +48,21 @@ public:
     }
     return *this;
   }
-  constexpr modint pow(u64 x) const
-  {
+  constexpr modint pow(u64 x) const {
     if (x == 0) return 1;
     auto ans = pow(x>>1);
     ans *= ans;
     if (x&1) ans *= v;
     return ans;
   }
+  constexpr inline modint inv() const { return pow(mod - 2); }
 
-  friend ostream& operator<<(ostream& s, const modint<mod>& x)
-  {
+  friend ostream& operator<<(ostream& s, const modint<mod>& x) {
     s << x.value();
     return s;
   }
 
-  friend istream& operator>>(istream& s, modint<mod>& x)
-  {
+  friend istream& operator>>(istream& s, modint<mod>& x) {
     s >> x.v;
     return s;
   }
