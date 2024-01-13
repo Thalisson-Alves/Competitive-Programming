@@ -1,7 +1,8 @@
 /*
  * binary_search(f, l, r) returns the minimum value x in [l, r] such that f(x) is true.
  */
-template <typename T, enable_if_t<is_integral_v<T>>> T binary_search(auto f, T l, T r) {
+template <typename T, enable_if_t<is_integral_v<T>, bool> = true>
+T binary_search(auto f, T l, T r) {
   static_assert(std::is_invocable_r_v<bool, decltype(f), T>, "f must be convertible to std::function<T(T)>");
 
   while (l <= r) {
@@ -13,7 +14,8 @@ template <typename T, enable_if_t<is_integral_v<T>>> T binary_search(auto f, T l
 /*
  * binary_search(f, l, r, max_iter) returns the minimum value x in [l, r] such that f(x) is true.
  */
-template <typename T> T binary_search(auto f, T l, T r, int max_iter=100) {
+template <typename T, enable_if_t<is_floating_point_v<T>, bool> = true>
+T binary_search(auto f, T l, T r, int max_iter=100) {
   static_assert(std::is_invocable_r_v<bool, decltype(f), T>, "f must be convertible to std::function<T(T)>");
 
   while (max_iter--) {
