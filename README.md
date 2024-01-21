@@ -126,8 +126,8 @@ Welcome to my Competitive Programming repository! This collection includes imple
 
 If you find a bug or want to add a new algorithm, feel free to open an issue or submit a pull request. I'm always looking to improve my code!
 
-**Obs 1:** If you want to add a new algorithm, please make sure to include a link to the problems you used to test it.
-**Obs 2:** You don't need to add a new algorithm to the README. The script `generate_readme.py` will do it for you.
+- **Obs 1:** If you want to add a new algorithm, please make sure to include a link to the problems you used to test it.
+- **Obs 2:** You don't need to add a new algorithm to the README. The script `generate_readme.py` will do it for you.
 
 ## Resources
 
