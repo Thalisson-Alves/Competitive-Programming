@@ -1,0 +1,31 @@
+name: Update README.md
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - code/**
+  pull_request:
+    branches:
+      - main
+    paths:
+      - code/**
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Update README
+      run: python scripts/generate_readme.py
+      shell: sh
+
+    - name: Commit README - Auto Commit
+      uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+        file_pattern: README.md
+        commit_message: update README
