@@ -3,14 +3,16 @@ name: Update README.md
 on:
   push:
     branches:
-      - main
+    - main
     paths:
-      - code/**
+    - code/**
+    - scripts/generate_readme.py
   pull_request:
     branches:
-      - main
+    - main
     paths:
-      - code/**
+    - code/**
+    - scripts/generate_readme.py
 
 jobs:
   update-readme:
