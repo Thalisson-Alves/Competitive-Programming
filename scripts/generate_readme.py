@@ -72,17 +72,24 @@ If you find a bug or want to add a new algorithm, feel free to open an issue or 
 - **Obs 1:** If you want to add a new algorithm, please make sure to include a link to the problems you used to test it.
 - **Obs 2:** You don't need to add a new algorithm to the README. The script `generate_readme.py` will do it for you.
 
-## Resources
+## References
 
-Useful resources for Competitive Programming:
+### Resources
+
+Enhance your Competitive Programming skills with the following valuable resources:
 
 - [TEP](https://github.com/edsomjr/TEP)
-- [UFMG Lib](https://github.com/brunomaletta/Biblioteca)
-- [Iagorr's repo](https://github.com/iagorrr/Competitive-Programming-Algorithms)
 - [Algorithms for Competitive Programming](https://cp-algorithms.com/)
 - [USACO Guide](https://usaco.guide/)
 - [Competitive Programing Book](https://cpbook.net/details?cp=4)
 - [Competitive Programmer's Handbook](https://cses.fi/book/book.pdf)
+
+### Other Repositories
+
+Explore additional repositories with extensive algorithm implementations:
+
+- [UFMG Lib](https://github.com/brunomaletta/Biblioteca)
+- [Iagorrr's Lib](https://github.com/iagorrr/Competitive-Programming-Algorithms)
 """
 
 
