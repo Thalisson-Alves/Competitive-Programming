@@ -135,7 +135,7 @@ Useful resources for Competitive Programming:
 
 - [TEP](https://github.com/edsomjr/TEP)
 - [UFMG Lib](https://github.com/brunomaletta/Biblioteca)
-- [Iagorr's repo](https://github.com/iagorrr/Competitive-Programming-Algorithms)
+- [Iagorrr's repo](https://github.com/iagorrr/Competitive-Programming-Algorithms)
 - [Algorithms for Competitive Programming](https://cp-algorithms.com/)
 - [USACO Guide](https://usaco.guide/)
 - [Competitive Programing Book](https://cpbook.net/details?cp=4)
