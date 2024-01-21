@@ -6,9 +6,9 @@ on:
     branches:
     - main
     paths:
-    - code/**
-    - submissions/*
-    - scripts/generate_readme.py
+    - 'code/**'
+    - 'submissions/*'
+    - 'scripts/generate_readme.py'
 
 jobs:
   update-readme:
