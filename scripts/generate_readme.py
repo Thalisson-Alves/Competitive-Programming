@@ -53,9 +53,15 @@ Welcome to my Competitive Programming repository! This collection includes imple
 
 ## Algorithms
 
+The `code` directory is organized into various subdirectories, each focusing on a specific category of algorithms. Here's a breakdown of the available algorithms:
+
 {ALGORITHMS_SECTION}
 
 ## Submissions
+
+The `submissions` directory holds my accepted submissions to different online judges. Each problem is labeled with its respective judge and problem ID.
+
+Reviewing these submissions can provide insights into different problem-solving techniques, optimization strategies, and coding styles. It's a great way to learn from both successful and unsuccessful attempts.
 
 {SUBMISSIONS_SECTION}
 
