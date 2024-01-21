@@ -20,7 +20,7 @@ def get_markdown_for(
     base_dir = base_dir.resolve()
     assert base_dir.is_dir(), f"{base_dir} is not a directory"
 
-    space_chars = " _-"
+    space_chars = "_-"
 
     def helper(path: Path, depth=0) -> Iterable[str]:
         # skip first level
