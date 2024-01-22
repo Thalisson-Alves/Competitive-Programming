@@ -1,6 +1,4 @@
-template<typename T>
-struct BITree2d
-{
+template<typename T> struct BITree2d {
   int N, M;
   vector<vector<T>> vs;
 
@@ -13,20 +11,17 @@ struct BITree2d
     }
   }
 
-  void update(int x, int y, const T& v)
-  {
+  void update(int x, int y, const T& v) {
     for (++x; x <= N; x += x & -x)
-      for (int i = y + 1; i <= N; i += i & -i)
+      for (int i = y + 1; i <= M; i += i & -i)
         vs[x][i] += v;
   }
 
-  T query(int x1, int y1, int x2, int y2)
-  {
+  T query(int x1, int y1, int x2, int y2) {
     return query(x2, y2) - query(x1-1, y2) - query(x2, y1-1) + query(x1-1, y1-1);
   }
 
-  T query(int x, int y)
-  {
+  T query(int x, int y) {
     if (x < 0 || y < 0) return T();
 
     T sum = 0;
