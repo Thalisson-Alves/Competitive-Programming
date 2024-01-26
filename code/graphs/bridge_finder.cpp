@@ -2,11 +2,14 @@
 struct BridgeFinder {
   // 2ecc = 2 edge conected component
   // cc = conected component
-  vector<int> parent, dsu_2ecc, dsu_cc, dsu_cc_size;
-  int bridges, lca_iteration;
-  vector<int> last_visit;
+  vector<int> dsu_2ecc, dsu_cc, dsu_cc_size;
+  int bridges_cnt;
+private:
+  vector<int> parent, last_visit;
+  int lca_iteration;
 
-  BridgeFinder(int n) : parent(n, -1), dsu_2ecc(n), dsu_cc(n), dsu_cc_size(n, 1), bridges(0), lca_iteration(0), last_visit(n) {
+public:
+  BridgeFinder(int n) : dsu_2ecc(n), dsu_cc(n), dsu_cc_size(n, 1), bridges_cnt(0), parent(n, -1), last_visit(n), lca_iteration(0) {
     for (int i = 0; i < n; i++) {
       dsu_2ecc[i] = i;
       dsu_cc[i] = i;
@@ -67,12 +70,12 @@ struct BridgeFinder {
     for (auto v : path_a) {
       dsu_2ecc[v] = lca;
       if (v == lca) break;
-      --bridges;
+      --bridges_cnt;
     }
     for (auto v : path_b) {
       dsu_2ecc[v] = lca;
       if (v == lca) break;
-      --bridges;
+      --bridges_cnt;
     }
   }
 
@@ -86,7 +89,7 @@ struct BridgeFinder {
     int cb = find_cc(b);
 
     if (ca != cb) {
-      ++bridges;
+      ++bridges_cnt;
       if (dsu_cc_size[ca] > dsu_cc_size[cb]) {
         swap(a, b);
         swap(ca, cb);
@@ -98,4 +101,6 @@ struct BridgeFinder {
       merge_path(a, b);
     }
   }
+
+  inline bool is_bridge(int u, int v) { return find_2ecc(u) != find_2ecc(v); }
 };
