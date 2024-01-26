@@ -54,6 +54,7 @@ template <typename T, bool directed> struct Graph {
     EdgeIterator end() const { return EdgeIterator(g, node, (int)g.g[node].size()); }
   };
   EdgeIterator next(int node) const { return EdgeIterator(*this, node); }
+  EdgeIterator operator[](int node) const { return EdgeIterator(*this, node); }
 
   int size() const { return static_cast<int>(g.size()); }
   constexpr bool is_directed() const { return directed; }
@@ -65,5 +66,5 @@ template <typename T, bool directed> struct Graph {
     return rev;
   }
 };
-template <typename T> using Digraph = Graph<T, true>;
-template <typename T> using Undigraph = Graph<T, false>;
+template <typename T = int> using Digraph = Graph<T, true>;
+template <typename T = int> using Undigraph = Graph<T, false>;
