@@ -20,22 +20,6 @@ template <typename T, bool directed> struct Graph {
     return id;
   }
 
-  struct NodeIterator {
-    const Graph &g; int cur;
-
-    NodeIterator(const Graph &g_, int cur_ = 0) : g(g_), cur(cur_) {}
-    int operator*() const { return cur; }
-    bool operator!=(const NodeIterator &rhs) const { return cur != rhs.cur; }
-    void operator++() { cur++; }
-    void operator++(int) { cur++; }
-
-    NodeIterator begin() const { return *this; }
-    NodeIterator end() const { return NodeIterator(g, g.size()); }
-  };
-  NodeIterator nodes() const { return NodeIterator(*this); }
-  NodeIterator begin() const { return nodes(); }
-  NodeIterator end() const { return nodes().end(); }
-
   struct EdgeIterator {
     const Graph &g;
     int node;
@@ -52,6 +36,8 @@ template <typename T, bool directed> struct Graph {
 
     EdgeIterator begin() const { return *this; }
     EdgeIterator end() const { return EdgeIterator(g, node, (int)g.g[node].size()); }
+    int size() const { return g.g[node].size(); }
+    int remaining() const { return size() - cur; }
   };
   EdgeIterator next(int node) const { return EdgeIterator(*this, node); }
   EdgeIterator operator[](int node) const { return EdgeIterator(*this, node); }
