@@ -1,0 +1,27 @@
+template <typename T> void find_bridges(Undigraph<T> &g, auto &&f) {
+  static_assert(std::is_invocable_r_v<void, decltype(f), int, int>);
+
+  vector<int> tin(g.size()), tout(g.size()), low(g.size());
+  int timer = 0;
+
+  auto dfs = [&](auto &&self, int u, int p) -> void {
+    tin[u] = low[u] = timer++;
+
+    for (auto [v, _] : g[u]) if (v != p) {
+      if (tin[v]) {
+        low[u] = min(low[u], tin[v]);
+      } else {
+        self(self, v, u);
+        low[u] = min(low[u], low[v]);
+        if (low[v] > tin[u]) {
+          f(u, v);
+        }
+      }
+    }
+  };
+
+  for (int i = 0; i < g.size(); i++) {
+    if (!tin[i])
+      dfs(dfs, i, -1);
+  }
+}
