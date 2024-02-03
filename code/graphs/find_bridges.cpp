@@ -2,7 +2,7 @@ template <typename T> void find_bridges(Undigraph<T> &g, auto &&f) {
   static_assert(std::is_invocable_r_v<void, decltype(f), int, int>);
 
   vector<int> tin(g.size()), tout(g.size()), low(g.size());
-  int timer = 0;
+  int timer = 1;
 
   auto dfs = [&](auto &&self, int u, int p) -> void {
     tin[u] = low[u] = timer++;
