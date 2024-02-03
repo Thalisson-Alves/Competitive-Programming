@@ -50,6 +50,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 - [Check Bipartite](code/graphs/check_bipartite.cpp)
 - [Check Cycle](code/graphs/check_cycle.cpp)
 - [Check Isomorphic](code/graphs/check_isomorphic.cpp)
+- [Dfs Tree](code/graphs/dfs_tree.cpp)
 - [Dijkstra](code/graphs/dijkstra.cpp)
 - [Euler Path](code/graphs/euler_path.cpp)
 - [Find Bridges](code/graphs/find_bridges.cpp)
