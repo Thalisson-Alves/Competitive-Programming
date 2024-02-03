@@ -1,3 +1,7 @@
+struct PhantomWeight {
+  template <typename T> operator T() const { return 1; }
+  template <typename T> PhantomWeight(T) {}
+};
 template <typename T, bool directed> struct Graph {
   using Weight = T;
   struct Edge {
@@ -52,5 +56,5 @@ template <typename T, bool directed> struct Graph {
     return rev;
   }
 };
-template <typename T = int> using Digraph = Graph<T, true>;
-template <typename T = int> using Undigraph = Graph<T, false>;
+template <typename T = PhantomWeight> using Digraph = Graph<T, true>;
+template <typename T = PhantomWeight> using Undigraph = Graph<T, false>;
