@@ -13,6 +13,24 @@ template <typename T, bool directed> struct Graph {
   vector<Edge> edges;
 
   Graph(int n) : g(n) {}
+  Graph(const vector<vector<int>> &g_) : Graph((int)g_.size()) {
+    for (int u = 0; u < (int)g_.size(); u++) {
+      for (auto v : g_[u]) {
+        if (directed or u <= v) {
+          add_edge(u, v);
+        }
+      }
+    }
+  }
+  Graph(const vector<vector<pair<int, Weight>>> &g_) : Graph((int)g_.size()) {
+    for (int u = 0; u < (int)g_.size(); u++) {
+      for (auto [v, w] : g_[u]) {
+        if (directed or u <= v) {
+          add_edge(u, v, w);
+        }
+      }
+    }
+  }
 
   int add_edge(int from, int to, T cost = 1) {
     assert(0 <= from and from < size() and 0 <= to and to < size());
@@ -40,14 +58,14 @@ template <typename T, bool directed> struct Graph {
 
     EdgeIterator begin() const { return *this; }
     EdgeIterator end() const { return EdgeIterator(g, node, (int)g.g[node].size()); }
-    int size() const { return g.g[node].size(); }
+    int size() const { return static_cast<int>(g.g[node].size()); }
     int remaining() const { return size() - cur; }
   };
   EdgeIterator next(int node) const { return EdgeIterator(*this, node); }
   EdgeIterator operator[](int node) const { return EdgeIterator(*this, node); }
 
   int size() const { return static_cast<int>(g.size()); }
-  constexpr bool is_directed() const { return directed; }
+  constexpr static bool is_directed() { return directed; }
 
   Graph reverse() const {
     Graph rev(size());
