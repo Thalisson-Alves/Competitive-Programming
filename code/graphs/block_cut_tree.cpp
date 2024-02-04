@@ -1,10 +1,10 @@
 // O(n + m)
-struct BlockCutTree {
+template <typename T> struct BlockCutTree {
   vector<vector<int>> blocks, tree;
   vector<vector<pair<int, int>>> block_edges;
   vector<int> articulation, pos;
 
-  BlockCutTree(const vector<vector<int>> &g) : articulation(g.size()), pos(g.size()) {
+  BlockCutTree(const Undigraph<T> &g) : articulation(g.size()), pos(g.size(), -1) {
     int t = 0;
     vector<int> id(g.size(), -1);
     stack<int> s1;
@@ -27,16 +27,16 @@ struct BlockCutTree {
   }
 
 private:
-  int dfs(const vector<vector<int>> &g, int i, int p, int &t, vector<int> &id, stack<int> &s1, stack<pair<int, int>> &s2) {
+  int dfs(const Undigraph<T> &g, int i, int p, int &t, vector<int> &id, stack<int> &s1, stack<pair<int, int>> &s2) {
     int lo = id[i] = t++;
     s1.push(i);
 
     if (p != -1) s2.emplace(i, p);
-    for (auto j : g[i])
+    for (auto [j, _] : g[i])
       if (j != p and id[j] != -1)
         s2.emplace(i, j);
 
-    for (auto j : g[i]) if (j != p) {
+    for (auto [j, _] : g[i]) if (j != p) {
       if (id[j] == -1) {
         int val = dfs(g, j, i, t, id, s1, s2);
         lo = min(lo, val);
