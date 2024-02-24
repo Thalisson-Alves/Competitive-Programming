@@ -1,6 +1,5 @@
 #define F(expr) [](auto a, auto b) { return expr; }
-template <typename T, auto op>
-struct SegTree {
+template <typename T, auto op> struct SegTree {
   static_assert(std::is_invocable_r_v<T, decltype(op), T, T>);
 
   int N;
@@ -11,7 +10,6 @@ struct SegTree {
 
   SegTree(const vector<T> &v) : SegTree((int)v.size()) {
     copy(v.begin(), v.end(), ns.begin() + N);
-
     for (int i = N - 1; i > 0; --i)
       ns[i] = op(ns[2 * i], ns[2 * i + 1]);
   }
@@ -21,18 +19,11 @@ struct SegTree {
   }
 
   T query(size_t l, size_t r) const {
-    l = l + N;
-    r = r + N;
-
     auto ml = identity, mr = identity;
-    while (l <= r) {
+    for (l += N, r += N; l <= r; l >>= 1, r >>= 1) {
       if (l & 1) ml = op(ml, ns[l++]);
       if (not (r & 1)) mr = op(ns[r--], mr);
-
-      l >>= 1;
-      r >>= 1;
     }
-
     return op(ml, mr);
   }
 
@@ -41,10 +32,8 @@ struct SegTree {
   }
 
   void set(size_t i, T value) {
-    auto a = i + N;
-
-    ns[a] = value;
-    while (a >>= 1)
-      ns[a] = op(ns[2 * a], ns[2 * a + 1]);
+    ns[i += N] = value;
+    while (i >>= 1)
+      ns[i] = op(ns[2 * i], ns[2 * i + 1]);
   }
 };
