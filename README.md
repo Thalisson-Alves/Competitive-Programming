@@ -12,6 +12,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 - [Bitree2D](code/data_structures/bitree2d.cpp)
 - [Disjoint Sparse Table](code/data_structures/disjoint_sparse_table.cpp)
 - [Merge Sort Tree](code/data_structures/merge_sort_tree.cpp)
+- [Multi Vector](code/data_structures/multi_vector.cpp)
 - [Ordered Set](code/data_structures/ordered_set.cpp)
 - [Persistent Segtree](code/data_structures/persistent_segtree.cpp)
 - [Segtree](code/data_structures/segtree.cpp)
