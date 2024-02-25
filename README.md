@@ -35,6 +35,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 - [2D](code/geometry/2d.cpp)
 - [Convex Hull](code/geometry/convex_hull.cpp)
 - [Lattice Points](code/geometry/lattice_points.cpp)
+- [Lichao Tree](code/geometry/lichao_tree.cpp)
 
 ### Graphs
 
