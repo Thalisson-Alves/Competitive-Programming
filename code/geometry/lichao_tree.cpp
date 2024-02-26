@@ -40,7 +40,8 @@ template <typename T = ll, T LO = T(-1e9), T HI = T(1e9)> struct LiChaoTree {
     else return best(val, query(x, ch(v, 1), m+1, r));
   }
 
-  void add(Line s, int v = 0, T l = LO, T r = HI) {
+  void add(T a, T b) { add({a, b}, 0, LO, HI); }
+  void add(Line s, int v, T l, T r) {
     auto m = l + (r - l) / 2;
     bool L = compare(s.eval(l), ln[v].eval(l));
     bool M = compare(s.eval(m), ln[v].eval(m));
@@ -51,7 +52,8 @@ template <typename T = ll, T LO = T(-1e9), T HI = T(1e9)> struct LiChaoTree {
     else if (R != M) add(s, ch(v, 1), m+1, r);
   }
 
-  void add_segment(Line s, T l, T r, int v = 0, T L = LO, T R = HI) {
+  void add_segment(T a, T b, T l, T r) { add_segment({a, b}, l, r, 0, LO, HI); }
+  void add_segment(Line s, T l, T r, int v, T L, T R) {
     if (l <= L and R <= r) return add(s, v, L, R);
     auto m = L + (R - L) / 2;
     if (l <= m) add_segment(s, l, r, ch(v, 0), L, m);
