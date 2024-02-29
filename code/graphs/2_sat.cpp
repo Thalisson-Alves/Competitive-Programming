@@ -25,64 +25,40 @@ struct Sat2 {
   inline bool var_sign(int v) const { return v & 1; }
 
   vector<bool> solve() {
-    auto order = topological_order(g);
-    auto components = mark_components(gr, order);
-    vector<int> comp_order(components.size(), (int)g.size());
+    auto components = scc_components(g);
     vector<bool> ans(g.size() >> 1);
     for (int i = 0; i < (int)g.size(); i++) {
-      auto a = order[i];
-      auto b = var_neg(order[i]);
-
-      auto ac = components[a];
-      auto bc = components[b];
-
-      if (ac == bc)
-        return {};
-
-      comp_order[ac] = min(comp_order[ac], i);
-      ans[a >> 1] = var_sign((comp_order[ac] < comp_order[bc] ? b : a));
+      int j = var_neg(i);
+      auto ac = components[i];
+      auto bc = components[j];
+      if (ac == bc) return {};
+      ans[i >> 1] = var_sign(ac > bc ? j : i);
     }
     return ans;
   }
 private:
-  static vector<int> topological_order(const vector<vector<int>> &g) {
-    vector<char> vis(g.size());
-    vector<int> order;
-    order.reserve(g.size());
-    auto dfs = [&](auto &&self, int u) -> void {
-      vis[u] = true;
+  static vector<int> scc_components(const vector<vector<int>> &g) {
+    vector<int> comps(g.size(), -1);
+    int timer = 1, num_sccs = 0;
+    vector<int> tin(g.size()), st;
+    st.reserve(g.size());
+    auto dfs = [&](auto&& self, int u) -> int {
+      int low = tin[u] = timer++, now = (int)st.size();
+      st.push_back(u);
       for (auto v : g[u])
-        if (not vis[v])
-          self(self, v);
-      order.push_back(u);
-    };
-
-    for (auto i = 0; i < (int)g.size(); i++)
-      if (not vis[i])
-        dfs(dfs, i);
-
-    reverse(order.begin(), order.end());
-    return order;
-  }
-
-  static vector<int> mark_components(const vector<vector<int>> &gr, const vector<int> &order) {
-    vector<int> comps(gr.size(), -1);
-    auto dfs = [&](auto &&self, int u) -> void {
-      for (auto x : gr[u]) {
-        if (comps[x] == -1) {
-          comps[x] = comps[u];
-          self(self, x);
-        }
+        if (comps[v] < 0)
+          low = min(low, tin[v] ? tin[v] : self(self, v));
+      if (tin[u] == low) {
+        for (int i = now; i < (int)st.size(); i++)
+          comps[st[i]] = num_sccs;
+        st.resize(now);
+        num_sccs++;
       }
+      return low;
     };
+    for (int i = 0; i < (int)g.size(); i++)
+      if (!tin[i]) dfs(dfs, i);
 
-    int id = 0;
-    for (auto u : order) {
-      if (comps[u] == -1) {
-        comps[u] = id++;
-        dfs(dfs, u);
-      }
-    }
     return comps;
-  }
+  };
 };
