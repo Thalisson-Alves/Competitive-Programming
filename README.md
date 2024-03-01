@@ -34,6 +34,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 
 - [2D](code/geometry/2d.cpp)
 - [Convex Hull](code/geometry/convex_hull.cpp)
+- [Convex Hull Trick](code/geometry/convex_hull_trick.cpp)
 - [Lattice Points](code/geometry/lattice_points.cpp)
 - [Lichao Tree](code/geometry/lichao_tree.cpp)
 
@@ -131,6 +132,7 @@ Reviewing these submissions can provide insights into different problem-solving 
 - [Codeforces](submissions/CodeForces)
 - [Gym](submissions/Gym)
 - [Ieeextreme](submissions/IEEEXtreme)
+- [Qoj](submissions/QOJ)
 - [Spoj](submissions/SPOJ)
 - [Uva](submissions/UVA)
 
