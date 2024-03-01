@@ -82,6 +82,7 @@ struct HeavyLightDecomposition {
     for (auto r : roots) _build_dfs(r), _build_bfs(r, tree_id_now++);
   }
 
+  // data[i] = value of vertex i
   template <class T> std::vector<T> segtree_rearrange(const std::vector<T> &data) const {
     assert(int(data.size()) == V);
     std::vector<T> ret;
@@ -89,10 +90,11 @@ struct HeavyLightDecomposition {
     for (int i = 0; i < V; i++) ret.emplace_back(data[aligned_id_inv[i]]);
     return ret;
   }
+  // data[i] = weight of edge[i]
   template <class T> std::vector<T> segtree_rearrange_weighted(const std::vector<T> &data) const {
-    assert(int(data.size()) == V-1);
+    assert(data.size() == edges.size());
     vector<T> ret(V);
-    for (int i = 0; i < V-1; i++) {
+    for (int i = 0; i < (int)edges.size(); i++) {
       auto [u, v] = edges[i];
       if (depth[u] > depth[v]) swap(u, v);
       ret[aligned_id[v]] = data[i];
@@ -109,6 +111,7 @@ struct HeavyLightDecomposition {
   // query for vertices on path [u, v] (INCLUSIVE)
   void for_each_vertex(int u, int v, const auto &f) const {
     static_assert(std::is_invocable_r_v<void, decltype(f), int, int>);
+    assert(tree_id[u] == tree_id[v] and tree_id[u] >= 0);
     while (true) {
       if (aligned_id[u] > aligned_id[v]) std::swap(u, v);
       f(std::max(aligned_id[head[v]], aligned_id[u]), aligned_id[v]);
@@ -120,6 +123,7 @@ struct HeavyLightDecomposition {
   void for_each_vertex_noncommutative( int from, int to, const auto &fup, const auto &fdown) const {
     static_assert(std::is_invocable_r_v<void, decltype(fup), int, int>);
     static_assert(std::is_invocable_r_v<void, decltype(fdown), int, int>);
+    assert(tree_id[from] == tree_id[to] and tree_id[from] >= 0);
     int u = from, v = to;
     const int lca = lowest_common_ancestor(u, v), dlca = depth[lca];
     while (u >= 0 and depth[u] > dlca) {
@@ -139,6 +143,7 @@ struct HeavyLightDecomposition {
   // query for edges on path [u, v]
   void for_each_edge(int u, int v, const auto &f) const {
     static_assert(std::is_invocable_r_v<void, decltype(f), int, int>);
+    assert(tree_id[u] == tree_id[v] and tree_id[u] >= 0);
     while (true) {
       if (aligned_id[u] > aligned_id[v]) std::swap(u, v);
       if (head[u] != head[v]) {
