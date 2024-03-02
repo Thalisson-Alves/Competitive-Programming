@@ -100,6 +100,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 - [Bin Bound](code/primitives/bin_bound.cpp)
 - [Matrix](code/primitives/matrix.cpp)
 - [Modint](code/primitives/modint.cpp)
+- [Parallel Binary Search](code/primitives/parallel_binary_search.cpp)
 - [Rng](code/primitives/rng.cpp)
 - [Y Combinator](code/primitives/y_combinator.cpp)
 
