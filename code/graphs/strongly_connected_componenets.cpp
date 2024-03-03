@@ -3,8 +3,8 @@
  * Finds the strongly connected components of a directed graph, and builds the SCC tree.
  *
  * Fields:
- * - num_scc: number of strongly connected components.
- * - scc_id: for each vertex, the id of the strongly connected component it belongs to.
+ * - size: number of strongly connected components.
+ * - comp_id: for each vertex, the id of the strongly connected component it belongs to.
  * - comps: for each strongly connected component, the list of vertices it contains.
  * - g: the SCC tree.
  *
@@ -18,12 +18,12 @@
  * - https://cses.fi/problemset/task/1685/
  */
 template <typename Digraph> struct SCC {
-  int num_scc;
-  vector<int> scc_id;
+  int size;
+  vector<int> comp_id;
   vector<vector<int>> comps;
   Digraph g;
 
-  SCC(const Digraph &g_) : num_scc(0), scc_id(g_.size(), -1), g(0) {
+  SCC(const Digraph &g_) : size(0), comp_id(g_.size(), -1), g(0) {
     int timer = 1;
     vector<int> tin(g_.size()), st;
     st.reserve(g_.size());
@@ -31,28 +31,28 @@ template <typename Digraph> struct SCC {
       int low = tin[u] = timer++, now = (int)st.size();
       st.push_back(u);
       for (auto v : g_[u])
-      if (scc_id[v] < 0)
+      if (comp_id[v] < 0)
         low = min(low, tin[v] ? tin[v] : self(self, v));
       if (tin[u] == low) {
         for (int i = now; i < (int)st.size(); i++)
-          scc_id[st[i]] = num_scc;
+          comp_id[st[i]] = size;
         st.resize(now);
-        num_scc++;
+        size++;
       }
       return low;
     };
     for (int i = 0; i < g_.size(); i++)
       if (!tin[i]) dfs(dfs, i);
-    comps.resize(num_scc);
-    for (int i = 0; i < (int)scc_id.size(); i++) comps[scc_id[i]].push_back(i);
+    comps.resize(size);
+    for (int i = 0; i < (int)comp_id.size(); i++) comps[comp_id[i]].push_back(i);
 
     g = [&]() {  // build scc tree
       set<pair<int, int>> edges;
       for (auto [u, v, _] : g_.edges) {
-        if (scc_id[u] != scc_id[v])
-          edges.emplace(scc_id[u], scc_id[v]);
+        if (comp_id[u] != comp_id[v])
+          edges.emplace(comp_id[u], comp_id[v]);
       }
-      auto tree = Digraph(num_scc);
+      auto tree = Digraph(size);
       for (auto [u, v] : edges)
         tree.add_edge(u, v);
       return tree;
