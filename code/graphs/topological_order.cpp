@@ -1,4 +1,4 @@
-vector<int> topological_order(const vector<vector<int>> &g) {
+template <typename Digraph> vector<int> topological_order(const Digraph &g) {
   vector<char> vis(g.size());
   vector<int> order;
   order.reserve(g.size());

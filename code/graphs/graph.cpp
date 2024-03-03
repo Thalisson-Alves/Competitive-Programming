@@ -42,15 +42,18 @@ template <typename T, bool directed> struct Graph {
     return id;
   }
 
-  struct EdgeIterator {
+  template <bool include_weight> struct EdgeIterator {
     const Graph &g;
     int node;
     int cur;
 
     EdgeIterator(const Graph &g_, int node_, int cur_ = 0) : g(g_), node(node_), cur(cur_) {}
-    pair<int, Weight> operator*() const {
+    auto operator*() const {
       auto e = g.edges[g.g[node][cur]];
-      return {e.to ^ e.from ^ node, e.weight};
+      if constexpr (include_weight)
+        return pair<int, T>(e.to ^ e.from ^ node, e.weight);
+      else
+        return e.to ^ e.from ^ node;
     }
     bool operator!=(const EdgeIterator &rhs) const { return cur != rhs.cur; }
     void operator++() { cur++; }
@@ -59,10 +62,12 @@ template <typename T, bool directed> struct Graph {
     EdgeIterator begin() const { return *this; }
     EdgeIterator end() const { return EdgeIterator(g, node, (int)g.g[node].size()); }
     int size() const { return static_cast<int>(g.g[node].size()); }
+    bool empty() const { return !remaining(); }
     int remaining() const { return size() - cur; }
+
+    EdgeIterator<true> with_weights() const { return EdgeIterator<true>(g, node, cur); }
   };
-  EdgeIterator next(int node) const { return EdgeIterator(*this, node); }
-  EdgeIterator operator[](int node) const { return EdgeIterator(*this, node); }
+  EdgeIterator<false> operator[](int node) const { return EdgeIterator<false>(*this, node); }
 
   int size() const { return static_cast<int>(g.size()); }
   constexpr static bool is_directed() { return directed; }
