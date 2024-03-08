@@ -60,6 +60,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 - [Find Bridges](code/graphs/find_bridges.cpp)
 - [Floyd Warshall](code/graphs/floyd_warshall.cpp)
 - [Functional Graph](code/graphs/functional_graph.cpp)
+- [Girth](code/graphs/girth.cpp)
 - [Graph](code/graphs/graph.cpp)
 - [Graph Traverse](code/graphs/graph_traverse.cpp)
 - [Gridgraph](code/graphs/gridgraph.cpp)
