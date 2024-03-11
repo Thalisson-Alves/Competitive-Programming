@@ -92,7 +92,7 @@ Args parse_args(int argc, char *argv[]) {
   return args;
 }
 
-string test_generator();
+void test_generator(stringstream &);
 int main(int argc, char *argv[]) {
   args = parse_args(argc, argv);
   rng::set_seed(args.seed);
@@ -100,15 +100,14 @@ int main(int argc, char *argv[]) {
   if (args.include_number_of_cases) {
     cout << args.number_of_cases << '\n';
   }
+  stringstream ss;
   for (int i = 0; i < args.number_of_cases; i++) {
-    cout << test_generator();
+    test_generator(ss);
+    cout << ss.str();
   }
 
   return 0;
 }
 
-string test_generator() {
-  stringstream ss;
-
-  return ss.str();
+void test_generator(stringstream &ss) {
 }
