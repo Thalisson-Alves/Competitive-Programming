@@ -65,7 +65,7 @@ template <typename T, bool directed> struct Graph {
     bool empty() const { return !remaining(); }
     int remaining() const { return size() - cur; }
 
-    EdgeIterator<true> with_weights() const { return EdgeIterator<true>(g, node, cur); }
+    EdgeIterator<true> weighted() const { return EdgeIterator<true>(g, node, cur); }
   };
   EdgeIterator<false> operator[](int node) const { return EdgeIterator<false>(*this, node); }
 
