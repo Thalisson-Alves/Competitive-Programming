@@ -6,9 +6,9 @@ import difflib
 def get_diff(solution: str, target: str, test_case: str) -> str:
     test_input = test_case
     a = subprocess.run(f'echo "{test_input}" | {solution}',
-                       stdout=subprocess.PIPE, shell=True)
+                       stdout=subprocess.PIPE, shell=True, timeout=1)
     b = subprocess.run(f'echo "{test_input}" | {target}',
-                       stdout=subprocess.PIPE, shell=True)
+                       stdout=subprocess.PIPE, shell=True, timeout=1)
 
     dif = difflib.unified_diff(
         a.stdout.decode('utf-8').splitlines(keepends=True),
