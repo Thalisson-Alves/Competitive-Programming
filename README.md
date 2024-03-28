@@ -57,6 +57,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 - [Dfs Tree](code/graphs/dfs_tree.cpp)
 - [Dijkstra](code/graphs/dijkstra.cpp)
 - [Euler Path](code/graphs/euler_path.cpp)
+- [Find Articulations](code/graphs/find_articulations.cpp)
 - [Find Bridges](code/graphs/find_bridges.cpp)
 - [Floyd Warshall](code/graphs/floyd_warshall.cpp)
 - [Functional Graph](code/graphs/functional_graph.cpp)
