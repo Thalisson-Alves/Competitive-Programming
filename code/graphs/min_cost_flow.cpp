@@ -73,7 +73,7 @@ template <typename T> struct MinCostFlow {
         for (auto i : g[cur]) {
           auto &[v, _, cost, cap] = e[i];
           if (cap > 0) {
-            cap = 0;
+            --cap;
             res.push_back(cur = v);
             found = true;
             break;
