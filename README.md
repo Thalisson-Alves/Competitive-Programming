@@ -135,6 +135,7 @@ Reviewing these submissions can provide insights into different problem-solving 
 - [Codechef](submissions/CodeChef)
 - [Codeforces](submissions/CodeForces)
 - [Gym](submissions/Gym)
+- [Icpc](submissions/ICPC)
 - [Ieeextreme](submissions/IEEEXtreme)
 - [Qoj](submissions/QOJ)
 - [Spoj](submissions/SPOJ)
