@@ -44,8 +44,15 @@ template<typename T=double> struct Point {
   inline Point to(const Point &p) const { return p - *this; }
 };
 
-template<typename T> int orientation(const Point<T> &a, const Point<T> &b, const Point<T> &c) {
-  auto x = a.x*(b.y-c.y)+b.x*(c.y-a.y)+c.x*(a.y-b.y);
+/* Orientation of point `p` relative to line `a-b`
+ *
+ * Returns:
+ * -1: `p` is to the right of the line passing through `a` and `b`
+ *  0: `p` belongs to the line passing through `a` and `b`
+ *  1: `p` is to the left of the line passing through `a` and `b`
+ */
+template<typename T> int orientation(const Point<T> &p, const Point<T> &a, const Point<T> &b) {
+  auto x = a.x*(b.y-p.y)+b.x*(p.y-a.y)+p.x*(a.y-b.y);
   bool is_zero = false;
   if constexpr (is_floating_point<T>())
     is_zero = feq(x, 0.0);
@@ -60,20 +67,31 @@ template<typename T> bool collinear(const Point<T> &a, const Point<T> &b, const 
   return feq(orientation(a, b, c), 0.0);
 }
 
-template<const bool include_collinear=false, typename T> bool cw(const Point<T> &a, const Point<T> &b, const Point<T> &c) {
-  auto o = orientation(a, b, c);
+template<const bool include_collinear=false, typename T> bool cw(const Point<T> &p, const Point<T> &a, const Point<T> &b) {
+  auto o = orientation(p, a, b);
   if constexpr (include_collinear)
     return (o < 0 or o == 0);
   else
     return o < 0;
 }
 
-template<const bool include_collinear=false, typename T> bool ccw(const Point<T> &a, const Point<T> &b, const Point<T> &c) {
-  auto o = orientation(a, b, c);
+template<const bool include_collinear=false, typename T> bool ccw(const Point<T> &p, const Point<T> &a, const Point<T> &b) {
+  auto o = orientation(p, a, b);
   if constexpr (include_collinear)
     return (o > 0 or o == 0);
   else
     return o > 0;
+}
+
+/* Check if point p is inside triangle v1, v2, v3 */
+template <typename T> bool is_inside_triangle(const Point<T> &p, const Point<T> &v1, const Point<T> &v2, const Point<T> &v3) {
+  auto o1 = orientation(p, v1, v2);
+  auto o2 = orientation(p, v2, v3);
+  auto o3 = orientation(p, v3, v1);
+
+  bool neg = (o1 < 0) or (o2 < 0) or (o3 < 0);
+  bool pos = (o1 > 0) or (o2 > 0) or (o3 > 0);
+  return !neg or !pos;
 }
 
 template<typename T=double> struct Segment {
