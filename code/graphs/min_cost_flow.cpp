@@ -46,7 +46,7 @@ template <typename T> struct MinCostFlow {
     while (flow < flow_limit and shortest_paths(s, t)) {
       T aug = numeric_limits<int>::max();
       for (int i = t; i != s; i = e[pre[i] ^ 1].to) {
-        aug = min(aug, e[pre[i]].cap);
+        aug = min({flow_limit - flow, aug, e[pre[i]].cap});
       }
       for (int i = t; i != s; i = e[pre[i] ^ 1].to) {
         e[pre[i]].cap -= aug;
