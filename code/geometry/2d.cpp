@@ -94,31 +94,71 @@ template <typename T> bool is_inside_triangle(const Point<T> &p, const Point<T> 
   return !neg or !pos;
 }
 
-template<typename T=double> struct Segment {
+template <typename T = double> struct Line {
+  T a, b, c; // ax + by = c
+
+  Line() : a(0), b(0), c(0) {}
+  Line(T a_, T b_, T c_) : a(a_), b(b_), c(c_) {}
+  Line(const Point<T> &p, const Point<T> &q) {
+    a = p.y - q.y;
+    b = q.x - p.x;
+    c = p.cross(q);
+  }
+
+  bool operator==(const Line &l) const {
+    return eq(a, l.a) and eq(b, l.b) and eq(c, l.c);
+  }
+
+  bool parallel(const Line &l) const { return eq(a * l.b, b * l.a); }
+
+  optional<Point<T>> intersection(const Line &l) const {
+    if (parallel(l))
+      return {};
+    auto det = a * l.b - b * l.a;
+    return Point<T>((b * l.c - c * l.b) / det, (c * l.a - a * l.c) / det);
+  }
+};
+
+template <typename T = double> struct Segment {
   Point<T> p, q;
 
   Segment() : p(), q() {}
   Segment(Point<T> a_, Point<T> b_) : p(a_), q(b_) {}
 
-  inline bool operator==(const Segment &l) const { return p == l.p and q == l.q; }
+  inline bool operator==(const Segment &l) const {
+    return p == l.p and q == l.q;
+  }
+
+  inline bool parallel(const Segment &l) const {
+    return eq(p.cross(q, l.p), (T)0) and eq(p.cross(q, l.q), (T)0);
+  }
 
   inline bool intersects(const Segment &l) const {
-    if (eq(p.cross(q, l.p), (T)0) and eq(p.cross(q, l.q), (T)0)) {
+    if (parallel(l)) {
       return min(p, q) <= max(l.p, l.q) and min(l.p, l.q) <= max(p, q);
     }
-    return (p.cross(q, l.p) * p.cross(q, l.q) <= 0) and (l.p.cross(l.q, p) * l.p.cross(l.q, q) <= 0);
+    return (p.cross(q, l.p) * p.cross(q, l.q) <= 0) and
+           (l.p.cross(l.q, p) * l.p.cross(l.q, q) <= 0);
   }
 
   inline bool intersects(const Point<T> &r) const {
     return eq(p.cross(q, r), (T)0) and min(p, q) <= r and r <= max(p, q);
   }
+  optional<Point<T>> intersection(const Point<T> &r) const {
+    if (intersects(r))
+      return r;
+    return {};
+  }
 
-  inline Point<T> intersection(const Segment &l) const {
-    assert(intersects(l));
-    if (eq(p.cross(q, l.p), (T)0) and eq(p.cross(q, l.q), (T)0)) {
-      return min(p, q) <= max(l.p, l.q) ? max(p, l.p) : min(p, l.p);
+  inline optional<variant<Segment<T>, Point<T>>>
+  intersection(const Segment &l) const {
+    if (!intersects(l))
+      return {};
+    if (parallel(l)) {
+      return Segment(max(min(p, q), min(l.p, l.q)),
+                     min(max(p, q), max(l.p, l.q)));
     }
-    return p + (q - p) * (l.p.cross(l.q, l.p) / l.p.cross(l.q, p - q));
+    return Line<T>(p, q).intersection(Line<T>(l.p, l.q));
   }
 
   inline Point<T> closest(const Point<T> &r) const {
