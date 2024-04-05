@@ -130,12 +130,14 @@ template <typename T = double> struct Segment {
   }
 
   inline bool parallel(const Segment &l) const {
+    // TODO: handle zero length segments
     return eq(p.cross(q, l.p), (T)0) and eq(p.cross(q, l.q), (T)0);
   }
 
   inline bool intersects(const Segment &l) const {
     if (parallel(l)) {
-      return min(p, q) <= max(l.p, l.q) and min(l.p, l.q) <= max(p, q);
+      return intersects(l.p) or intersects(l.q) or l.intersects(p) or
+             l.intersects(q);
     }
     return (p.cross(q, l.p) * p.cross(q, l.q) <= 0) and
            (l.p.cross(l.q, p) * l.p.cross(l.q, q) <= 0);
@@ -150,15 +152,16 @@ template <typename T = double> struct Segment {
     return {};
   }
 
-  inline optional<variant<Segment<T>, Point<T>>>
-  intersection(const Segment &l) const {
+  inline optional<Segment<T>> intersection(const Segment &l) const {
     if (!intersects(l))
       return {};
     if (parallel(l)) {
       return Segment(max(min(p, q), min(l.p, l.q)),
                      min(max(p, q), max(l.p, l.q)));
     }
-    return Line<T>(p, q).intersection(Line<T>(l.p, l.q));
+    if (auto pt = Line<T>(p, q).intersection(Line<T>(l.p, l.q)))
+      return Segment(*pt, *pt);
+    return {};
   }
 
   inline Point<T> closest(const Point<T> &r) const {
