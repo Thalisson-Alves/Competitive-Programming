@@ -4,6 +4,10 @@ template <typename T> bool eq(const T a, const T b) {
   else return a == b;
 }
 
+const double PI = acos(-1);
+double to_rad(double deg) { return deg * PI / 180; }
+double to_deg(double rad) { return rad * 180 / PI; }
+
 template<typename T=double> struct Point {
   T x, y;
 
@@ -33,6 +37,12 @@ template<typename T=double> struct Point {
   friend ostream& operator<<(ostream &os, const Point &p) { return os << p.x << ' ' << p.y; }
   friend istream& operator>>(istream &is, Point &p) { return is >> p.x >> p.y; }
 
+  template<typename U> void rotate(U rad) {
+    tie(x, y) = make_pair(x * cos(rad) - y * sin(rad), x * sin(rad) + y * cos(rad));
+  }
+  template<typename U> Point<U> rotated(U rad) const {
+    return Point<U>(x * cos(rad) - y * sin(rad), x * sin(rad) + y * cos(rad));
+  }
   inline T dot(const Point &p) const { return x * p.x + y * p.y; }
   inline T cross(const Point &p) const { return x * p.y - y * p.x; }
   inline T cross(const Point &a, const Point &b) const { return (a - *this).cross(b - *this); }
