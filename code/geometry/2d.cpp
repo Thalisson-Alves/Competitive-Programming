@@ -149,8 +149,8 @@ template <typename T = double> struct Segment {
       return intersects(l.p) or intersects(l.q) or l.intersects(p) or
              l.intersects(q);
     }
-    return (p.cross(q, l.p) * p.cross(q, l.q) <= 0) and
-           (l.p.cross(l.q, p) * l.p.cross(l.q, q) <= 0);
+    return orientation(p, q, l.p) * orientation(p, q, l.q) <= 0 and
+           orientation(l.p, l.q, p) * orientation(l.p, l.q, q) <= 0;
   }
 
   inline bool intersects(const Point<T> &r) const {
