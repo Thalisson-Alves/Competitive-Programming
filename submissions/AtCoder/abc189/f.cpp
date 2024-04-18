@@ -16,14 +16,8 @@ void solve() {
   for (int x; cin >> x; cant[x] = 1);
   vector<valarray<double>> dp(n + 1, valarray<double>(2));
   valarray<double> sum = {0.0, 0.0};
-  int bad = 0;
   for (int i = n - 1; ~i; --i) {
     sum += dp[i + 1] - dp[min(n, i + m + 1)];
-    bad += cant[i + 1] - cant[min(n, i + m + 1)];
-    if (bad >= m) {
-      cout << "-1\n";
-      return;
-    }
     if (cant[i])
       dp[i] = valarray<double>{0.0, 1.0};
     else
