@@ -12,19 +12,14 @@ using ll = long long;
 void solve() {
   int n;
   cin >> n;
-  vector<char> v(n);
-  for (auto &x : v) {
+  ll res = 1;
+  for (int i = 0; i < n; i++) {
     string s;
     cin >> s;
-    x = s[0];
+    if (s[0] == 'O')
+      res += 1ll << (i + 1);
   }
 
-  ll res = 1;
-  for (int i = n - 1; ~i; --i) {
-    if (v[i] == 'O') {
-      res += 1ll << (i + 1);
-    }
-  }
   cout << res << '\n';
 }
 
