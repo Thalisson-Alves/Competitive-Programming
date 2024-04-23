@@ -10,8 +10,6 @@ using namespace std;
 #define dbg(...)
 #endif
 
-#define all(x) x.begin(), x.end()
-
 using ll = long long;
 
 void solve()
