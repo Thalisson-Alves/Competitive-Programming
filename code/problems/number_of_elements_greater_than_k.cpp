@@ -23,7 +23,7 @@ vector<T> count_greater_k(const vector<T> &v, const vector<tuple<int, int, T>> &
     a[i].value = k;
   }
 
-  sort(all(a), [](auto x, auto y) {
+  sort(a.begin(), a.end(), [](auto x, auto y) {
     if (x.value == y.value)
       return x.l > y.l;
     return x.value > y.value;

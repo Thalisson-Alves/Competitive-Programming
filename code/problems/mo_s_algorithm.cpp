@@ -23,7 +23,7 @@ struct Mo {
 
   auto solve() {
     vector<typename result_of<decltype(&Mo::get_answer)(Mo)>::type> answers(qs.size());
-    sort(all(qs));
+    sort(qs.begin(), qs.end());
 
     int cur_l = 0, cur_r = -1;
     for (auto q : qs) {

@@ -48,7 +48,7 @@ vector<int> euler_path_directed(vector<vector<int>> &g, int first)
   auto res = euler_cycle_directed(g, first);
   if (res.empty()) return res;
 
-  reverse(all(res));
+  reverse(res.begin(), res.end());
   return res;
 }
 
@@ -135,6 +135,6 @@ vector<int> euler_path_undirected(vector<vector<int>> &g, int first)
     }
   }
 
-  reverse(all(res));
+  reverse(res.begin(), res.end());
   return res;
 }

@@ -11,7 +11,7 @@ template <typename T> struct WaveletTree {
   WaveletTree(vector<T> &v) {
     // TODO: maybe make it 2*distinc(v). Don't know if it's worth it tho.
     nodes.reserve(2*v.size());
-    auto [mn, mx] = minmax_element(all(v));
+    auto [mn, mx] = minmax_element(v.begin(), v.end());
     build(nodes[make_node(*mn, *mx)], v.begin(), v.end());
   }
 
@@ -66,9 +66,9 @@ private:
 
     auto pivot = stable_partition(from, to, f);
     node.left_child = make_node(node.lo, left_upper);
-    build(nodes[node.left_child], from, pivot); 
+    build(nodes[node.left_child], from, pivot);
     node.right_child = make_node(right_lower, node.hi);
-    build(nodes[node.right_child], pivot, to); 
+    build(nodes[node.right_child], pivot, to);
   }
 
   template <typename K, auto handle_base>

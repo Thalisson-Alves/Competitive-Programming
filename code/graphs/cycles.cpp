@@ -15,13 +15,13 @@ template <typename Graph> void cycles(const Graph &g, auto &&f) {
         cur = ps[cur];
         cy.push_back(cur);
       }
-      reverse(all(cy));
+      reverse(cy.begin(), cy.end());
       return f(cy);
     }
 
     ps[u] = p;
     color[u] = 1;
-    for (auto [v, _] : g[u]) {
+    for (auto v : g[u]) {
       if ((Graph::is_directed() or v != p) and self(self, v, u))
         return true;
     }

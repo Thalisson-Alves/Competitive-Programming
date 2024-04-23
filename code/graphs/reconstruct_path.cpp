@@ -5,6 +5,6 @@ template <typename Node> vector<Node> reconstruct_path(Node t, const vector<Node
 
   for (; t != default_node; t = prev[t])
     path.push_back(t);
-  reverse(all(path));
+  reverse(path.begin(), path.end());
   return path;
 }

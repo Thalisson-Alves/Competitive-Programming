@@ -29,7 +29,7 @@ template <typename Graph> auto bellman_ford(const Graph &g, int s) {
               if (x == v and cycle.size() > 1)
                 break;
             }
-            reverse(all(cycle));
+            reverse(cycle.begin(), cycle.end());
             return make_pair(dist, cycle);
           }
         }

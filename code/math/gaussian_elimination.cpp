@@ -14,7 +14,7 @@ template<size_t Dim> struct GaussianElimination {
   }
 
   void normalize() {
-    sort(all(basis));
+    sort(basis.begin(), basis.end());
     for (int i = size() - 1; ~i; --i) {
       for (int j = i - 1; ~j; --j) {
         if (basis[i] & (1ll << (63 - __builtin_clzll(basis[j]))))

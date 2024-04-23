@@ -45,6 +45,6 @@ vector<vector<pair<int, int>>> centroid_decomposition(const vector<vector<int>> 
   vector<bool> rem(g.size());
   vector<vector<pair<int, int>>> ancestor(g.size());
   centroid_decomposition(g, sz, ancestor, rem);
-  for (auto &x : ancestor) reverse(all(x));
+  for (auto &x : ancestor) reverse(x.begin(), x.end());
   return ancestor;
 }

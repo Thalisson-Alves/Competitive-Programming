@@ -4,8 +4,8 @@ template <typename T> struct MergeSortTree {
 
   MergeSortTree(const vector<T> &a) : N((int)a.size()), v(4 * N), idx(4 * N) {
     vector<int> b(a.size());
-    iota(all(b), 0);
-    sort(all(b), [&a](int x, int y) { return a[x] < a[y]; });
+    iota(b.begin(), b.end(), 0);
+    sort(b.begin(), b.end(), [&a](int x, int y) { return a[x] < a[y]; });
     build(a, b, 1, 0, N-1);
   }
 
@@ -15,7 +15,7 @@ template <typename T> struct MergeSortTree {
   }
   int count_in_range(int l, int r, T mn, T mx) const {
     constexpr auto f = [](const auto &a, auto x) {
-      return (int)(upper_bound(all(a), x.second) - lower_bound(all(a), x.first));
+      return (int)(upper_bound(a.begin(), a.end(), x.second) - lower_bound(a.begin(), a.end(), x.first));
     };
     constexpr auto op = [](int a, int b) {
       return a + b;
@@ -24,7 +24,7 @@ template <typename T> struct MergeSortTree {
   }
   int count_greater(int l, int r, T x) const {
     constexpr auto f = [](const auto &a, auto q) {
-      return (int)(a.end() - upper_bound(all(a), q));
+      return (int)(a.end() - upper_bound(a.begin(), a.end(), q));
     };
     constexpr auto op = [](int a, int b) {
       return a + b;
@@ -44,8 +44,8 @@ private:
       auto tm = tl + (tr - tl) / 2;
       build(a, b, 2*node, tl, tm);
       build(a, b, 2*node+1, tm+1, tr);
-      merge(all(v[2*node]), all(v[2*node+1]), back_inserter(v[node]));
-      merge(all(idx[2*node]), all(idx[2*node+1]), back_inserter(idx[node]));
+      merge(v[2*node].begin(), v[2*node].end(), v[2*node+1].begin(), v[2*node+1].end(), back_inserter(v[node]));
+      merge(idx[2*node].begin(), idx[2*node].end(), idx[2*node+1].begin(), idx[2*node+1].end(), back_inserter(idx[node]));
     }
   }
 
@@ -65,7 +65,7 @@ private:
   int kth_element_index(int node, int tl, int tr, int l, int r, int k) const {
     if (tl == tr) return idx[node][0];
 
-    int cnt = (int)(upper_bound(all(idx[2*node]), r) - lower_bound(all(idx[2*node]), l));
+    int cnt = (int)(upper_bound(idx[2*node].begin(), idx[2*node].end(), r) - lower_bound(idx[2*node].begin(), idx[2*node].end(), l));
 
     auto tm = tl + (tr - tl) / 2;
     if (cnt > k)

@@ -35,7 +35,7 @@ template <typename Mint> void ntt(vector<Mint> &a, bool invert=false) {
     roots[0].push_back(g.pow((Mint::mod-1) / (1 << roots[0].size())));
     roots[1].push_back(roots[0].back().inv());
   }
-  
+
   const auto &rs = roots[invert];
   vector<Mint> b(n);
   for (int i = 1; i <= s; i++) {
@@ -101,9 +101,9 @@ vector<modint<m>> convolution(const vector<T> &a, const vector<T> &b) {
 
   constexpr int PRIMES[3] = {1004535809, 998244353, 985661441};
   #define vp(_p) vector<modint<PRIMES[_p]>>
-  vp(0) z0 = convolution<PRIMES[0]>(vp(0)(all(a)), vp(0)(all(b)));
-  vp(1) z1 = convolution<PRIMES[1]>(vp(1)(all(a)), vp(1)(all(b)));
-  vp(2) z2 = convolution<PRIMES[2]>(vp(2)(all(a)), vp(2)(all(b)));
+  vp(0) z0 = convolution<PRIMES[0]>(vp(0)(a.begin(), a.end()), vp(0)(b.begin(), b.end()));
+  vp(1) z1 = convolution<PRIMES[1]>(vp(1)(a.begin(), a.end()), vp(1)(b.begin(), b.end()));
+  vp(2) z2 = convolution<PRIMES[2]>(vp(2)(a.begin(), a.end()), vp(2)(b.begin(), b.end()));
 
   for (int i = 0; i < (int)c.size(); i++) {
     c[i] = garner_algorithm<m>(z0[i], z1[i], z2[i]);

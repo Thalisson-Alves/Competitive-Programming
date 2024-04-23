@@ -99,8 +99,8 @@ template <typename Digraph> struct SCC {
     }
 
     int matches = (int)sources.size();
-    sources.insert(sources.end(), all(unmatched_sources));
-    sinks.insert(sinks.end(), all(unmatched_sinks));
+    sources.insert(sources.end(), unmatched_sources.begin(), unmatched_sources.end());
+    sinks.insert(sinks.end(), unmatched_sinks.begin(), unmatched_sinks.end());
     int mn = (int)sources.size(), mx = (int)sinks.size();
     if (mn > mx) swap(mn, mx);
 

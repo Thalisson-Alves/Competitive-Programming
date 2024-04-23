@@ -194,7 +194,7 @@ template <typename T = double> struct Segment {
 };
 
 template <typename T> void sort_segments(vector<Segment<T>> &segments) {
-  sort(all(segments), [](const auto &a, const auto &b) {
+  sort(segments.begin(), segments.end(), [](const auto &a, const auto &b) {
     return a.a.x < b.a.x;
   });
 

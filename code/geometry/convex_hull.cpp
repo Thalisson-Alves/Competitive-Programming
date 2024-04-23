@@ -3,7 +3,7 @@ vector<Point<T>> convex_hull(vector<Point<T>> pts)
 {
   if (pts.size() == 1) return pts;
 
-  sort(all(pts));
+  sort(pts.begin(), pts.end());
   auto p1 = pts[0], p2 = pts.back();
   vector<Point<T>> up, down;
   up.push_back(p1);
@@ -28,7 +28,7 @@ vector<Point<T>> convex_hull(vector<Point<T>> pts)
   {
     if (up.size() == pts.size())
     {
-      reverse(all(pts));
+      reverse(pts.begin(), pts.end());
       return pts;
     }
   }

@@ -3,7 +3,7 @@ struct UFDS {
   int components;
 
   UFDS(int n) : ps(n), sz(n, 1), components(n) {
-    iota(all(ps), 0);
+    iota(ps.begin(), ps.end(), 0);
   }
 
   int find(int x) {
