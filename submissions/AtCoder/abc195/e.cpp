@@ -15,16 +15,17 @@ void solve() {
   string s, t;
   cin >> s >> t;
 
-  vector<vector<bool>> dp(n + 1, vector<bool>(7));
-  dp[n][0] = 1;
+  vector<vector<bool>> dp(2, vector<bool>(7));
+  dp[1][0] = 1;
   for (int i = n - 1; ~i; --i) {
     for (int j = 0; j < 7; j++) {
-      auto a = dp[i + 1][(j * 10) % 7];
-      auto b = dp[i + 1][(j * 10 + s[i] - '0') % 7];
-      dp[i][j] = (t[i] == 'T' ? a or b : a and b);
+      auto a = dp[1][(j * 10) % 7];
+      auto b = dp[1][(j * 10 + s[i] - '0') % 7];
+      dp[0][j] = (t[i] == 'T' ? a or b : a and b);
     }
+    swap(dp[0], dp[1]);
   }
-  cout << (dp[0][0] ? "Takahashi" : "Aoki") << '\n';
+  cout << (dp[1][0] ? "Takahashi" : "Aoki") << '\n';
 }
 
 int32_t main() {
