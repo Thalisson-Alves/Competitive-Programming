@@ -8,7 +8,7 @@ template <typename T> struct WaveletTree {
   };
 
   vector<Node> nodes;
-  WaveletTree(vector<T> &v) {
+  WaveletTree(vector<T> v) {
     // TODO: maybe make it 2*distinc(v). Don't know if it's worth it tho.
     nodes.reserve(2*v.size());
     auto [mn, mx] = minmax_element(v.begin(), v.end());
@@ -36,6 +36,7 @@ template <typename T> struct WaveletTree {
   }
   int count_equal(int l, int r, T k) const {
     constexpr auto base = [](const Node & node, T x) -> int {
+      if (node.lo > x or node.hi < x) return 0;
       if (node.lo == node.hi) return (x == node.lo);
       return -1;
     };
