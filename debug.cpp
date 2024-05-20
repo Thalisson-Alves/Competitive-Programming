@@ -22,6 +22,7 @@ void __print(const A &x);
 template <typename T>
 void __print(optional<T> x);
 void __print(char x);
+void __print(bool x) { cerr << boolalpha << x; }
 void __print(char x) {
   if (x < 31) cerr << static_cast<int>(x);
   else cerr << x;
