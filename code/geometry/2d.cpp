@@ -80,7 +80,7 @@ template<typename T> bool collinear(const Point<T> &a, const Point<T> &b, const 
 template<const bool include_collinear=false, typename T> bool cw(const Point<T> &p, const Point<T> &a, const Point<T> &b) {
   auto o = orientation(p, a, b);
   if constexpr (include_collinear)
-    return (o < 0 or o == 0);
+    return o <= 0;
   else
     return o < 0;
 }
@@ -88,13 +88,13 @@ template<const bool include_collinear=false, typename T> bool cw(const Point<T> 
 template<const bool include_collinear=false, typename T> bool ccw(const Point<T> &p, const Point<T> &a, const Point<T> &b) {
   auto o = orientation(p, a, b);
   if constexpr (include_collinear)
-    return (o > 0 or o == 0);
+    return o >= 0;
   else
     return o > 0;
 }
 
 /* Check if point p is inside triangle v1, v2, v3 */
-template <typename T> bool is_inside_triangle(const Point<T> &p, const Point<T> &v1, const Point<T> &v2, const Point<T> &v3) {
+template <typename Pt> bool is_inside_triangle(const Pt &p, const Pt &v1, const Pt &v2, const Pt &v3) {
   auto o1 = orientation(p, v1, v2);
   auto o2 = orientation(p, v2, v3);
   auto o3 = orientation(p, v3, v1);
@@ -102,6 +102,19 @@ template <typename T> bool is_inside_triangle(const Point<T> &p, const Point<T> 
   bool neg = (o1 < 0) or (o2 < 0) or (o3 < 0);
   bool pos = (o1 > 0) or (o2 > 0) or (o3 > 0);
   return !neg or !pos;
+}
+
+template <typename Pt> bool is_inside_polygon(const vector<Pt> &poly, const Pt &p) {
+  int l = 2, r = (int)poly.size() - 1;
+  while (l <= r) {
+    int mid = (l + r) / 2;
+    if (ccw<true>(p, poly[0], poly[mid]))
+      l = mid + 1;
+    else
+      r = mid - 1;
+  }
+
+  return is_inside_triangle(p, poly[0], poly[r-1], poly[r]);
 }
 
 template <typename T = double> struct Line {
