@@ -104,6 +104,12 @@ template <typename Pt> bool is_inside_triangle(const Pt &p, const Pt &v1, const 
   return !neg or !pos;
 }
 
+/* Check if point p is inside a convex polygon
+ *
+ * Points i and i+1 must represent a segment of the polygon
+ *
+ * Time complexity: O(log n)
+*/
 template <typename Pt> bool is_inside_polygon(const vector<Pt> &poly, const Pt &p) {
   int l = 2, r = (int)poly.size() - 1;
   while (l <= r) {
