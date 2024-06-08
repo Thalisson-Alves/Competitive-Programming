@@ -1,24 +1,19 @@
-void tree_diameter(const vector<vector<int>> &g, int s, vector<int> &dist, int &last)
-{
-  for (auto x : g[s])
-    if (dist[x] == -1)
-    {
-      if ((dist[x] = dist[s] + 1) > dist[last])
-        last = x;
-      tree_diameter(g, x, dist, last);
-    }
-}
-
-int tree_diameter(const vector<vector<int>> &g)
-{
+int tree_diameter(const vector<vector<int>> &g, int root=0) {
   vector<int> dist(g.size(), -1);
-  int last = 0;
+  int last = root;
   dist[last] = 0;
-  tree_diameter(g, last, dist, last);
+  auto dfs = [&](auto &&self, int u) -> void {
+    for (auto v : g[u]) if (dist[v] == -1) {
+      if ((dist[v] = dist[u] + 1) > dist[last])
+        last = v;
+      self(self, v);
+    }
+  };
+  dfs(dfs, last);
 
   dist.assign(g.size(), -1);
   dist[last] = 0;
-  tree_diameter(g, last, dist, last);
+  dfs(dfs, last);
 
   return dist[last];
 }
