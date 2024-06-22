@@ -28,6 +28,7 @@ template <typename T> struct WaveletTree {
         if (value) left_upper = max(left_upper, *it);
         else right_lower = min(right_lower, *it);
       }
+
       auto pivot = stable_partition(from, to, f);
       node.left_child = make_node(node.lo, left_upper);
       self(self, nodes[node.left_child], from, pivot);
@@ -49,27 +50,25 @@ template <typename T> struct WaveletTree {
     return f(f, nodes[0], L, R, K);
   }
 
-  int count_in_range(int L, int R, T a, T b) const {
-    auto f = [&](auto &&self, const Node &node, int l, int r) -> int {
-      if (l > r or node.lo > b or node.hi < a) return 0;
-      if (a <= node.lo and node.hi <= b) return r - l + 1;
+  pair<int, ll> count_and_sum_in_range(int L, int R, T a, T b) const {
+    auto f = [&](auto &&self, const Node &node, int l, int r) -> pair<int, ll> {
+      if (l > r or node.lo > b or node.hi < a) return {0, 0};
+      if (a <= node.lo and node.hi <= b)
+        return {r - l + 1, (node.lo == node.hi ? (r - l + 1ll) * node.lo : node.psum[r+1] - node.psum[l])};
       int lb = node.pcnt[l], rb = node.pcnt[r+1];
-      return self(self, nodes[node.left_child], lb, rb-1) +
-             self(self, nodes[node.right_child], l-lb, r-rb);
+      auto [left_cnt, left_sum] = self(self, nodes[node.left_child], lb, rb-1);
+      auto [right_cnt, right_sum] = self(self, nodes[node.right_child], l-lb, r-rb);
+      return {left_cnt + right_cnt, left_sum + right_sum};
     };
     return f(f, nodes[0], L, R);
   }
 
-  ll sum_in_range(int L, int R, T a, T b) const {
-    auto f = [&](auto &&self, const Node &node, int l, int r) -> ll {
-      if (l > r or node.lo > b or node.hi < a) return 0ll;
-      if (a <= node.lo and node.hi <= b)
-        return (node.lo == node.hi ? (r - l + 1ll) * node.lo : node.psum[r+1] - node.psum[l]);
-      int lb = node.pcnt[l], rb = node.pcnt[r+1];
-      return self(self, nodes[node.left_child], lb, rb-1) +
-             self(self, nodes[node.right_child], l-lb, r-rb);
-    };
-    return f(f, nodes[0], L, R);
+  inline int count_in_range(int L, int R, T a, T b) const {
+    return count_and_sum_in_range(L, R, a, b).first;
+  }
+
+  inline ll sum_in_range(int L, int R, T a, T b) const {
+    return count_and_sum_in_range(L, R, a, b).second;
   }
 private:
   int make_node(T lo, T hi) {
