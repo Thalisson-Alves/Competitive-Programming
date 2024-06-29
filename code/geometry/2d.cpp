@@ -123,6 +123,16 @@ template <typename Pt> bool is_inside_polygon(const vector<Pt> &poly, const Pt &
   return is_inside_triangle(p, poly[0], poly[r-1], poly[r]);
 }
 
+template <typename T>
+T rect_overlapping_area(pair<T, T> l1, pair<T, T> r1, pair<T, T> l2, pair<T, T> r2) {
+  auto a1 = abs(l1.first - r1.first) * abs(l1.second - r1.second);
+  auto a2 = abs(l2.first - r2.first) * abs(l2.second - r2.second);
+  auto dx = min(r1.first, r2.first) - max(l1.first, l2.first);
+  auto dy = min(r1.second, r2.second) - max(l1.second, l2.second);
+  T ai = (dx > 0 and dy > 0 ? dx * dy : 0);
+  return a1 + a2 - ai;
+}
+
 template <typename T = double> struct Line {
   T a, b, c; // ax + by = c
 
