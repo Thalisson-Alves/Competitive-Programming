@@ -25,7 +25,7 @@ template <typename T> struct MinCostFlow {
   int n;
   vector<Edge> e;
   vector<vector<int>> g;
-  vector<T> dis;
+  vector<T> dist;
   vector<int> pre;
 
   MinCostFlow() {}
@@ -43,7 +43,7 @@ template <typename T> struct MinCostFlow {
   // {flow, cost}
   pair<T, T> flow(int s, int t, T flow_limit = numeric_limits<T>::max()) {
     T flow = 0, cost = 0;
-    while (flow < flow_limit and shortest_paths(s, t)) {
+    while (flow < flow_limit and dijkstra(s, t)) {
       T aug = numeric_limits<int>::max();
       for (int i = t; i != s; i = e[pre[i] ^ 1].to) {
         aug = min({flow_limit - flow, aug, e[pre[i]].cap});
@@ -56,7 +56,7 @@ template <typename T> struct MinCostFlow {
         e[pre[i] ^ 1].cap_used -= aug;
       }
       flow += aug;
-      cost += aug * dis[t];
+      cost += aug * dist[t];
     }
     return {flow, cost};
   }
@@ -94,14 +94,14 @@ template <typename T> struct MinCostFlow {
   }
 
 private:
-  bool shortest_paths(int s, int t) {
-    dis.assign(n, numeric_limits<T>::max());
+  bool bellman_ford(int s, int t) {
+    dist.assign(n, numeric_limits<T>::max());
     pre.assign(n, -1);
 
     vector<bool> inq(n, false);
     queue<int> q;
 
-    dis[s] = 0;
+    dist[s] = 0;
     q.push(s);
 
     while (not q.empty()) {
@@ -110,10 +110,10 @@ private:
       inq[u] = false;
 
       for (auto i : g[u]) {
-        auto [v, cap, cost, _] = e[i];
-        auto new_dist = dis[u] + cost;
-        if (cap > 0 and dis[v] > new_dist) {
-          dis[v] = new_dist;
+        auto [v, cap, w, _] = e[i];
+        auto new_dist = dist[u] + w;
+        if (cap > 0 and dist[v] > new_dist) {
+          dist[v] = new_dist;
           pre[v] = i;
           if (not inq[v]) {
             inq[v] = true;
@@ -123,6 +123,32 @@ private:
       }
     }
 
-    return dis[t] != numeric_limits<T>::max();
+    return dist[t] != numeric_limits<T>::max();
+  }
+
+  bool dijkstra(int s, int t) {
+    dist.assign(n, numeric_limits<T>::max());
+    pre.assign(n, -1);
+    dist[s] = 0;
+
+    using PQ = pair<T, int>;
+    priority_queue<PQ, vector<PQ>, greater<PQ>> pq;
+    pq.emplace(0, s);
+    while (not pq.empty()) {
+      auto [cost, u] = pq.top(); pq.pop();
+      if (cost != dist[u]) continue;
+
+      for (auto i : g[u]) {
+        auto [v, cap, w, _] = e[i];
+        auto new_dist = dist[u] + w;
+        if (cap > 0 and dist[v] > new_dist) {
+          dist[v] = new_dist;
+          pre[v] = i;
+          pq.emplace(new_dist, v);
+        }
+      }
+    }
+
+    return dist[t] != numeric_limits<T>::max();
   }
 };
