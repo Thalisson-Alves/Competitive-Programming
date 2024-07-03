@@ -2,6 +2,7 @@ import argparse
 from collections.abc import Callable
 from pathlib import Path
 from typing import Iterable, Literal
+from urllib.parse import quote
 
 
 def get_markdown_for(
@@ -41,9 +42,9 @@ def get_markdown_for(
             if path.suffix and path.suffix != ".cpp":
                 name += f" ({path.suffix[1:]})"
 
-        padding = " " * (expansion == '-') * 2 * (depth - 1)
+        padding = " " * (expansion == "-") * 2 * (depth - 1)
         if should_be_link(path):
-            yield f"{padding}- [{name}]({path.relative_to(base_dir.parent)})"
+            yield f"{padding}- [{name}]({quote(str(path.relative_to(base_dir.parent)))})"
         elif path.is_dir():
             if expansion == "#":
                 yield f"\n{'#' * (depth + 2)} {name}\n"
