@@ -130,17 +130,32 @@ The `submissions` directory holds my accepted submissions to different online ju
 
 Reviewing these submissions can provide insights into different problem-solving techniques, optimization strategies, and coding styles. It's a great way to learn from both successful and unsuccessful attempts.
 
-- [Atcoder](submissions/AtCoder)
+- [AtCoder](submissions/AtCoder)
 - [Beecrowd](submissions/Beecrowd)
-- [Cses](submissions/CSES)
-- [Codechef](submissions/CodeChef)
-- [Codeforces](submissions/CodeForces)
+- [CSES](submissions/CSES)
+- [CodeChef](submissions/CodeChef)
+- [CodeForces](submissions/CodeForces)
 - [Gym](submissions/Gym)
-- [Icpc](submissions/ICPC)
-- [Ieeextreme](submissions/IEEEXtreme)
-- [Qoj](submissions/QOJ)
-- [Spoj](submissions/SPOJ)
-- [Uva](submissions/UVA)
+- ICPC
+  - [2010-2011 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2010-2011 ACM-ICPC Brazil Subregional Programming Contest)
+  - [2013-2014 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2013-2014 ACM-ICPC Brazil Subregional Programming Contest)
+  - [2014-2015 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2014-2015 ACM-ICPC Brazil Subregional Programming Contest)
+  - [2017-2018 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2017-2018 ACM-ICPC Brazil Subregional Programming Contest)
+  - [2018-2019 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2018-2019 ACM-ICPC Brazil Subregional Programming Contest)
+  - [2019-2020 ACM-ICPC Brazil Regional Programming Contest](submissions/ICPC/2019-2020 ACM-ICPC Brazil Regional Programming Contest)
+  - [2019-2020 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2019-2020 ACM-ICPC Brazil Subregional Programming Contest)
+  - [2020-2021 ACM-ICPC Brazil Regional Programming Contest](submissions/ICPC/2020-2021 ACM-ICPC Brazil Regional Programming Contest)
+  - [2020-2021 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2020-2021 ACM-ICPC Brazil Subregional Programming Contest)
+  - [2021-2022 ACM-ICPC Brazil Regional Programming Contest](submissions/ICPC/2021-2022 ACM-ICPC Brazil Regional Programming Contest)
+  - [2021-2022 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2021-2022 ACM-ICPC Brazil Subregional Programming Contest)
+  - [2022-2023 ACM-ICPC Brazil Regional Programming Contest](submissions/ICPC/2022-2023 ACM-ICPC Brazil Regional Programming Contest)
+  - [2022-2023 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2022-2023 ACM-ICPC Brazil Subregional Programming Contest)
+  - [2023-2024 ACM-ICPC Brazil Regional Programming Contest](submissions/ICPC/2023-2024 ACM-ICPC Brazil Regional Programming Contest)
+  - [2023-2024 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2023-2024 ACM-ICPC Brazil Subregional Programming Contest)
+- [IEEEXtreme](submissions/IEEEXtreme)
+- [QOJ](submissions/QOJ)
+- [SPOJ](submissions/SPOJ)
+- [UVA](submissions/UVA)
 
 ## Contributing
 

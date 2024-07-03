@@ -1,11 +1,15 @@
 import argparse
 from collections.abc import Callable
 from pathlib import Path
-from typing import Iterable
+from typing import Iterable, Literal
 
 
 def get_markdown_for(
-    base_dir: Path, should_be_link: Callable[[Path], bool]
+    base_dir: Path,
+    should_be_link: Callable[[Path], bool],
+    expansion: Literal["-", "#"] = "#",
+    *,
+    apply_name_transformation: bool = True,
 ) -> Iterable[str]:
     """Generate markdown for a directory tree.
 
@@ -30,16 +34,21 @@ def get_markdown_for(
             return
 
         name = path.stem
-        for char in space_chars:
-            name = name.replace(char, " ")
-        name = name.title()
-        if path.suffix and path.suffix != ".cpp":
-            name += f" ({path.suffix[1:]})"
+        if apply_name_transformation:
+            for char in space_chars:
+                name = name.replace(char, " ")
+            name = name.title()
+            if path.suffix and path.suffix != ".cpp":
+                name += f" ({path.suffix[1:]})"
 
+        padding = " " * (expansion == '-') * 2 * (depth - 1)
         if should_be_link(path):
-            yield f"- [{name}]({path.relative_to(base_dir.parent)})"
+            yield f"{padding}- [{name}]({path.relative_to(base_dir.parent)})"
         elif path.is_dir():
-            yield f"\n{'#' * (depth + 2)} {name}\n"
+            if expansion == "#":
+                yield f"\n{'#' * (depth + 2)} {name}\n"
+            else:
+                yield f"{padding}- {name}"
 
             for child in sorted(path.iterdir()):
                 yield from helper(child, depth + 1)
@@ -94,6 +103,7 @@ Explore additional repositories with extensive algorithm implementations:
 
 
 def main(args: argparse.Namespace):
+    args.submissions_to_expansion = set(args.submissions_to_expansion)
     with open(args.readme_path, "w") as f:
         f.write(
             README_TEMPLATE.format(
@@ -102,7 +112,12 @@ def main(args: argparse.Namespace):
                 ),
                 SUBMISSIONS_SECTION="\n".join(
                     # Stop at the first level of directories
-                    get_markdown_for(args.submissions_dir, Path.is_dir)
+                    get_markdown_for(
+                        args.submissions_dir,
+                        lambda path: path.name not in args.submissions_to_expansion,
+                        expansion="-",
+                        apply_name_transformation=False,
+                    )
                 ),
             ).replace("\n\n\n", "\n\n")
         )
@@ -127,6 +142,12 @@ if __name__ == "__main__":
         type=Path,
         default=Path(__file__).parent.parent / "README.md",
         help="Path to the README.md file. (default: %(default)s)",
+    )
+    parser.add_argument(
+        "--submissions-to-expansion",
+        nargs="+",
+        default=["ICPC"],
+        help="Submissions names to expand. (default: %(default)s)",
     )
     args = parser.parse_args()
 
