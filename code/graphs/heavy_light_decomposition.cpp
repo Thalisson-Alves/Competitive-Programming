@@ -1,4 +1,4 @@
-struct HeavyLightDecomposition {
+struct HLD {
   int V;
   int id;
   int nb_heavy_path;
@@ -15,11 +15,11 @@ struct HeavyLightDecomposition {
   std::vector<int> heavy_path_id; // heavy_path_id[i] = heavy_path_id for vertex [i]
 
 
-  HeavyLightDecomposition(const std::vector<std::vector<int>> &e, vector<int> roots = {0}) : HeavyLightDecomposition((int)e.size()) {
+  HLD(const std::vector<std::vector<int>> &e, vector<int> roots = {0}) : HeavyLightDecomposition((int)e.size()) {
     g = e;
     build(roots);
   }
-  HeavyLightDecomposition(int sz = 0)
+  HLD(int sz = 0)
       : V(sz), id(0), nb_heavy_path(0), g(sz), par(sz), depth(sz), subtree_sz(sz), heavy_child(sz),
         tree_id(sz, -1), aligned_id(sz), aligned_id_inv(sz), head(sz), heavy_path_id(sz, -1) {}
 
