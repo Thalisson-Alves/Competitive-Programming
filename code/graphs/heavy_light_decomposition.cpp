@@ -15,7 +15,7 @@ struct HLD {
   std::vector<int> heavy_path_id; // heavy_path_id[i] = heavy_path_id for vertex [i]
 
 
-  HLD(const std::vector<std::vector<int>> &e, vector<int> roots = {0}) : HeavyLightDecomposition((int)e.size()) {
+  HLD(const std::vector<std::vector<int>> &e, vector<int> roots = {0}) : HLD((int)e.size()) {
     g = e;
     build(roots);
   }
