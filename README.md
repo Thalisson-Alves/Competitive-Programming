@@ -137,7 +137,6 @@ Reviewing these submissions can provide insights into different problem-solving 
 - [CodeForces](submissions/CodeForces)
 - [Gym](submissions/Gym)
 - ICPC
-  - [2010-2011 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2010-2011%20ACM-ICPC%20Brazil%20Subregional%20Programming%20Contest)
   - [2013-2014 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2013-2014%20ACM-ICPC%20Brazil%20Subregional%20Programming%20Contest)
   - [2014-2015 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2014-2015%20ACM-ICPC%20Brazil%20Subregional%20Programming%20Contest)
   - [2017-2018 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2017-2018%20ACM-ICPC%20Brazil%20Subregional%20Programming%20Contest)
