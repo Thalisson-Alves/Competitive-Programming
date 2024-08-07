@@ -58,6 +58,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 - [Dfs Tree](code/graphs/dfs_tree.cpp)
 - [Dijkstra](code/graphs/dijkstra.cpp)
 - [Dominator Tree](code/graphs/dominator_tree.cpp)
+- [Edge Cover Min Cost](code/graphs/edge_cover_min_cost.cpp)
 - [Euler Path](code/graphs/euler_path.cpp)
 - [Find Articulations](code/graphs/find_articulations.cpp)
 - [Find Bridges](code/graphs/find_bridges.cpp)
