@@ -24,6 +24,12 @@ struct SegTreeLazy {
       lrs[i] = {lrs[i << 1].first, lrs[i << 1 | 1].second};
     }
   }
+  T get(int p) {
+    assert(0 <= p && p < N);
+    p += size;
+    for (int i = height; i >= 1; i--) push(p >> i);
+    return d[p];
+  }
   void set(int p, T x) {
     assert(0 <= p && p < N);
     p += size;
@@ -31,12 +37,14 @@ struct SegTreeLazy {
     d[p] = x;
     for (int i = 1; i <= height; i++) update(p >> i);
   }
-  T get(int p) {
+  void update(int p, L f) {
     assert(0 <= p && p < N);
     p += size;
     for (int i = height; i >= 1; i--) push(p >> i);
-    return d[p];
+    d[p] = mapping(f, d[p]);
+    for (int i = 1; i <= height; i++) update(p >> i);
   }
+  T query_all() { return d[1]; }
   T query(int l, int r) {
     assert(0 <= l && l <= r && r < N);
     l += size;
@@ -53,14 +61,6 @@ struct SegTreeLazy {
       r >>= 1;
     }
     return op(sml, smr);
-  }
-  T query_all() { return d[1]; }
-  void update(int p, L f) {
-    assert(0 <= p && p < N);
-    p += size;
-    for (int i = height; i >= 1; i--) push(p >> i);
-    d[p] = mapping(f, d[p]);
-    for (int i = 1; i <= height; i++) update(p >> i);
   }
   void update(int l, int r, L f) {
     assert(0 <= l && l <= r && r < N);
@@ -84,6 +84,58 @@ struct SegTreeLazy {
       if ((((r+1) >> i) << i) != (r+1)) update(r >> i);
     }
   }
+  template <typename F> int pos(F f) {
+    int u = 1;
+    if (!f(d[u])) return -1;
+    for (auto sm = eT; u < size;) {
+      push(u);
+      u <<= 1;
+      if (!f(op(sm, d[u])))
+        sm = op(sm, d[u++]);
+    }
+    return u-size;
+  }
+  template <typename F> int find_right(int l, F f) {
+    assert(0 <= l and l <= N);
+    l += size;
+    for (int i = height; i >= 1; i--) push(l >> i);
+    auto sm = eT;
+    do {
+      while (!(l&1)) l >>= 1;
+      if (f(op(sm, d[l]))) {
+        while (l < size) {
+          push(l);
+          l <<= 1;
+          if (f(op(sm, d[l])))
+            sm = op(sm, d[l++]);
+        }
+        return l-size;
+      }
+      sm = op(sm, d[l++]);
+    } while ((l&-l) != l);
+    return -1;
+  };
+  template <typename F> int find_left(int r, F f) {
+    assert(0 <= r and r <= N);
+    r += size;
+    for (int i = height; i >= 1; i--) push(r >> i);
+    auto sm = eT;
+    do {
+      while (r > 1 and (r&1)) r >>= 1;
+      if (f(op(d[r], sm))) {
+        while (r < size) {
+          push(r);
+          r = r<<1|1;
+          if (f(op(d[r], sm)))
+            sm = op(d[r--], sm);
+        }
+        return r-size;
+      }
+      sm = op(d[r--], sm);
+    } while ((r&-r) != r);
+    return -1;
+  };
+
 private:
   void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
   void all_apply(int k, L f) {
