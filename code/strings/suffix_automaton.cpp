@@ -8,10 +8,8 @@ struct SuffixAutomaton {
   vector<char> is_cloned;
   int sz, last;
 
-  vector<ll> paths_dp;
-
   SuffixAutomaton(const string &s) : SuffixAutomaton(s, (int)s.size()<<1) {}
-  SuffixAutomaton(const string &s, int maxlen) : st(maxlen), is_cloned(maxlen), sz(1), last(0), paths_dp(maxlen) {
+  SuffixAutomaton(const string &s, int maxlen) : st(maxlen), is_cloned(maxlen), sz(1), last(0) {
     st[0].len = 0;
     st[0].link = -1;
 
@@ -23,6 +21,7 @@ struct SuffixAutomaton {
     int cur = sz++;
     st[cur].len = st[last].len + 1;
     st[cur].first_pos = st[cur].len - 1;
+    st[cur].cnt = 1;
     int p = last;
     while (p != -1 and !st[p].next.count(c)) {
       st[p].next[c] = cur;
@@ -53,20 +52,12 @@ struct SuffixAutomaton {
     last = cur;
   }
 
-  inline void update_states_cnt()
-  {
-    auto cmp = [&](int a, int b){return st[a].len < st[b].len;};
-    priority_queue<int, vector<int>, decltype(cmp)> pq(cmp);
-    for (int i = 1; i < sz; i++) {
-      st[i].cnt = !is_cloned[i];
-      pq.push(i);
-    }
-
-    for (; !pq.empty(); pq.pop()) {
-      auto cur = pq.top();
-      if (st[cur].link != -1)
-        st[st[cur].link].cnt += st[cur].cnt;
-    }
+  inline void update_states_cnt() {
+    vector<pair<int, int>> order(sz-1);
+    for (int i = 1; i < sz; i++) order[i-1] = {st[i].len, i};
+    sort(rbegin(order), rend(order));
+    for (auto [_, i] : order)
+      st[st[i].link].cnt += st[i].cnt;
   }
 
   optional<state> find(const string &t) const {
@@ -125,15 +116,6 @@ struct SuffixAutomaton {
     return res;
   }
 
-  ll paths(int u) {
-    auto &x = paths_dp[u];
-    if (x) return x;
-    x = 1;
-    for (auto [_, v] : st[u].next)
-      x += paths(v);
-    return x;
-  }
-
   // starts at 0
   string kth_substring(ll k) {
     string res;
@@ -141,14 +123,14 @@ struct SuffixAutomaton {
     return res;
   }
 
-  void kth_substring(ll k, int at, string &res) {
-    for (auto [c, v] : st[at].next) if (k >= 0) {
-      if (paths(v) > k) {
-        res += c;
-        kth_substring(k-1, v, res);
-        return;
-      }
-      k -= paths(v);
+  void kth_substring(ll &k, int u, string &res) {
+    if (k < 0) return;
+    for (auto [c, v] : st[u].next) {
+      res += c;
+      k -= st[v].cnt;
+      kth_substring(k, v, res);
+      if (k < 0) return;
+      res.pop_back();
     }
   }
 };
