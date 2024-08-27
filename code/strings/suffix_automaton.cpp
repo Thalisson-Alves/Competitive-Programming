@@ -8,6 +8,7 @@
  *   - link: suffix link
  *   - cnt: number of occurrences of the substring represented by the path from the root to this state
  *   - first_pos: position of the first occurrence of the substring represented by the path from the root to this state
+ *   - repeated_cnt: number of substrings in the subtree rooted at this state
  *   - distinct_cnt: number of distinct substrings in the subtree rooted at this state
  *   - next: map from characters to the next states
  * - sz: number of states
@@ -36,31 +37,32 @@
  * - update_states_cnt(): update the cnt field of all states
  *   - Time: O(n*log(n))
  *   - Only needed to calculate the number of occurrences of a substring
- * - update_states_distinct_cnt(): update the distinct_cnt field of all states
+ * - update_states_kth_counts(): update the distinct_cnt and repeated_cnt field of all states
  *   - Time: O(n)
- *   - Only needed to calculate the number of distinct substrings
+ *   - Only needed to calculate the kth substring (distinct or not)
  */
 struct SuffixAutomaton {
   struct state {
     int len, link, cnt, first_pos;
-    ll distinct_cnt;
+    ll repeated_cnt, distinct_cnt;
     map<char, int> next;
   };
 
   vector<state> st;
-  int sz, last;
+  int sz, last, n;
 
   SuffixAutomaton(const string &s) : SuffixAutomaton(s, (int)s.size()<<1) {}
-  SuffixAutomaton(const string &s, int maxlen) : st(maxlen), sz(1), last(0) {
+  SuffixAutomaton(const string &s, int maxlen) : st(maxlen), sz(1), last(0), n(0) {
     st[0].len = 0;
     st[0].link = -1;
 
     for (auto c : s) add(c);
     update_states_cnt();
-    update_states_distinct_cnt();
+    update_states_kth_counts();
   }
 
   void add(char c) {
+    ++n;
     int cur = sz++;
     st[cur].len = st[last].len + 1;
     st[cur].first_pos = st[cur].len - 1;
@@ -90,13 +92,6 @@ struct SuffixAutomaton {
       }
     }
     last = cur;
-  }
-
-  void update_states_cnt() {
-    vector<pair<int, int>> order(sz-1);
-    for (int i = 1; i < sz; i++) order[i-1] = {st[i].len, i};
-    sort(rbegin(order), rend(order));
-    for (auto [_, i] : order) st[st[i].link].cnt += st[i].cnt;
   }
 
   optional<state> find(const string &t) const {
@@ -156,30 +151,19 @@ struct SuffixAutomaton {
 
   // starts at 0
   string kth_substring(ll k) {
+    k += n;
     string res;
-    auto dfs = [&](auto &&self, int u) -> void {
-      if (k < 0) return;
+    for (int u = 0; k >= st[u].cnt;) {
+      k -= st[u].cnt;
       for (auto [c, v] : st[u].next) {
-        res += c;
-        k -= st[v].cnt;
-        self(self, v);
-        if (k < 0) return;
-        res.pop_back();
+        if (st[v].repeated_cnt > k) {
+          res += c; u = v;
+          break;
+        }
+        k -= st[v].repeated_cnt;
       }
-    };
-    dfs(dfs, 0);
+    }
     return res;
-  }
-
-  void update_states_distinct_cnt() {
-    auto dfs = [&](auto &&self, int u) -> ll {
-      auto &res = st[u].distinct_cnt;
-      if (res) return res;
-      res = 1;
-      for (auto [_, v] : st[u].next) res += self(self, v);
-      return res;
-    };
-    dfs(dfs, 0);
   }
   string kth_distinct_substring(ll k) {
     string res;
@@ -193,5 +177,25 @@ struct SuffixAutomaton {
       }
     }
     return res;
+  }
+  void update_states_cnt() {
+    vector<pair<int, int>> order(sz-1);
+    for (int i = 1; i < sz; i++) order[i-1] = {st[i].len, i};
+    sort(rbegin(order), rend(order));
+    for (auto [_, i] : order) st[st[i].link].cnt += st[i].cnt;
+  }
+  void update_states_kth_counts() {
+    auto dfs = [&](auto &&self, int u) -> void {
+      auto &dis = st[u].distinct_cnt;
+      auto &rep = st[u].repeated_cnt;
+      dis = 1;
+      rep = st[u].cnt;
+      for (auto [_, v] : st[u].next) {
+        if (!st[v].distinct_cnt) self(self, v);
+        dis += st[v].distinct_cnt;
+        rep += st[v].repeated_cnt;
+      }
+    };
+    dfs(dfs, 0);
   }
 };
