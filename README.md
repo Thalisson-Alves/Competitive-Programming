@@ -106,6 +106,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 ### Primitives
 
 - [Bin Bound](code/primitives/bin_bound.cpp)
+- [Hash Histogram](code/primitives/hash_histogram.cpp)
 - [Matrix](code/primitives/matrix.cpp)
 - [Modint](code/primitives/modint.cpp)
 - [Parallel Binary Search](code/primitives/parallel_binary_search.cpp)
