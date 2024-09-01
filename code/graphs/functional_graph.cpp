@@ -82,6 +82,16 @@ struct FunctionalGraph {
     return dist + cycle_relative_pos(v) + pos[cycle_end(u)] - pos[u] + 1;
   }
 
+  // data[i] = value of vertex i
+  template <class T> vector<T> segtree_rearrange(const vector<T> &data) const {
+    assert(data.size() == size(par));
+    vector<T> ret;
+    ret.reserve(size(par));
+    for (int i = 0; i < (int)size(par); i++)
+      ret.emplace_back(data[pos_inv[i]]);
+    return ret;
+  }
+
   // Query for vertices on path [u, v] (INCLUSIVE)
   // If u and v are not LCA of each other, returns immediately
   bool for_each_vertex(int u, int v, const auto &f) const {
