@@ -35,10 +35,12 @@ The `code` directory is organized into various subdirectories, each focusing on 
 ### Geometry
 
 - [2D](code/geometry/2d.cpp)
+- [Circle](code/geometry/circle.cpp)
 - [Convex Hull](code/geometry/convex_hull.cpp)
 - [Convex Hull Trick](code/geometry/convex_hull_trick.cpp)
 - [Lattice Points](code/geometry/lattice_points.cpp)
 - [Lichao Tree](code/geometry/lichao_tree.cpp)
+- [Line](code/geometry/line.cpp)
 - [Point](code/geometry/point.cpp)
 
 ### Graphs
@@ -142,6 +144,7 @@ Reviewing these submissions can provide insights into different problem-solving 
 - [CodeChef](submissions/CodeChef)
 - [CodeForces](submissions/CodeForces)
 - [Gym](submissions/Gym)
+- [HDU](submissions/HDU)
 - ICPC
   - [2013-2014 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2013-2014%20ACM-ICPC%20Brazil%20Subregional%20Programming%20Contest)
   - [2014-2015 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2014-2015%20ACM-ICPC%20Brazil%20Subregional%20Programming%20Contest)
