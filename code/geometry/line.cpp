@@ -12,8 +12,7 @@ template <typename T = double> struct Line {
   double dist(const Point<T> &p) const { return abs(a*p.x+b*p.y+c)/(sqrt(a*a+b*b)); }
   bool parallel(const Line &l) const { return eq(a * l.b, b * l.a); }
   optional<Point<T>> intersection(const Line &l) const {
-    if (parallel(l))
-      return {};
+    if (parallel(l)) return {};
     auto det = a * l.b - b * l.a;
     return Point<T>((b * l.c - c * l.b) / det, (c * l.a - a * l.c) / det);
   }

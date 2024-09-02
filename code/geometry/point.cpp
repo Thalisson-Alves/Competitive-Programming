@@ -2,6 +2,7 @@ template<typename T=double> struct Point {
   T x, y;
   Point() : x(0), y(0) {}
   Point(T x_, T y_) : x(x_), y(y_) {}
+  template <typename U> operator Point<U>() { return {(U)x, (U)y}; }
   Point operator+(const Point &p) const { return Point(x + p.x, y + p.y); }
   Point operator-(const Point &p) const { return Point(x - p.x, y - p.y); }
   Point operator+(const T &k) const { return Point(x + k, y + k); }
@@ -38,3 +39,16 @@ template<typename T=double> struct Point {
   Point rot90() const { return Point(-y, x); }
   Point to(const Point &p) const { return p - *this; }
 };
+
+// ang(a1,b1) <= ang(a2,b2)
+template <typename T>
+bool angle_less(const Point<T> &a1, const Point<T> &b1, const Point<T> &a2, const Point<T> &b2) {
+  Point<T> p1(a1.dot(b1), abs(a1.cross(b1)));
+  Point<T> p2(a2.dot(b2), abs(a2.cross(b2)));
+  return p1.cross(p2) <= 0;
+}
+
+template <typename T>
+T projection_len(const Point<T> &p, const Point<T> &a, const Point<T> &b) {
+  return (p-a).dot(b-a) / (b-a).norm();
+}
