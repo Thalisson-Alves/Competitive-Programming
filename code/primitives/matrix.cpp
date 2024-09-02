@@ -21,7 +21,7 @@ template <typename T> struct Matrix {
     return res;
   }
 
-  Matrix<T> pow(int power) const {
+  Matrix<T> pow(ll power) const {
     assert(n() == m());
 
     auto res = Matrix<T>::identity(n());
