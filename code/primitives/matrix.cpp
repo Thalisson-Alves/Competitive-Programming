@@ -3,6 +3,7 @@ template <typename T> struct Matrix {
   Matrix() : Matrix(0) {}
   Matrix(int n) : Matrix(n, n) {}
   Matrix(int n, int m) : Matrix(vector<vector<T>>(n, vector<T>(m))) {}
+  Matrix(const vector<T> &v) : d(vector<vector<T>>(1, v)) {}
   Matrix(const vector<vector<T>> &v) : d(v) {}
   constexpr int n() const { return (int)d.size(); }
   constexpr int m() const { return n() ? (int)d[0].size() : 0; }
@@ -108,6 +109,7 @@ template <typename T> struct Matrix {
   }
   Matrix<T> operator-(const Matrix<T> &o) const { return Matrix(*this) -= o; }
   Matrix<T> operator*(const Matrix<T> &o) const { return Matrix(*this) *= o; }
+  friend Matrix<T> operator*(const vector<T> &a, const Matrix<T> &o) { return Matrix(a) *= o; }
   Matrix<T> &operator*=(const Matrix<T> &o) {
     assert(m() == o.n());
     Matrix<T> res(n(), o.m());
