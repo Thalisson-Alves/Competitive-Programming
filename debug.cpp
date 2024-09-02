@@ -2,10 +2,6 @@
 using namespace std;
 /******** Debug Code *******/
 template<typename T>
-concept Printable = requires(T t) {
-    { std::cout << t } -> std::same_as<std::ostream&>;
-};
-template<Printable T>
 void __print(const T &x) { cerr << x; }
 template <typename A, typename B>
 void __print(const pair<A, B> &p);
@@ -33,6 +29,7 @@ void __print(optional<T> x) {
   else __print("NONE");
 }
 template <typename A>
+requires std::ranges::range<A>
 void __print(const A &x) {
     bool first = true;
     cerr << '{';
