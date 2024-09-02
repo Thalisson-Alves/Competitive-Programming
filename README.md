@@ -42,6 +42,8 @@ The `code` directory is organized into various subdirectories, each focusing on 
 - [Lichao Tree](code/geometry/lichao_tree.cpp)
 - [Line](code/geometry/line.cpp)
 - [Point](code/geometry/point.cpp)
+- [Polygon](code/geometry/polygon.cpp)
+- [Segment](code/geometry/segment.cpp)
 
 ### Graphs
 
