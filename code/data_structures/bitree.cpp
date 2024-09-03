@@ -1,25 +1,17 @@
 template<typename T> struct BITree {
-  int N;
   vector<T> v;
-
-  BITree(int n) : N(n), v(n+2, 0) {}
-
+  BITree(int n) : v(n) {}
   void update(int i, T x) {
-    for (++i; i <= N; i += i & -i)
-      v[i] += x;
+    assert(0 <= i and i < (int)size(v));
+    for (++i; i <= (int)size(v); i+=i&-i) v[i-1] += x;
   }
-
-  void update(int l, int r, T x) {
-    update(l, x);
-    update(r+1, -x);
+  T query(int l, int r) {
+    assert(0 <= l and l <= r and r <= (int)size(v));
+    return query(r) - query(l);
   }
-
-  T query(int i, int j) { return query(j) - query(i - 1); }
-
-  T query(int i) {
-    T sum = 0;
-    for (++i; i > 0; i -= i & -i)
-      sum += v[i];
-    return sum;
+  T query(int r) {
+    T res = 0;
+    for (; r; r-=r&-r) res += v[r-1];
+    return res;
   }
 };
