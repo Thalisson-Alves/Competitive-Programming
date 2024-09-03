@@ -16,18 +16,12 @@ void solve()
 {
 }
 
-int32_t main()
-{
-  ios_base::sync_with_stdio(false);
-  cin.tie(nullptr);
-  cout.tie(nullptr);
-
+int32_t main() {
+  cin.tie(0)->sync_with_stdio(0);
   int t = 1;
   // cin >> t; cin.ignore();
   for (auto i = 1; i <= t; i++) {
     solve();
   }
-
-  return 0;
 }
 
