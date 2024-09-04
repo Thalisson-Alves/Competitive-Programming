@@ -4,7 +4,6 @@ template <typename T, typename Op = T(*)(T,T)> struct SegTree {
   vector<T> ns;
   const Op op;
   const T id = T();
-
   SegTree(int n, Op f = Op(), const T identity = T()) : op(f), id(identity) {
     size = 1;
     while (size < n) size <<= 1;
@@ -15,7 +14,6 @@ template <typename T, typename Op = T(*)(T,T)> struct SegTree {
     for (int i = size - 1; i > 0; --i)
       ns[i] = op(ns[2 * i], ns[2 * i + 1]);
   }
-
   T query(int i) const { return ns[i + size]; }
   T query(int l, int r) const {
     auto ml = id, mr = id;
@@ -25,14 +23,12 @@ template <typename T, typename Op = T(*)(T,T)> struct SegTree {
     }
     return op(ml, mr);
   }
-
   void update(int i, T value) { set(i, op(ns[i + size], value)); }
   void set(int i, T value) {
     ns[i += size] = value;
     while (i >>= 1)
       ns[i] = op(ns[2 * i], ns[2 * i + 1]);
   }
-
   template <typename F> int pos(F f) {
     int u = 1;
     if (!f(ns[u])) return -1;
@@ -43,7 +39,6 @@ template <typename T, typename Op = T(*)(T,T)> struct SegTree {
     }
     return u-size;
   }
-
   template <typename F> int find_right(int l, F f) {
     auto sm = id;
     l += size;
@@ -61,7 +56,6 @@ template <typename T, typename Op = T(*)(T,T)> struct SegTree {
     } while ((l&-l) != l);
     return -1;
   }
-
   template <typename F> int find_left(int r, F f) {
     auto sm = id;
     r += size;
