@@ -1,4 +1,4 @@
-template<typename T=double> struct Point {
+template<typename T=long double> struct Point {
   T x, y;
   Point() : x(0), y(0) {}
   Point(T x_, T y_) : x(x_), y(y_) {}
@@ -32,10 +32,10 @@ template<typename T=double> struct Point {
   T cross(const Point &p) const { return x * p.y - y * p.x; }
   T cross(const Point &a, const Point &b) const { return (a - *this).cross(b - *this); }
   T dist2() const { return x * x + y * y; }
-  double dist() const { return hypot(x, y); }
-  double dist(const Point &p) const { return to(p).dist(); }
-  double angle() const { return atan2(y, x); }
-  double norm() const { return sqrt(dot(*this)); }
+  long double dist() const { return hypot(x, y); }
+  long double dist(const Point &p) const { return to(p).dist(); }
+  long double angle() const { return atan2(y, x); }
+  long double norm() const { return sqrt(dot(*this)); }
   Point rot90() const { return Point(-y, x); }
   Point to(const Point &p) const { return p - *this; }
 };
