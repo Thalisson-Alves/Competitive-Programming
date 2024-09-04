@@ -4,11 +4,23 @@ template <typename T> struct Circle {
   Circle(Point<T> c_, T r_) : c(c_), r(r_) {}
   template <typename U> bool contains(const Point<U> &p) { return c.dist(p) <= r; }
   pair<Point<T>, Point<T>> tangent_points(const Point<T> &p) {
-    double d1 = (p - c).norm(), theta = asin(r / d1);
+    long double d1 = (p - c).norm(), theta = asin(r / d1);
     assert(d1 >= r);
     auto p1 = (c-p).rotated(theta) * sqrt(d1*d1 - r*r) / d1 + p;
     auto p2 = (c-p).rotated(-theta) * sqrt(d1*d1 - r*r) / d1 + p;
     return {p1, p2};
+  }
+  long double area() const { return acos(-1)*r*r; }
+  long double area_intersection(const Circle &o) const {
+    auto d = c.dist(o.c);
+    if (d > r + o.r) return 0;
+    if (d <= (r-o.r) and r >= o.r) return o.area();
+    if (d <= (o.r-r) and o.r >= r) return area();
+    auto alpha = acos((r*r+d*d-o.r*o.r) / (2*r*d)) * 2;
+    auto beta = acos((o.r*o.r+d*d-r*r) / (2*o.r*d)) * 2;
+    auto a1 = .5*beta*o.r*o.r-.5*o.r*o.r*sin(beta);
+    auto a2 = .5*alpha*r*r-.5*r*r*sin(alpha);
+    return a1+a2;
   }
   friend ostream& operator<<(ostream &os, const Circle &cr) { return os << cr.c << ' ' << cr.r; }
   friend istream& operator>>(istream &is, Circle &cr) { return is >> cr.c >> cr.r; }
@@ -23,9 +35,9 @@ template <typename T> Circle<T> circumcircle(const Point<T> &a, const Point<T> &
   return {center, center.dist(a)};
 }
 
-template <typename T> Circle<double> minimum_enclosing_circle(vector<Point<T>> &p) {
+template <typename T> Circle<long double> minimum_enclosing_circle(vector<Point<T>> &p) {
   random_shuffle(begin(p), end(p));
-  Circle<double> res(p[0], 0);
+  Circle<long double> res(p[0], 0);
   for (int i = 0; i < (int)size(p); i++) {
     if (res.contains(p[i])) continue;
     res = {p[i], 0};
