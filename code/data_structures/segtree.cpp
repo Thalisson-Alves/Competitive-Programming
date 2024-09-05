@@ -9,7 +9,7 @@ template <typename T, typename Op = T(*)(T,T)> struct SegTree {
     while (size < n) size <<= 1;
     ns.resize(size << 1, id);
   }
-  SegTree(const vector<T> &v, Op f = Op()) : SegTree((int)v.size(), f) {
+  SegTree(const vector<T> &v, Op f = Op(), const T identity = T()) : SegTree((int)v.size(), f, identity) {
     copy(v.begin(), v.end(), ns.begin() + size);
     for (int i = size - 1; i > 0; --i)
       ns[i] = op(ns[2 * i], ns[2 * i + 1]);
