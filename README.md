@@ -101,6 +101,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 - [Inv Gcd](code/math/inv_gcd.cpp)
 - [Is Prime](code/math/is_prime.cpp)
 - [Max Prime Dp](code/math/max_prime_dp.cpp)
+- [Mobius](code/math/mobius.cpp)
 - [Ntt](code/math/ntt.cpp)
 - [Phi](code/math/phi.cpp)
 - [Phi Dp](code/math/phi_dp.cpp)
