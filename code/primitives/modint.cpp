@@ -10,50 +10,51 @@ private:
     return *this;
   }
 public:
-  constexpr modint() noexcept : v(0) {}
-  template <typename T> constexpr modint(const T x) noexcept : v(safe_mod(x)) {}
-  constexpr u64 &value() noexcept { return v; }
-  constexpr const u64 &value() const noexcept { return v; }
-  template <typename T> static constexpr u64 safe_mod(T x) noexcept {
+  modint() noexcept : v(0) {}
+  template <u64 Mod2> modint(const modint<Mod2> &x) : v(x.value()) {}
+  template <typename T> modint(const T x) noexcept : v(safe_mod(x)) {}
+  u64 &value() noexcept { return v; }
+  const u64 &value() const noexcept { return v; }
+  template <typename T> static u64 safe_mod(T x) noexcept {
     if constexpr (is_signed_v<T>) {
       return (x % (ll)mod + mod) % mod;
     } else {
       return x % mod;
     }
   }
-  constexpr bool operator==(const modint rhs) const noexcept { return v == rhs.v; }
-  constexpr bool operator!=(const modint rhs) const noexcept { return v != rhs.v; }
-  constexpr bool operator<(const modint rhs) const noexcept { return v < rhs.v; }
-  constexpr bool operator<=(const modint rhs) const noexcept { return v <= rhs.v; }
-  constexpr bool operator>(const modint rhs) const noexcept { return v > rhs.v; }
-  constexpr bool operator>=(const modint rhs) const noexcept { return v >= rhs.v; }
-  template <typename T> constexpr explicit operator T() const noexcept { return (T)v; }
-  constexpr modint operator++(int) noexcept { modint res = *this; *this += 1; return res; }
-  constexpr modint operator--(int) noexcept { modint res = *this; *this -= 1; return res; }
-  constexpr modint &operator++() noexcept { return *this += 1; }
-  constexpr modint &operator--() noexcept { return *this -= 1; }
-  constexpr modint operator+() const noexcept { return modint(*this); }
-  constexpr modint operator-() const noexcept { return modint(*this).negate(); }
-  friend constexpr modint operator+(const modint lhs, const modint rhs) noexcept { return modint(lhs) += rhs; }
-  friend constexpr modint operator-(const modint lhs, const modint rhs) noexcept { return modint(lhs) -= rhs; }
-  friend constexpr modint operator*(const modint lhs, const modint rhs) noexcept { return modint(lhs) *= rhs; }
-  friend constexpr modint operator/(const modint lhs, const modint rhs) noexcept { return modint(lhs) /= rhs; }
-  constexpr modint &operator+=(const modint rhs) noexcept {
+  bool operator==(const modint rhs) const noexcept { return v == rhs.v; }
+  bool operator!=(const modint rhs) const noexcept { return v != rhs.v; }
+  bool operator<(const modint rhs) const noexcept { return v < rhs.v; }
+  bool operator<=(const modint rhs) const noexcept { return v <= rhs.v; }
+  bool operator>(const modint rhs) const noexcept { return v > rhs.v; }
+  bool operator>=(const modint rhs) const noexcept { return v >= rhs.v; }
+  template <typename T> explicit operator T() const noexcept { return (T)v; }
+  modint operator++(int) noexcept { modint res = *this; *this += 1; return res; }
+  modint operator--(int) noexcept { modint res = *this; *this -= 1; return res; }
+  modint &operator++() noexcept { return *this += 1; }
+  modint &operator--() noexcept { return *this -= 1; }
+  modint operator+() const noexcept { return modint(*this); }
+  modint operator-() const noexcept { return modint(*this).negate(); }
+  friend modint operator+(const modint lhs, const modint rhs) noexcept { return modint(lhs) += rhs; }
+  friend modint operator-(const modint lhs, const modint rhs) noexcept { return modint(lhs) -= rhs; }
+  friend modint operator*(const modint lhs, const modint rhs) noexcept { return modint(lhs) *= rhs; }
+  friend modint operator/(const modint lhs, const modint rhs) noexcept { return modint(lhs) /= rhs; }
+  modint &operator+=(const modint rhs) noexcept {
     v += rhs.v;
     if (v >= mod) v -= mod;
     return *this;
   }
-  constexpr modint &operator-=(const modint rhs) noexcept {
+  modint &operator-=(const modint rhs) noexcept {
     if (v < rhs.v) v += mod;
     v -= rhs.v;
     return *this;
   }
-  constexpr modint &operator*=(const modint rhs) noexcept {
+  modint &operator*=(const modint rhs) noexcept {
     v = v * rhs.v % mod;
     return *this;
   }
-  constexpr modint &operator/=(modint rhs) noexcept { return *this *= rhs.inv(); }
-  constexpr modint pow(u64 x) const {
+  modint &operator/=(modint rhs) noexcept { return *this *= rhs.inv(); }
+  modint pow(u64 x) const {
     static_assert(mod < static_cast<u64>(1) << 32, "Modulus must be less than 2**32");
     modint res = 1, a = *this;
     while (x) {
@@ -63,7 +64,27 @@ public:
     }
     return res;
   }
-  constexpr inline modint inv() const { return pow(mod - 2); }
+  modint sqrt() const {
+    modint b = 1;
+    while (b.pow((mod - 1) >> 1) == 1) b += 1;
+    u64 m = mod-1, e = 0;
+    while (~m&1) m >>= 1, e++;
+    auto x = pow((m-1)>>1);
+    auto y = *this * x * x;
+    x *= *this;
+    auto z = b.pow(m);
+    while (y != 1) {
+      u64 j = 0;
+      for (modint t = y; t != 1; t *= t, ++j);
+      z.pow(1ll << (e - j - 1));
+      x *= z;
+      z *= z;
+      y *= z;
+      e = j;
+    }
+    return x;
+  }
+  inline modint inv() const { return pow(mod - 2); }
   friend ostream& operator<<(ostream& s, const modint &x) {
     s << x.value();
     return s;
@@ -75,6 +96,3 @@ public:
     return s;
   }
 };
-template <uint_fast64_t Modulus>
-constexpr typename modint<Modulus>::u64 modint<Modulus>::mod;
-using mint = modint<1000000007>;
