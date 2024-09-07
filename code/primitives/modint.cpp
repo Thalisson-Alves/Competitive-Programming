@@ -52,7 +52,7 @@ public:
     v = v * rhs.v % mod;
     return *this;
   }
-  constexpr modint &operator/=(modint rhs) noexcept { return *this * rhs.inv(); }
+  constexpr modint &operator/=(modint rhs) noexcept { return *this *= rhs.inv(); }
   constexpr modint pow(u64 x) const {
     static_assert(mod < static_cast<u64>(1) << 32, "Modulus must be less than 2**32");
     modint res = 1, a = *this;
