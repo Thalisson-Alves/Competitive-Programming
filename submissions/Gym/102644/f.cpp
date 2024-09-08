@@ -20,7 +20,6 @@ void solve() {
   }
   auto op = [&](auto &a, const auto &b) {
     vector<vector<ll>> d(n, vector<ll>(n, LLONG_MAX));
-    vector<vector<bool>> nc(n, vector<bool>(n));
     for (int l = 0; l < n; l++) {
       for (int i = 0; i < n; i++) {
         for (int j = 0; j < n; j++) {
@@ -34,7 +33,6 @@ void solve() {
   };
   auto pow = [&](auto b, ll power) {
     vector<vector<ll>> res(n, vector<ll>(n));
-    vector<vector<bool>> cr(n, vector<bool>(n, 1));
     while (power) {
       if (power & 1) op(res, b);
       op(b, b);
