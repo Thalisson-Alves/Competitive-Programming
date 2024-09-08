@@ -4,6 +4,7 @@ template <typename T=mint> T factorial(int n) {
   return fact[n];
 }
 template <typename T=mint> T comb(int n, int k) {
+  if (n < k) return 0;
   return factorial<T>(n) / (factorial<T>(n-k) * factorial<T>(k));
 }
 // same as comb(2*n, n) / (n + 1)
