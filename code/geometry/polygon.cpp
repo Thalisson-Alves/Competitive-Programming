@@ -49,17 +49,18 @@ template<typename T> int inside_simple(const Polygon<T> &poly, const Point<T> &p
   }
   return (w ? 1 : -1);
 }
-template<typename T> double sarea(const Polygon<T> &poly) {
+template<typename T> T sarea2(const Polygon<T> &poly) {
   int n = (int)size(poly);
-  double total = 0;
+  T total = 0;
   for (int i = 0; i < n; i++) {
     total += poly[i].x * poly[(i+1)%n].y;
     total -= poly[i].y * poly[(i+1)%n].x;
   }
-  return total/2;
+  return total;
 }
+template<typename T> double sarea(const Polygon<T> &poly) { return sarea2(poly) / 2.0; }
 template <typename T> double area(const Polygon<T> &poly) { return abs(sarea(poly)); }
-template <typename T> bool is_clockwise(const Polygon<T> &poly) { return sarea(poly) < 0; }
+template <typename T> bool is_clockwise(const Polygon<T> &poly) { return sarea2(poly) < 0; }
 /* Length of the common part of a polygon (poly) and a line (a-b)
  *
  * Time complexity: O(n)
