@@ -88,7 +88,8 @@ The `code` directory is organized into various subdirectories, each focusing on 
 
 ### Math
 
-- [Combination](code/math/combination.cpp)
+- [Combination Dp](code/math/combination_dp.cpp)
+- [Combination Fact](code/math/combination_fact.cpp)
 - [Count Divisors](code/math/count_divisors.cpp)
 - [Crt](code/math/crt.cpp)
 - [Divisors](code/math/divisors.cpp)
