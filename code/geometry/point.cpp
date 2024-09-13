@@ -1,3 +1,8 @@
+constexpr double EPS = 1e-9;
+template <typename T> bool eq(const T a, const T b) {
+  if constexpr (is_floating_point_v<T>) return fabs(a - b) <= EPS;
+  else return a == b;
+}
 template<typename T=long double> struct Point {
   T x, y;
   Point() : x(0), y(0) {}
@@ -32,14 +37,23 @@ template<typename T=long double> struct Point {
   T cross(const Point &p) const { return x * p.y - y * p.x; }
   T cross(const Point &a, const Point &b) const { return (a - *this).cross(b - *this); }
   T dist2() const { return x * x + y * y; }
+  T dist2(const Point &p) const { return to(p).dist2(); }
   long double dist() const { return hypot(x, y); }
   long double dist(const Point &p) const { return to(p).dist(); }
   long double angle() const { return atan2(y, x); }
+  long double angle(const Point &p) const { return atan2(cross(p), dot(p)); }
   long double norm() const { return sqrt(dot(*this)); }
   Point rot90() const { return Point(-y, x); }
   Point to(const Point &p) const { return p - *this; }
 };
 
+template <typename T> bool polar_less(const Point<T> &a, const Point<T> &b) {
+  constexpr auto top = [](const Point<T> &p) { return p.y < 0 or (!p.y and p.x < 0); };
+  auto ta = top(a);
+  auto tb = top(b);
+  if (ta != tb) return ta;
+  return a.cross(b) > 0;
+}
 // ang(a1,b1) <= ang(a2,b2)
 template <typename T>
 bool angle_less(const Point<T> &a1, const Point<T> &b1, const Point<T> &a2, const Point<T> &b2) {
