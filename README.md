@@ -36,11 +36,13 @@ The `code` directory is organized into various subdirectories, each focusing on 
 
 - [2D](code/geometry/2d.cpp)
 - [Circle](code/geometry/circle.cpp)
+- [Closest Pair Of Points](code/geometry/closest_pair_of_points.cpp)
 - [Convex Hull](code/geometry/convex_hull.cpp)
 - [Convex Hull Trick](code/geometry/convex_hull_trick.cpp)
 - [Lattice Points](code/geometry/lattice_points.cpp)
 - [Lichao Tree](code/geometry/lichao_tree.cpp)
 - [Line](code/geometry/line.cpp)
+- [Orientation](code/geometry/orientation.cpp)
 - [Point](code/geometry/point.cpp)
 - [Polygon](code/geometry/polygon.cpp)
 - [Segment](code/geometry/segment.cpp)
