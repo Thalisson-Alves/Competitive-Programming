@@ -11,7 +11,7 @@ template <typename T> struct Circle {
     return {p1, p2};
   }
   long double area() const { return acos(-1)*r*r; }
-  long double area_intersection(const Circle &o) const {
+  long double intersection_area(const Circle &o) const {
     auto d = c.dist(o.c);
     if (d > r + o.r) return 0;
     if (d <= (r-o.r) and r >= o.r) return o.area();
@@ -21,6 +21,26 @@ template <typename T> struct Circle {
     auto a1 = .5*beta*o.r*o.r-.5*o.r*o.r*sin(beta);
     auto a2 = .5*alpha*r*r-.5*r*r*sin(alpha);
     return a1+a2;
+  }
+  long double intersection_area(const Polygon<T> &ps) const {
+    auto arg = [&](const Point<T> &p, const Point<T> &q) {
+      return atan2(p.cross(q), p.dot(q));
+    };
+    auto tri = [&](const Point<T> &p, const Point<T> &q) {
+      auto r2 = r*r/2;
+      auto d = q - p;
+      auto a = d.dot(p)/d.dist2(), b = (p.dist2()-r*r)/d.dist2();
+      auto det = a*a-b;
+      if (det <= 0) return arg(p, q) * r2;
+      auto s = max(.0, -a-sqrt(det)), t = min(1., -a+sqrt(det));
+      if (t < 0 or 1 <= s) return arg(p, q) * r2;
+      auto u = p + d * s, v = p + d * t;
+      return arg(p, u) * r2 + u.cross(v) / 2 + arg(v, q) * r2;
+    };
+    double res = 0;
+    for (int i = 0; i < (int)size(ps); i++)
+      res += tri(ps[i] - c, ps[(i + 1) % size(ps)] - c);
+    return res;
   }
   friend ostream& operator<<(ostream &os, const Circle &cr) { return os << cr.c << ' ' << cr.r; }
   friend istream& operator>>(istream &is, Circle &cr) { return is >> cr.c >> cr.r; }
