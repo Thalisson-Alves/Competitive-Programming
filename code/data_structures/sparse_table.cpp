@@ -1,5 +1,4 @@
-#define F(expr) [](auto a, auto b) { return expr; }
-template <typename T, typename Op> struct SparseTable {
+template <typename T, typename Op = T(*)(T,T)> struct SparseTable {
   vector<vector<T>> st;
   Op f;
   const T id;
@@ -15,13 +14,13 @@ template <typename T, typename Op> struct SparseTable {
         st[i][j] = f(st[i-1][j], st[i-1][j+(1 << (i-1))]);
   }
   T query(int l, int r) const {
-    assert(l <= r);
+    if (l > r) return id;
     auto lg = 31-__builtin_clz(r-l+1);
     return f(st[lg][l], st[lg][r-(1<<lg)+1]);
   }
   // Non RMQ query
   T query_complete(int l, int r) const {
-    assert(l <= r);
+    if (l > r) return id;
     T acc = id;
     for (int i = 31-__builtin_clz(size(st[0])); ~i; --i)
       if ((1 << i) <= r - l + 1) {
