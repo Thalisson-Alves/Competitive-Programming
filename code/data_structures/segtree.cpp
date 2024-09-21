@@ -1,4 +1,3 @@
-#define F(expr) [](auto a, auto b) { return expr; }
 template <typename T, typename Op = T(*)(T,T)> struct SegTree {
   int size;
   vector<T> ns;
@@ -70,7 +69,7 @@ template <typename T, typename Op = T(*)(T,T)> struct SegTree {
         return r-size;
       }
       sm = op(ns[r--], sm);
-    } while ((r&-r) != r);
+    } while (r&(r+1));
     return -1;
   }
 };
