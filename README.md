@@ -21,6 +21,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 - [Segtree Lazy](code/data_structures/segtree_lazy.cpp)
 - [Sparse Segtree](code/data_structures/sparse_segtree.cpp)
 - [Sparse Table](code/data_structures/sparse_table.cpp)
+- [Treap](code/data_structures/treap.cpp)
 - [Ufds](code/data_structures/ufds.cpp)
 - [Wavelet Tree](code/data_structures/wavelet_tree.cpp)
 - [Xor Trie](code/data_structures/xor_trie.cpp)
@@ -123,6 +124,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 
 ### Problems
 
+- [Area Of Union Of Rectangles](code/problems/area_of_union_of_rectangles.cpp)
 - [Inversion Count](code/problems/inversion_count.cpp)
 - [Mo S Algorithm](code/problems/mo_s_algorithm.cpp)
 - [Number Of Elements Greater Than K](code/problems/number_of_elements_greater_than_k.cpp)
@@ -170,6 +172,7 @@ Reviewing these submissions can provide insights into different problem-solving 
 - [QOJ](submissions/QOJ)
 - [SPOJ](submissions/SPOJ)
 - [UVA](submissions/UVA)
+- [Yosupo](submissions/Yosupo)
 
 ## Contributing
 
