@@ -123,9 +123,10 @@ struct ImplicitTreap {
     return res;
   }
   void push_back(T key) { root = merge(root, new Node(key)); }
-  void remove_at(int pos) {
-    auto p1 = split_at(root, pos);
-    auto p2 = split_at(p1.second, 1);
+  void remove_at(int pos) { remove_range(pos, pos); }
+  void remove_range(int l, int r) {
+    auto p1 = split_at(root, l);
+    auto p2 = split_at(p1.second, r-l+1);
     delete p2.first;
     root = merge(p1.first, p2.second);
   }
