@@ -1,40 +1,43 @@
 mt19937 rng((long) chrono::steady_clock::now().time_since_epoch().count());
-template <typename T> struct Treap {
+template <typename T, auto op, typename L, auto mapping, auto composition>
+struct TreapLazy {
   struct Node {
-    T key, sum, lazy;
+    T key, acc;
+    L lazy;
     int priority, size;
     bool rev;
     Node *l, *r;
-    Node(T value, int prior) : key(value), sum(value), lazy(0), priority(prior), size(1), rev(false), l(), r() {}
+    Node(T value, int prior) : key(value), acc(value), lazy(L()), priority(prior), size(1), rev(false), l(), r() {}
     Node(T value) : Node(value, (int)rng()) {}
     ~Node() { delete l; delete r; }
     void prop() {
       if (lazy) {
-        key += lazy, sum += lazy*size;
-        if (l) l->lazy += lazy;
-        if (r) r->lazy += lazy;
+        key = mapping(lazy, key, 1);
+        acc = mapping(lazy, acc, size);
+        if (l) l->lazy = composition(lazy, l->lazy);
+        if (r) r->lazy = composition(lazy, r->lazy);
       }
       if (rev) {
         swap(l, r);
         if (l) l->rev ^= 1;
         if (r) r->rev ^= 1;
       }
-      lazy = rev = 0;
+      lazy = L(); rev = 0;
     }
     void update() {
-      size = 1, sum = key;
-      if (l) l->prop(), size += l->size, sum += l->sum;
-      if (r) r->prop(), size += r->size, sum += r->sum;
+      size = 1, acc = key;
+      if (l) l->prop(), size += l->size, acc = op(l->acc, acc);
+      if (r) r->prop(), size += r->size, acc = op(acc, r->acc);
     }
   };
   using ptr = Node*;
   ptr root;
-  Treap() : root() {}
-  Treap(const Treap &o) = delete;
-  ~Treap() { delete root; }
+  TreapLazy() : root() {}
+  TreapLazy(const TreapLazy &o) = delete;
+  ~TreapLazy() { delete root; }
   int size(ptr t) const { return (t ? t->size : 0); }
   int size() const { return size(root); }
-  T query(ptr t) const { return (t ? t->sum : 0); }
+  T query(ptr t) const { return (t ? t->acc : T()); }
   T query() const { return query(root); }
   ptr merge(ptr l, ptr r) {
     if (!l or !r) return l ? l : r;
@@ -84,10 +87,10 @@ template <typename T> struct Treap {
     p2.first->update();
     root = merge(merge(p1.first, p2.first), p2.second);
   }
-  void update(int l, int r, T s) {
+  void update(int l, int r, L s) {
     auto p1 = split_at(root, l);
     auto p2 = split_at(p1.second, r-l+1);
-    if (p2.first) p2.first->lazy += s;
+    if (p2.first) p2.first->lazy = composition(s, p2.first->lazy);
     root = merge(merge(p1.first, p2.first), p2.second);
   }
   T query_pref(int r) {
@@ -149,3 +152,22 @@ template <typename T> struct Treap {
     dfs(dfs, root);
   }
 };
+struct Node {
+  ll v = 0;
+};
+Node op(Node a, Node b) {
+  return {a.v + b.v};
+}
+struct Lazy {
+  ll v = 0;
+  operator bool() const { // has lazy?
+    return v != 0;
+  }
+};
+Node mapping(Lazy f, Node x, int size) {
+  return {x.v + f.v * size};
+}
+Lazy composition(Lazy f, Lazy g) {
+  return {f.v + g.v};
+}
+using Treap = TreapLazy<Node, op, Lazy, mapping, composition>;
