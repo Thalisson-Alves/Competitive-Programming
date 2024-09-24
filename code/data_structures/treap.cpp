@@ -1,6 +1,6 @@
 mt19937 rng((long) chrono::steady_clock::now().time_since_epoch().count());
 template <typename T, auto op, typename L, auto mapping, auto composition>
-struct TreapLazy {
+struct ImplicitTreap {
   struct Node {
     T key, acc;
     L lazy;
@@ -32,9 +32,9 @@ struct TreapLazy {
   };
   using ptr = Node*;
   ptr root;
-  TreapLazy() : root() {}
-  TreapLazy(const TreapLazy &o) = delete;
-  ~TreapLazy() { delete root; }
+  ImplicitTreap() : root() {}
+  ImplicitTreap(const ImplicitTreap &o) = delete;
+  ~ImplicitTreap() { delete root; }
   int size(ptr t) const { return (t ? t->size : 0); }
   int size() const { return size(root); }
   T query(ptr t) const { return (t ? t->acc : T()); }
@@ -135,6 +135,15 @@ struct TreapLazy {
     delete p2.first;
     root = merge(p1.first, p2.second);
   }
+  void swap_non_overlapping(int l1, int r1, int l2, int r2) {
+    if (l1 > l2) swap(l1, l2), swap(r1, r2);
+    assert(l1 < l2 and r1 < l2);
+    auto p1 = split_at(root, l1);
+    auto p2 = split_at(p1.second, r1-l1+1);
+    auto p3 = split_at(p2.second, l2-r1-1);
+    auto p4 = split_at(p3.second, r2-l2+1);
+    root = merge(merge(merge(merge(p1.first, p4.first), p3.first), p2.first), p4.second);
+  }
   void reverse(int l, int r) {
     auto p1 = split_at(root, l);
     auto p2 = split_at(p1.second, r-l+1);
@@ -146,7 +155,7 @@ struct TreapLazy {
       if (!u) return;
       u->prop();
       self(self, u->l);
-      f(u);
+      f(u->key);
       self(self, u->r);
     };
     dfs(dfs, root);
@@ -155,7 +164,7 @@ struct TreapLazy {
 struct Node {
   ll v = 0;
 };
-Node op(Node a, Node b) {
+Node op(Node a, [[maybe_unused]] Node b) {
   return {a.v + b.v};
 }
 struct Lazy {
@@ -164,10 +173,10 @@ struct Lazy {
     return v != 0;
   }
 };
-Node mapping(Lazy f, Node x, int size) {
+Node mapping([[maybe_unused]] Lazy f, Node x, [[maybe_unused]] int size) {
   return {x.v + f.v * size};
 }
-Lazy composition(Lazy f, Lazy g) {
+Lazy composition(Lazy f, [[maybe_unused]] Lazy g) {
   return {f.v + g.v};
 }
-using Treap = TreapLazy<Node, op, Lazy, mapping, composition>;
+using Treap = ImplicitTreap<Node, op, Lazy, mapping, composition>;
