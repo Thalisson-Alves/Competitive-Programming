@@ -6,8 +6,10 @@ struct ImplicitTreap {
     L lazy;
     int priority, size;
     bool rev;
+    // to add parent node just set it to null
+    // before merge/split and set it back after
     Node *l, *r;
-    Node(T value, int prior) : key(value), acc(value), lazy(L()), priority(prior), size(1), rev(false), l(), r() {}
+    Node(T value, int prior) : key(value), acc(value), lazy(L()), priority(prior), size(1), rev(false), l(nullptr), r(nullptr) {}
     Node(T value) : Node(value, (int)rng()) {}
     ~Node() { delete l; delete r; }
     void prop() {
@@ -35,17 +37,17 @@ struct ImplicitTreap {
   ImplicitTreap() : root() {}
   ImplicitTreap(const ImplicitTreap &o) = delete;
   ~ImplicitTreap() { delete root; }
-  int size(ptr t) const { return (t ? t->size : 0); }
+  static int size(ptr t) { return (t ? t->size : 0); }
   int size() const { return size(root); }
-  T query(ptr t) const { return (t ? t->acc : T()); }
+  static T query(ptr t) { return (t ? t->acc : T()); }
   T query() const { return query(root); }
-  ptr merge(ptr l, ptr r) {
+  static ptr merge(ptr l, ptr r) {
     if (!l or !r) return l ? l : r;
     l->prop(), r->prop();
-    if (l->priority > r -> priority) return l->r = merge(l->r, r), l->update(), l;
+    if (l->priority > r->priority) return l->r = merge(l->r, r), l->update(), l;
     else return r->l = merge(l, r->l), r->update(), r;
   }
-  pair<ptr, ptr> split_at(ptr t, int pos) {
+  static pair<ptr, ptr> split_at(ptr t, int pos) {
     if (!t) return {};
     t->prop();
     pair<ptr, ptr> res;
@@ -54,7 +56,7 @@ struct ImplicitTreap {
     t->update();
     return res;
   }
-  pair<ptr, ptr> split_less(ptr t, T key) {
+  static pair<ptr, ptr> split_less(ptr t, T key) {
     if (!t) return {};
     t->prop();
     pair<ptr, ptr> res;
