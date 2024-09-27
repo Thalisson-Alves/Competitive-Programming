@@ -18,15 +18,4 @@ template <typename T, typename Op = T(*)(T,T)> struct SparseTable {
     auto lg = 31-__builtin_clz(r-l+1);
     return f(st[lg][l], st[lg][r-(1<<lg)+1]);
   }
-  // Non RMQ query
-  T query_complete(int l, int r) const {
-    if (l > r) return id;
-    T acc = id;
-    for (int i = 31-__builtin_clz(size(st[0])); ~i; --i)
-      if ((1 << i) <= r - l + 1) {
-        acc = f(acc, st[i][l]);
-        l += 1 << i;
-      }
-    return acc;
-  }
 };
