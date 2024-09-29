@@ -1,38 +1,40 @@
+/* 2-SAT
+ *
+ * Given a boolean formula in 2-CNF, determine if it is satisfiable.
+ * A 2-CNF formula is a conjunction of disjunctions of two literals.
+ *
+ * To negate a variable, use ~x.
+ *
+ * Time complexity: O(V+E)
+ */
 struct Sat2 {
-  vector<vector<int>> g, gr;
-
-  Sat2(int variables) : g(variables << 1), gr(variables << 1) {}
-
-  void add_implication(int x, bool sign_x, int y, bool sign_y) {
-    g[var(x, sign_x)].push_back(var(y, sign_y));
-    gr[var(y, sign_y)].push_back(var(x, sign_x));
+  vector<vector<int>> g;
+  Sat2(int variables) : g(variables << 1) {}
+  void add_implication(int x, int y) {
+    x = max(~x<<1^1, x<<1);
+    y = max(~y<<1^1, y<<1);
+    g[x].push_back(y);
   }
-  void add_xor(int x, bool sign_x, int y, bool sign_y) {
-    add_or(x, sign_x, y, sign_y);
-    add_or(x, not sign_x, y, not sign_y);
+  void add_xor(int x, int y) {
+    add_or(x, y);
+    add_or(~x, ~y);
   }
-  void add_and(int x, bool sign_x, int y, bool sign_y) {
-    add_or(x, sign_x, x, sign_x);
-    add_or(y, sign_y, y, sign_y);
+  void add_and(int x, int y) {
+    add_or(x, x);
+    add_or(y, y);
   }
-  void add_or(int x, bool sign_x, int y, bool sign_y) {
-    add_implication(x, not sign_x, y, sign_y);
-    add_implication(y, not sign_y, x, sign_x);
+  void add_or(int x, int y) {
+    add_implication(~x, y);
+    add_implication(~y, x);
   }
-
-  inline int var(int x, bool sign) const { return (x << 1) + sign; }
-  inline int var_neg(int v) const { return v ^ 1; }
-  inline bool var_sign(int v) const { return v & 1; }
-
   vector<bool> solve() {
     auto components = scc_components(g);
     vector<bool> ans(g.size() >> 1);
-    for (int i = 0; i < (int)g.size(); i++) {
-      int j = var_neg(i);
+    for (int i = 0; i < (int)g.size(); i+=2) {
       auto ac = components[i];
-      auto bc = components[j];
+      auto bc = components[i^1];
       if (ac == bc) return {};
-      ans[i >> 1] = var_sign(ac > bc ? j : i);
+      ans[i>>1] = ac < bc;
     }
     return ans;
   }
@@ -58,7 +60,6 @@ private:
     };
     for (int i = 0; i < (int)g.size(); i++)
       if (!tin[i]) dfs(dfs, i);
-
     return comps;
   };
 };
