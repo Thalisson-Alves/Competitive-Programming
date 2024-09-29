@@ -88,6 +88,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 - [Topological Order](code/graphs/topological_order.cpp)
 - [Tree Diameter](code/graphs/tree_diameter.cpp)
 - [Tree Flatten](code/graphs/tree_flatten.cpp)
+- [Virtual Tree](code/graphs/virtual_tree.cpp)
 
 ### Math
 
@@ -157,6 +158,7 @@ Reviewing these submissions can provide insights into different problem-solving 
   - [2013-2014 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2013-2014%20ACM-ICPC%20Brazil%20Subregional%20Programming%20Contest)
   - [2014-2015 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2014-2015%20ACM-ICPC%20Brazil%20Subregional%20Programming%20Contest)
   - [2017-2018 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2017-2018%20ACM-ICPC%20Brazil%20Subregional%20Programming%20Contest)
+  - [2017-2018 ACM-ICPC Latin American Regional Programming Contest](submissions/ICPC/2017-2018%20ACM-ICPC%20Latin%20American%20Regional%20Programming%20Contest)
   - [2018-2019 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2018-2019%20ACM-ICPC%20Brazil%20Subregional%20Programming%20Contest)
   - [2019-2020 ACM-ICPC Brazil Regional Programming Contest](submissions/ICPC/2019-2020%20ACM-ICPC%20Brazil%20Regional%20Programming%20Contest)
   - [2019-2020 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2019-2020%20ACM-ICPC%20Brazil%20Subregional%20Programming%20Contest)
