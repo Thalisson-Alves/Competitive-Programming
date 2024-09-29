@@ -15,13 +15,11 @@ template <bool invert=false> void fft(vector<complex<double>> &a, const vector<i
       }
     }
   }
-
   if constexpr (invert) {
     for (auto &x : a)
       x /= n;
   }
 }
-
 template <typename T> vector<complex<double>> convolution(const vector<T> &a, const vector<T> &b) {
   vector<complex<double>> fa(a.begin(), a.end()), fb(b.begin(), b.end());
   const int N = (int)(a.size() + b.size() - 1);
