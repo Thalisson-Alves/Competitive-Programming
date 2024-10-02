@@ -7,7 +7,6 @@ struct SegTreeLazy {
   vector<T> d;
   vector<L> lz;
   vector<pair<int, int>> lrs;
-
   SegTreeLazy(int n=0, const T &eT_ = T(), const L &eL_ = L()) : SegTreeLazy(vector<T>(n, eT_), eT_, eL_) {}
   SegTreeLazy(const vector<T>& v, const T &eT_ = T(), const L &eL_ = L()) : N(int(v.size())), eT(eT_), eL(eL_) {
     size = 1; height = 0;
@@ -19,6 +18,7 @@ struct SegTreeLazy {
       d[size + i] = v[i];
       lrs[size + i] = {i, i};
     }
+    for (int i = N; i < size; i++) lrs[size + i] = {i, i};
     for (int i = size - 1; i >= 1; i--) {
       update(i);
       lrs[i] = {lrs[i << 1].first, lrs[i << 1 | 1].second};
@@ -135,7 +135,6 @@ struct SegTreeLazy {
     } while ((r&-r) != r);
     return -1;
   };
-
 private:
   void update(int k) { d[k] = op(d[2 * k], d[2 * k + 1]); }
   void all_apply(int k, L f) {
@@ -151,7 +150,6 @@ private:
   static_assert(is_convertible_v<decltype(mapping), function<T(L, T, pair<int, int>)>>, "mapping must be a function T(L, T, lr)");
   static_assert(is_convertible_v<decltype(composition), function<L(L, L, pair<int, int>)>>, "composition must be a function L(L, L, lr)");
 };
-
 struct Node {};
 Node op(Node a, Node b) {}
 struct Lazy {};
