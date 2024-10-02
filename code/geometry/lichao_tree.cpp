@@ -32,14 +32,12 @@ template <typename T = ll, T LO = T(-1e9), T HI = T(1e9)> struct LiChaoTree {
   };
   vector<Line> ln;
   LiChaoTree() { ln.emplace_back(); }
-
   T query(T x, int v = 0, T l = LO, T r = HI) {
     auto m = l + (r - l) / 2, val = ln[v].eval(x);
     if (ln[v].is_leaf()) return val;
     if (x <= m) return best(val, query(x, ch(v, 0), l, m));
     else return best(val, query(x, ch(v, 1), m+1, r));
   }
-
   void add(T a, T b) { add({a, b}, 0, LO, HI); }
   void add(Line s, int v, T l, T r) {
     auto m = l + (r - l) / 2;
@@ -51,7 +49,6 @@ template <typename T = ll, T LO = T(-1e9), T HI = T(1e9)> struct LiChaoTree {
     if (L != M) add(s, ch(v, 0), l, m);
     else if (R != M) add(s, ch(v, 1), m+1, r);
   }
-
   void add_segment(T a, T b, T l, T r) { add_segment({a, b}, l, r, 0, LO, HI); }
   void add_segment(Line s, T l, T r, int v, T L, T R) {
     if (l <= L and R <= r) return add(s, v, L, R);
