@@ -139,6 +139,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 - [Min Cyclic String](code/strings/min_cyclic_string.cpp)
 - [Rabin Karp](code/strings/rabin_karp.cpp)
 - [Str](code/strings/str.cpp)
+- [Suffix Array](code/strings/suffix_array.cpp)
 - [Suffix Automaton](code/strings/suffix_automaton.cpp)
 - [Z Function](code/strings/z_function.cpp)
 
