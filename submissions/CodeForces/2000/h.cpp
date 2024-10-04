@@ -65,11 +65,13 @@ private:
   }
 };
 
-template<typename T, typename F>
+struct Nothing {};
+template<typename T, typename D=Nothing, typename F=function<void(T,T,D)>, typename R=F, typename U=function<void(T,T,T,D)>>
 struct BlockSet {
-  map<T, T> blocks;
-  F &f;
-  BlockSet(F &f_) : f(f_) {}
+  map<T, pair<T, D>> blocks;
+  function<void(T,T,D)> fset, frem;
+  function<void(T,T,T,D)> fupd;
+  BlockSet(F s, R r, U u) : fset(s), frem(r), fupd(u) {}
   void merge(T l, T r) {
     auto it = blocks.upper_bound(l);
     if (it == end(blocks)) return;
@@ -77,94 +79,68 @@ struct BlockSet {
     while (it != end(blocks) and it->first <= r) {
       auto il = prev(it);
       auto ir = it++;
-      if (il->second >= l) merge(il, ir);
+      if (il->second.first >= l) merge(il, ir);
     }
   }
   void remove(T l, T r) {
     auto it = blocks.upper_bound(l);
     if (it != begin(blocks)) --it;
     if (it == end(blocks) or it->first > r) return;
-    if (it->first < l and r < it->second) {
+    if (it->first < l and r < it->second.first) {
       split(it, l, r);
       return;
     }
     if (it->first < l) shrink_right(it++, l-1);
-    while (it != end(blocks) and it->second <= r) remove(it++);
+    while (it != end(blocks) and it->second.first <= r) remove(it++);
     if (it != end(blocks) and it->first <= r) shrink_left(it, r+1);
   }
   void add(T l, T r) {
     add_unchecked(l, r);
     merge(l, r);
   }
-  void add_unchecked(T l, T r) {
+  void add_unchecked(T l, T r, D d=D()) {
     auto it = blocks.find(l);
-    if (it == end(blocks)) f.insert(l, r), blocks[l] = r;
-    else f.shrink_right(l, r, it->second), it->second = r;
+    if (it != end(blocks)) remove(it);
+    insert(l, r, d);
   }
 private:
-  void insert(T l, T r) {
+  void insert(T l, T r, D d) {
     assert(!blocks.count(l));
-    f.insert(l, r);
-    blocks[l] = r;
+    fset(l, r, d);
+    blocks[l] = {r, d};
   }
   void shrink_left(auto it, int l) {
-    auto [pl, r] = *it;
-    f.shrink_left(l, r, pl);
-    blocks.erase(it);
-    blocks[l] = r;
+    insert(l, it->second.first, it->second.second);
+    remove(it);
   }
   void shrink_right(auto it, int r) {
-    f.shrink_right(it->first, r, it->second);
-    it->second = r;
+    auto [l, rp] = *it;
+    fupd(l, r, rp.first, rp.second);
+    it->second.first = r;
   }
   void remove(auto it) {
-    f.remove(it->first, it->second);
+    frem(it->first, it->second.first, it->second.second);
     blocks.erase(it);
   }
   void split(auto it, T il, T ir) {
-    auto [l, r] = *it;
-    f.split(l, r, il, ir);
-    it->second = il-1;
-    blocks[ir+1] = r;
+    auto [r, d] = it->second;
+    shrink_right(it, il-1);
+    insert(ir+1, r, d);
   }
   void merge(auto il, auto ir) {
-    auto [li, ri] = *il;
-    auto [lj, rj] = *ir;
-    f.merge(li, ri, lj, rj);
-    il->second = rj;
-    blocks.erase(ir);
-  }
-};
-struct Info {
-  SparseSegTree<int> seg;
-  void shrink_left(int l, int r, int pl) {
-    seg.set(pl, 0);
-    seg.set(l, r-l+1);
-  }
-  void shrink_right(int l, int r, int pr) {
-    seg.set(l, r-l+1);
-  }
-  void insert(int l, int r) {
-    seg.set(l, r-l+1);
-  }
-  void remove(int l, int r) {
-    seg.set(l, 0);
-  }
-  void split(int l, int r, int il, int ir) {
-    seg.set(l, il-l);
-    seg.set(ir+1, r-ir);
-  }
-  void merge(int li, int ri, int lj, int rj) {
-    seg.set(lj, 0);
-    seg.set(li, rj-li+1);
+    shrink_right(il, ir->second.first);
+    remove(ir);
   }
 };
 
 void solve() {
   int n;
   cin >> n;
-  Info info(SparseSegTree<int>(0, 2e6, [](int a, int b) { return max(a, b); }));
-  BlockSet<int, Info> bs(info);
+  SparseSegTree<int> seg(0, 2e6, [](int a, int b) { return max(a, b); });
+  auto fset = [&](int l, int r, auto) { seg.set(l, r-l+1); };
+  auto frem = [&](int l, int, auto) { seg.set(l, 0); };
+  auto fupd = [&](int l, int r, int, auto) { seg.set(l, r-l+1); };
+  BlockSet<int, Nothing> bs(fset, frem, fupd);
   bs.add_unchecked(1, 2e6);
   set<int> gap;
   for (int i = 0; i < n; i++) {
@@ -180,7 +156,7 @@ void solve() {
     if (c == '-') bs.add_unchecked(x, x), bs.merge(x-1, x+1), gap.erase(x);
     else if (c == '+') bs.remove(x, x), gap.insert(x);
     else {
-      auto res = info.seg.pos([&](int k) { return k >= x; });
+      auto res = seg.pos([&](int k) { return k >= x; });
       cout << (~res ? res : *rbegin(gap)+1) << ' ';
     }
   }
