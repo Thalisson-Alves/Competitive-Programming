@@ -3,6 +3,9 @@
  * Add lines (ax + b) and query maximum value at `x`.
  * If you want to get minimum value, set inf = numeric_limits<T>::max().
  * In case of overflow, try to compress `x` values.
+ * Note:
+ *  - get max value at x by default
+ *  - to get min value, set inf = numeric_limits<T>::max()
  *
  * - query(x) -> get maximum `y` value at `x`
  *   - O(log (HI-LO))
@@ -11,16 +14,11 @@
  * - add_segment(Line s, l, r) -> add line `s` to the tree in range [l, r]
  *   - O(log^2 (HI-LO))
  */
-template <typename T = ll, T LO = T(-1e9), T HI = T(1e9)> struct LiChaoTree {
-  // get max value at x by default
-  // to get min value, set inf = numeric_limits<T>::max()
-  static constexpr T inf = numeric_limits<T>::min();
+template <typename T = ll, T inf = numeric_limits<T>::min(), T LO = (T)-1e9, T HI = (T)1e9>
+struct LiChaoTree {
   static constexpr bool compare(T a, T b) {
-    if constexpr (inf == numeric_limits<T>::max()) {
-      return a < b;
-    } else {
-      return a > b;
-    }
+    if constexpr (inf == numeric_limits<T>::max()) return a < b;
+    else return a > b;
   }
   static constexpr T best(T a, T b) { return (compare(a, b) ? a : b); }
   struct Line {
