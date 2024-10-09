@@ -30,6 +30,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 
 - [Edit Distance](code/dynamic_programming/edit_distance.cpp)
 - [Knapsack](code/dynamic_programming/knapsack.cpp)
+- [Knuth Optimization](code/dynamic_programming/knuth_optimization.cpp)
 - [Lis](code/dynamic_programming/lis.cpp)
 - [Tsp](code/dynamic_programming/tsp.cpp)
 
