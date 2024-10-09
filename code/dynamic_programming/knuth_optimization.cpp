@@ -6,8 +6,9 @@
  * Parameters:
  * - n: number of elements
  * - f: cost function of range [i, j]
- *   - must satisfy quadrangle inequality:
- *     f(a, c) + f(b, d) <= f(a, d) + f(b, c) for a <= b <= c <= d
+ *   - both conditions must be satisfied for a <= b <= c <= d:
+ *     - f(b, c) <= f(a, d)
+ *     - f(a, c) + f(b, d) <= f(a, d) + f(b, c) (quadrangle inequality)
  * - def: default value for dp[i][i]
  *
  * Time complexity: O(n^2)
