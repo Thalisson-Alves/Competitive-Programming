@@ -134,6 +134,12 @@ The `code` directory is organized into various subdirectories, each focusing on 
 - [Mo S Algorithm](code/problems/mo_s_algorithm.cpp)
 - [Number Of Elements Greater Than K](code/problems/number_of_elements_greater_than_k.cpp)
 
+### Segtree Operations
+
+- [Maximum Non Empty Subarray Sum](code/segtree_operations/maximum-non-empty-subarray-sum.cpp)
+- [Palindrome](code/segtree_operations/palindrome.cpp)
+- [Polynomial Update](code/segtree_operations/polynomial-update.cpp)
+
 ### Strings
 
 - [Hash String](code/strings/hash_string.cpp)
@@ -160,6 +166,7 @@ Reviewing these submissions can provide insights into different problem-solving 
 - [Gym](submissions/Gym)
 - [HDU](submissions/HDU)
 - ICPC
+  - [2010-2011 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2010-2011%20ACM-ICPC%20Brazil%20Subregional%20Programming%20Contest)
   - [2013-2014 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2013-2014%20ACM-ICPC%20Brazil%20Subregional%20Programming%20Contest)
   - [2014-2015 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2014-2015%20ACM-ICPC%20Brazil%20Subregional%20Programming%20Contest)
   - [2017-2018 ACM-ICPC Brazil Subregional Programming Contest](submissions/ICPC/2017-2018%20ACM-ICPC%20Brazil%20Subregional%20Programming%20Contest)
