@@ -1,4 +1,4 @@
-template <typename T, typename Op = T(*)(T,T)> struct SegTree {
+template <typename T, typename Op = function<T(T,T)>> struct SegTree {
   int size;
   vector<T> ns;
   const Op op;
