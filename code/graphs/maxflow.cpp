@@ -1,7 +1,6 @@
 template <class Cap> struct MaxFlow {
   MaxFlow() : _n(0) {}
   explicit MaxFlow(int n) : _n(n), g(n) {}
-
   int add_edge(int from, int to, Cap cap) {
     assert(0 <= from && from < _n);
     assert(0 <= to && to < _n);
@@ -15,12 +14,10 @@ template <class Cap> struct MaxFlow {
     g[to].push_back(_Edge{from, from_id, 0});
     return m;
   }
-
   struct Edge {
     int from, to;
     Cap cap, flow;
   };
-
   Edge get_edge(int i) {
     int m = int(pos.size());
     assert(0 <= i && i < m);
@@ -45,7 +42,6 @@ template <class Cap> struct MaxFlow {
     _e.cap = new_cap - new_flow;
     _re.cap = new_flow;
   }
-
   Cap flow(int s, int t) {
     return flow(s, t, numeric_limits<Cap>::max());
   }
@@ -53,10 +49,8 @@ template <class Cap> struct MaxFlow {
     assert(0 <= s && s < _n);
     assert(0 <= t && t < _n);
     assert(s != t);
-
     vector<int> level(_n), iter(_n);
     queue<int> que;
-
     auto bfs = [&]() {
       fill(level.begin(), level.end(), -1);
       level[s] = 0;
@@ -90,7 +84,6 @@ template <class Cap> struct MaxFlow {
       level[v] = _n;
       return res;
     };
-
     Cap flow = 0;
     while (flow < flow_limit) {
       bfs();
@@ -102,7 +95,6 @@ template <class Cap> struct MaxFlow {
     }
     return flow;
   }
-
   vector<bool> min_cut(int s) {
     vector<bool> visited(_n);
     queue<int> que;
@@ -120,7 +112,6 @@ template <class Cap> struct MaxFlow {
     }
     return visited;
   }
-
 private:
   int _n;
   struct _Edge {

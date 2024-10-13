@@ -4,12 +4,6 @@ using namespace std;
 #pragma GCC optimize("O3,unroll-loops")
 #pragma GCC target("avx2,bmi,bmi2,lzcnt,popcnt")
 
-#ifdef DEBUG
-#include "debug.cpp"
-#else
-#define dbg(...)
-#endif
-
 using ll = long long;
 
 void solve()
