@@ -69,6 +69,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 - [Cycles](code/graphs/cycles.cpp)
 - [Dfs Tree](code/graphs/dfs_tree.cpp)
 - [Dijkstra](code/graphs/dijkstra.cpp)
+- [Dijkstra Ways](code/graphs/dijkstra_ways.cpp)
 - [Dominator Tree](code/graphs/dominator_tree.cpp)
 - [Dynamic Connectivity](code/graphs/dynamic-connectivity.cpp)
 - [Edge Cover Min Cost](code/graphs/edge_cover_min_cost.cpp)
