@@ -1,5 +1,5 @@
-ll fpow(ll x, ll p) {
-  ll res = 1;
+template <typename T> T fpow(T x, ll p) {
+  T res = 1;
   while (p) {
     if (p & 1) res *= x;
     p >>= 1;
