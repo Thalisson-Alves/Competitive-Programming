@@ -133,6 +133,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 
 - [Area Of Union Of Rectangles](code/problems/area_of_union_of_rectangles.cpp)
 - [Inversion Count](code/problems/inversion_count.cpp)
+- [Min Inversion Permutation](code/problems/min_inversion_permutation.cpp)
 - [Mo S Algorithm](code/problems/mo_s_algorithm.cpp)
 - [Number Of Elements Greater Than K](code/problems/number_of_elements_greater_than_k.cpp)
 
