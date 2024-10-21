@@ -139,6 +139,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 
 ### Segtree Operations
 
+- [Longest Subarray Same Bit](code/segtree_operations/longest-subarray-same-bit.cpp)
 - [Maximum Non Empty Subarray Sum](code/segtree_operations/maximum-non-empty-subarray-sum.cpp)
 - [Palindrome](code/segtree_operations/palindrome.cpp)
 - [Polynomial Update](code/segtree_operations/polynomial-update.cpp)
