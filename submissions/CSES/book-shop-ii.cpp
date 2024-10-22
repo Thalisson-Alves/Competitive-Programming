@@ -12,12 +12,11 @@ void solve() {
   vector<ll> dp(m+1, LLONG_MIN);
   dp[0] = 0;
   for (int i = 0; i < n; i++) {
-    for (int l = 1; k[i] > 0; l <<= 1) {
+    for (int l = 1; k[i]; l <<= 1) {
       int got = min(l, k[i]);
       k[i] -= got;
-      for (int j = m; j-got*h[i] >= 0; --j)
-        if (dp[j-got*h[i]] != -1)
-          dp[j] = max(dp[j], dp[j-got*h[i]]+got*s[i]);
+      for (int j = m; j >= got*h[i]; --j)
+        dp[j] = max(dp[j], dp[j-got*h[i]]+got*s[i]);
     }
   }
   cout << *max_element(begin(dp), end(dp)) << '\n';
