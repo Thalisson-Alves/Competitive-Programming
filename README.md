@@ -23,6 +23,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 - [Sparse Segtree](code/data_structures/sparse_segtree.cpp)
 - [Sparse Table](code/data_structures/sparse_table.cpp)
 - [Treap](code/data_structures/treap.cpp)
+- [Trie](code/data_structures/trie.cpp)
 - [Ufds](code/data_structures/ufds.cpp)
 - [Wavelet Tree](code/data_structures/wavelet_tree.cpp)
 - [Xor Trie](code/data_structures/xor_trie.cpp)
@@ -136,6 +137,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 - [Min Inversion Permutation](code/problems/min_inversion_permutation.cpp)
 - [Mo S Algorithm](code/problems/mo_s_algorithm.cpp)
 - [Number Of Elements Greater Than K](code/problems/number_of_elements_greater_than_k.cpp)
+- [Permute Permutation](code/problems/permute_permutation.cpp)
 
 ### Segtree Operations
 
