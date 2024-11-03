@@ -33,6 +33,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 
 ### Dynamic Programming
 
+- [Aliens Trick](code/dynamic_programming/aliens_trick.cpp)
 - [Divide And Conquer](code/dynamic_programming/divide_and_conquer.cpp)
 - [Edit Distance](code/dynamic_programming/edit_distance.cpp)
 - [Knapsack](code/dynamic_programming/knapsack.cpp)
