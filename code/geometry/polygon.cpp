@@ -85,3 +85,38 @@ template<typename T> T polygon_cut_length(const Polygon<T> &poly, const Point<T>
   }
   return abs(res);
 }
+
+template <typename T> double polygon_union_area(const vector<Polygon<T>> &poly) {
+  using P = Point<T>;
+  constexpr auto sgn = [](auto x) { return (x > 0) - (x < 0); };
+  auto rat = [&](P a, P b) { return sgn(b.x) ? 1.*a.x/b.x : 1.*a.y/b.y; };
+  auto side_of = [&](P s, P e, P p) { return sgn(s.cross(e, p)); };
+	double ret = 0;
+	for (int i = 0; i < (int)size(poly); i++) for (int v = 0; v < (int)size(poly[i]); v++) {
+		P A = poly[i][v], B = poly[i][(v + 1) % (int)size(poly[i])];
+		vector<pair<double, int>> segs = {{0, 0}, {1, 0}};
+		for (int j = 0; j < (int)size(poly); j++) if (i != j) {
+			for (int u = 0; u < (int)size(poly[j]); u++) {
+				P C = poly[j][u], D = poly[j][(u + 1) % (int)size(poly[j])];
+				int sc = side_of(A, B, C), sd = side_of(A, B, D);
+				if (sc != sd) {
+					double sa = C.cross(D, A), sb = C.cross(D, B);
+					if (min(sc, sd) < 0) segs.emplace_back(sa / (sa - sb), sgn(sc - sd));
+				} else if (!sc && !sd && j<i && sgn((B-A).dot(D-C))>0){
+					segs.emplace_back(rat(C - A, B - A), 1);
+					segs.emplace_back(rat(D - A, B - A), -1);
+				}
+			}
+		}
+		sort(begin(segs), end(segs));
+		for (auto& s : segs) s.first = min(max(s.first, 0.0), 1.0);
+		double sum = 0;
+		int cnt = segs[0].second;
+		for (int j = 1; j < (int)size(segs); j++) {
+			if (!cnt) sum += segs[j].first - segs[j - 1].first;
+			cnt += segs[j].second;
+		}
+		ret += A.cross(B) * sum;
+	}
+	return ret / 2;
+}
