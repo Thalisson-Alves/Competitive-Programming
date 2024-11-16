@@ -4,13 +4,15 @@
  * It supports adding, removing, and merging intervals.
  *
  * Methods:
- * - add(l, r, v): Add the interval [l, r] with value v.
- *   - If the interval overlaps with existing intervals, they are merged.
+ * - get(i): Returns the interval that contains i.
+ *   - Time complexity: O(log(n)).
+ * - update(l, r, v): Updates the interval [l, r] with value v.
  *   - Time complexity: O(log(n)) amortized.
  * - remove(l, r): Remove intervals that overlap with [l, r].
  *   - Split intervals that are partially contained in [l, r].
  *   - Time complexity: O(log(n)) amortized.
  * - merge(l, r): Merge intervals that overlap with [l, r].
+ *   - The intervals are only merged if they have the same value v.
  *   - Time complexity: O(log(n)) amortized.
  * - add_unchecked(l, r, v): Add the interval [l, r] with value v.
  *   - Does not merge intervals.
@@ -31,6 +33,10 @@ struct BlockSet {
   function<void(T,T,D)> fset, frem;
   function<void(T,T,T,D)> fupd;
   BlockSet(F s, R r, U u) : fset(s), frem(r), fupd(u) {}
+  tuple<T, T, D> get(T i) const {
+    auto it = prev(blocks.upper_bound(i));
+    return {it->first, it->second.first, it->second.second};
+  }
   void merge(T l, T r) {
     auto it = blocks.upper_bound(l);
     if (it == end(blocks)) return;
@@ -38,7 +44,7 @@ struct BlockSet {
     while (it != end(blocks) and it->first <= r) {
       auto il = prev(it);
       auto ir = it++;
-      if (il->second.first >= l) merge(il, ir);
+      if (il->second.first >= l and il->second.second == ir->second.second) merge(il, ir);
     }
   }
   void remove(T l, T r) {
@@ -53,9 +59,9 @@ struct BlockSet {
     while (it != end(blocks) and it->second.first <= r) remove(it++);
     if (it != end(blocks) and it->first <= r) shrink_left(it, r+1);
   }
-  void add(T l, T r, D d=D()) {
+  void update(T l, T r, D d=D()) {
+    remove(l, r);
     add_unchecked(l, r, d);
-    merge(l, r);
   }
   void add_unchecked(T l, T r, D d=D()) {
     auto it = blocks.find(l);
