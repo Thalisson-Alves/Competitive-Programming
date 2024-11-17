@@ -17,6 +17,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 - [Fdeque](code/data_structures/fdeque.cpp)
 - [Fqueue](code/data_structures/fqueue.cpp)
 - [Fstack](code/data_structures/fstack.cpp)
+- [K Majority](code/data_structures/k-majority.cpp)
 - [Merge Sort Tree](code/data_structures/merge_sort_tree.cpp)
 - [Merge Sort Tree Bit](code/data_structures/merge_sort_tree_bit.cpp)
 - [Mex](code/data_structures/mex.cpp)
