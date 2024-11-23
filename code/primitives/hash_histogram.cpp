@@ -15,7 +15,7 @@ template<int p1=(int)2e5+3, int p2=(int)2e5+9, int q1=(int)1e9+7, int q2=(int)1e
   void add(int idx, int x) {
     pref.push_back(add(pref.back(), mul(power(idx), x)));
   }
-  template <typename T> void add(const vector<T> &hist) {
+  void add(const auto &hist) {
     pows.reserve(pows.size() + hist.size());
     auto &res = pref.emplace_back();
     for (int i = 0; i < (int)hist.size(); i++)
