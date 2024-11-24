@@ -10,11 +10,9 @@ template <typename T> struct Matrix {
   void rotate() { *this = rotated(); }
   Matrix<T> rotated() const {
     Matrix<T> res(m(), n());
-    for (int i = 0; i < m(); i++) {
-      for (int j = 0; j < n(); j++) {
+    for (int i = 0; i < m(); i++)
+      for (int j = 0; j < n(); j++)
         res[i][j] = d[n()-j-1][i];
-      }
-    }
     return res;
   }
   Matrix<T> pow(ll p) { return Matrix<T>(*this).ipow(p); }
@@ -58,53 +56,37 @@ template <typename T> struct Matrix {
   const vector<T> &operator[](int i) const { return d[i]; }
   Matrix<T> operator+(T value) const { return Matrix(*this) += value; }
   Matrix<T> &operator+=(T value) {
-    for (auto &row : d) {
-      for (auto &x : row)
-        x += value;
-    }
+    for (auto &row : d) for (auto &x : row) x += value;
     return *this;
   }
   Matrix<T> operator-(T value) const { return Matrix(*this) -= value; }
   Matrix<T> &operator-=(T value) {
-    for (auto &row : d) {
-      for (auto &x : row)
-        x -= value;
-    }
+    for (auto &row : d) for (auto &x : row) x -= value;
     return *this;
   }
   Matrix<T> operator*(T value) const { return Matrix(*this) *= value; }
   Matrix<T> &operator*=(T value) {
-    for (auto &row : d) {
-      for (auto &x : row)
-        x *= value;
-    }
+    for (auto &row : d) for (auto &x : row) x *= value;
     return *this;
   }
   Matrix<T> &operator/=(T value) {
-    for (auto &row : d) {
-      for (auto &x : row)
-        x /= value;
-    }
+    for (auto &row : d) for (auto &x : row) x /= value;
     return *this;
   }
   Matrix<T> operator/(T value) const { return Matrix(*this) /= value; }
   Matrix<T> &operator+=(const Matrix<T> &o) {
     assert(n() == o.n() and m() == o.m());
-    for (int i = 0; i < n(); i++) {
-      for (int j = 0; j < m(); j++) {
+    for (int i = 0; i < n(); i++)
+      for (int j = 0; j < m(); j++)
         d[i][j] += o[i][j];
-      }
-    }
     return *this;
   }
   Matrix<T> operator+(const Matrix<T> &o) const { return Matrix(o) += o; }
   Matrix<T> &operator-=(const Matrix<T> &o) {
     assert(n() == o.n() and m() == o.m());
-    for (int i = 0; i < n(); i++) {
-      for (int j = 0; j < m(); j++) {
+    for (int i = 0; i < n(); i++)
+      for (int j = 0; j < m(); j++)
         d[i][j] -= o[i][j];
-      }
-    }
     return *this;
   }
   Matrix<T> operator-(const Matrix<T> &o) const { return Matrix(*this) -= o; }
@@ -113,34 +95,21 @@ template <typename T> struct Matrix {
   Matrix<T> &operator*=(const Matrix<T> &o) {
     assert(m() == o.n());
     Matrix<T> res(n(), o.m());
-    for (int i = 0; i < res.n(); i++) {
-      for (int j = 0; j < res.m(); j++) {
-        for (int k = 0; k < m(); k++) {
+    for (int i = 0; i < res.n(); i++)
+      for (int j = 0; j < res.m(); j++)
+        for (int k = 0; k < m(); k++)
           res[i][k] += (d[i][j] * o[j][k]);
-        }
-      }
-    }
     swap(d, res.d);
     return *this;
   }
   friend istream &operator>>(istream &is, Matrix<T> &mat) {
-    for (auto &row : mat)
-      for (auto &x : row)
-        is >> x;
+    for (auto &row : mat) for (auto &x : row) is >> x;
     return is;
   }
   friend ostream &operator<<(ostream &os, const Matrix<T> &mat) {
-    bool frow = 1;
-    for (auto &row : mat) {
-      if (not frow) os << '\n';
-      bool first = 1;
-      for (auto &x : row) {
-        if (not first) os << ' ';
-        os << x;
-        first = 0;
-      }
-      frow = 0;
-    }
+    for (int i = 0; i < mat.n(); i++)
+      for (int j = 0; j < mat.m(); j++)
+        os << mat[i][j] << " \n"[j == mat.m()-1];
     return os;
   }
   auto begin() { return d.begin(); }
