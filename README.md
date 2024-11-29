@@ -118,8 +118,10 @@ The `code` directory is organized into various subdirectories, each focusing on 
 - [Find Any Solution](code/math/find_any_solution.cpp)
 - [Fpow](code/math/fpow.cpp)
 - [Gaussian Elimination](code/math/gaussian_elimination.cpp)
+- [Guess Kth Term](code/math/guess_kth_term.cpp)
 - [Inv Gcd](code/math/inv_gcd.cpp)
 - [Is Prime](code/math/is_prime.cpp)
+- [Kth Fibonacci](code/math/kth_fibonacci.cpp)
 - [Max Prime Dp](code/math/max_prime_dp.cpp)
 - [Mobius](code/math/mobius.cpp)
 - [Ntt](code/math/ntt.cpp)
@@ -156,6 +158,7 @@ The `code` directory is organized into various subdirectories, each focusing on 
 
 ### Strings
 
+- [Anagram Index](code/strings/anagram_index.cpp)
 - [Hash String](code/strings/hash_string.cpp)
 - [Kmp](code/strings/kmp.cpp)
 - [Longest Palindrome](code/strings/longest_palindrome.cpp)
