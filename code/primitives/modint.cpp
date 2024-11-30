@@ -19,7 +19,7 @@ template <ll Mod> struct modint {
   modint &operator++() { return *this += 1; }
   modint &operator--() { return *this -= 1; }
   modint operator+() const { return modint(*this); }
-  modint operator-() const { return modint(*this).negate(); }
+  modint operator-() const { return mod - modint(*this); }
   friend modint operator+(const modint lhs, const modint rhs) noexcept { return modint(lhs) += rhs; }
   friend modint operator-(const modint lhs, const modint rhs) noexcept { return modint(lhs) -= rhs; }
   friend modint operator*(const modint lhs, const modint rhs) noexcept { return modint(lhs) *= rhs; }

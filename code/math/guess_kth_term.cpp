@@ -4,10 +4,9 @@
  * finds the shortest linear recurrence relation that generates the given
  * sequence.
  *
- * Node: mod needs to have inverse
+ * Note: mod needs to have inverse
  *
- * Time complexity: O(n^2 log(k))
- *   Can be optimized to O(n log(n) log(k)) using FFT
+ * Time complexity: O(n^2)
  */
 template <typename T> vector<T> berlekamp_massey(const vector<T> &s) {
   vector<T> cur, best;
