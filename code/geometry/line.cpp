@@ -1,6 +1,5 @@
-template <typename T = double> struct Line {
+template <typename T = long double> struct Line {
   T a, b, c; // ax + by = c
-
   Line() : a(0), b(0), c(0) {}
   Line(T a_, T b_, T c_) : a(a_), b(b_), c(c_) {}
   Line(const Point<T> &p, const Point<T> &q) {
