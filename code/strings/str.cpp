@@ -10,17 +10,14 @@ namespace str {
     for (++it; it != values.end(); ++it) ss << sep << *it;
     return ss.str();
   }
-
   template <typename T> inline T cast(const string &s) {
     stringstream ss(s);
     T res;
     ss >> res;
     return res;
   }
-
   void split_for_each(const string &s, const string_view &sep, auto f) {
     static_assert(is_invocable_r_v<void, decltype(f), string>);
-
     size_t pos = 0, last = 0;
     while ((pos = s.find(sep, last)) != string::npos) {
       if (pos > last)
@@ -36,7 +33,6 @@ namespace str {
       split_for_each(s, sep, f);
       return;
     }
-
     split_for_each(s, sep, [&](const string &x) { f(cast<T>(x)); });
   }
   template <typename Out> void split_into(const string &s, const string_view &sep, Out out) {
@@ -59,7 +55,6 @@ namespace str {
     split_for_each<T>(s, sep, [&](const T &x) { res.emplace_back(x); });
     return res;
   }
-
   void replace_all(string &s, const string_view &from, const string_view &to) {
     if (from.empty()) return;
     size_t pos = 0;

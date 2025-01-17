@@ -4,6 +4,7 @@ template <typename T> struct Matrix {
   Matrix(int n) : Matrix(n, n) {}
   Matrix(int n, int m) : Matrix(vector<vector<T>>(n, vector<T>(m))) {}
   Matrix(const initializer_list<T> &v) : Matrix(vector<T>(v)) {}
+  Matrix(const initializer_list<vector<T>> &v) : Matrix(vector<vector<T>>(v)) {}
   Matrix(const vector<T> &v) : d(vector<vector<T>>(1, v)) {}
   Matrix(const vector<vector<T>> &v) : d(v) {}
   constexpr int n() const { return (int)d.size(); }

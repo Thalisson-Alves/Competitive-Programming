@@ -1,7 +1,3 @@
-template <uint_fast64_t Modulus>
-constexpr typename modint<Modulus>::u64 modint<Modulus>::mod;
-using mint = modint<1000000007>;
-
 template<int m> constexpr int primitive_root() {
   if constexpr (m == 1224736769) return 3;
   else if constexpr (m == 1053818881) return 7;
@@ -24,18 +20,15 @@ template<int m> constexpr int primitive_root() {
   else if constexpr (m == 2) return 1;
   else return -1;
 }
-
 template <typename Mint> void ntt(vector<Mint> &a, bool invert=false) {
   int n = (int)a.size(), s = __builtin_ctz(n);
   assert(n == (1 << s));
-
-  constexpr auto g = Mint(primitive_root<Mint::mod>());
+  const auto g = Mint(primitive_root<Mint::mod>());
   static array<vector<Mint>, 2> roots;
   while ((int)roots[0].size() <= s) {
     roots[0].push_back(g.pow((Mint::mod-1) / (1 << roots[0].size())));
     roots[1].push_back(roots[0].back().inv());
   }
-
   const auto &rs = roots[invert];
   vector<Mint> b(n);
   for (int i = 1; i <= s; i++) {
@@ -52,13 +45,11 @@ template <typename Mint> void ntt(vector<Mint> &a, bool invert=false) {
     }
     swap(a, b);
   }
-
   if (invert) {
     auto inv = Mint(n).inv();
     for (auto &x : a) x *= inv;
   }
 }
-
 template <int m = mint::mod, typename T, enable_if_t<primitive_root<m>() != -1, bool> = true>
 vector<modint<m>> convolution(const vector<T> &a, const vector<T> &b) {
   using Mint = modint<m>;
@@ -75,19 +66,17 @@ vector<modint<m>> convolution(const vector<T> &a, const vector<T> &b) {
   fa.resize(N);
   return fa;
 }
-
 template <int m, typename Mint1, typename Mint2, typename Mint3>
 modint<m> garner_algorithm(Mint1 a1, Mint2 a2, Mint3 a3) {
   using Mint = modint<m>;
-  static constexpr auto r12 = Mint2(Mint1::mod).inv();
-  static constexpr auto r13 = Mint3(Mint1::mod).inv();
-  static constexpr auto r23 = Mint3(Mint2::mod).inv();
+  static const auto r12 = Mint2(Mint1::mod).inv();
+  static const auto r13 = Mint3(Mint1::mod).inv();
+  static const auto r23 = Mint3(Mint2::mod).inv();
   a2 = (a2 - a1.value()) * r12;
   a3 = (a3 - a1.value()) * r13;
   a3 = (a3 - a2.value()) * r23;
   return Mint(a1.value()) + Mint(Mint1::mod) * a2.value() + (Mint(Mint1::mod) * Mint(Mint2::mod)) * a3.value();
 }
-
 template <int m = mint::mod, typename T, enable_if_t<primitive_root<m>() == -1, bool> = true>
 vector<modint<m>> convolution(const vector<T> &a, const vector<T> &b) {
   using Mint = modint<m>;
@@ -98,13 +87,11 @@ vector<modint<m>> convolution(const vector<T> &a, const vector<T> &b) {
         c[i+j] += a[i] * b[j];
     return c;
   }
-
   constexpr int PRIMES[3] = {1004535809, 998244353, 985661441};
   #define vp(_p) vector<modint<PRIMES[_p]>>
   vp(0) z0 = convolution<PRIMES[0]>(vp(0)(a.begin(), a.end()), vp(0)(b.begin(), b.end()));
   vp(1) z1 = convolution<PRIMES[1]>(vp(1)(a.begin(), a.end()), vp(1)(b.begin(), b.end()));
   vp(2) z2 = convolution<PRIMES[2]>(vp(2)(a.begin(), a.end()), vp(2)(b.begin(), b.end()));
-
   for (int i = 0; i < (int)c.size(); i++) {
     c[i] = garner_algorithm<m>(z0[i], z1[i], z2[i]);
   }
