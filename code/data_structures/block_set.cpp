@@ -26,13 +26,16 @@
  * - fupd(l, r, pr, v): A function that updates the interval [l, pr] to [l, r] with value v.
  *   - pr is the right endpoint of the interval before the update.
  */
-struct Nothing {};
+struct Nothing {
+  void operator()(auto...) const {}
+  friend ostream& operator<<(ostream &os, const Nothing &) { return os; }
+};
 template<typename T, typename D=Nothing, typename F=function<void(T,T,D)>, typename R=F, typename U=function<void(T,T,T,D)>>
 struct BlockSet {
   map<T, pair<T, D>> blocks;
   function<void(T,T,D)> fset, frem;
   function<void(T,T,T,D)> fupd;
-  BlockSet(F s, R r, U u) : fset(s), frem(r), fupd(u) {}
+  BlockSet(F s = Nothing(), R r = Nothing(), U u = Nothing()) : fset(s), frem(r), fupd(u) {}
   tuple<T, T, D> get(T i) const {
     auto it = prev(blocks.upper_bound(i));
     return {it->first, it->second.first, it->second.second};
@@ -74,11 +77,11 @@ private:
     fset(l, r, d);
     blocks[l] = {r, d};
   }
-  void shrink_left(auto it, int l) {
+  void shrink_left(auto it, T l) {
     insert(l, it->second.first, it->second.second);
     remove(it);
   }
-  void shrink_right(auto it, int r) {
+  void shrink_right(auto it, T r) {
     auto [l, rp] = *it;
     fupd(l, r, rp.first, rp.second);
     it->second.first = r;
