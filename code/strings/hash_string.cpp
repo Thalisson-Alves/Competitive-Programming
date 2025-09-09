@@ -2,6 +2,7 @@ template<int p1=31, int p2=29, int q1=(int)1e9+7, int q2=(int)1e9+9> struct Hash
   using H = pair<int, int>;
   static H mul(H a, H b) { return {(ll)a.first*b.first%q1, (ll)a.second*b.second%q2}; }
   static H add(H a, int x) { return {(a.first+x)%q1, (a.second+x)%q2}; }
+  static H add(H a, H b) { return {(a.first+b.first)%q1, (a.second+b.second)%q2}; }
   static H sub(H a, H b) { return {(a.first-b.first+q1)%q1, (a.second-b.second+q2)%q2}; }
   static inline vector<H> pows{{1, 1}, {p1, p2}};
   static inline H power(int i) {
@@ -20,6 +21,7 @@ template<int p1=31, int p2=29, int q1=(int)1e9+7, int q2=(int)1e9+9> struct Hash
     reserve_more(s.size());
     for (auto c : s) add(c);
   }
+  void pop_back() { pref.pop_back(); }
   void reserve_more(size_t n) {
     pref.reserve(pref.size() + n);
     pows.reserve(pref.capacity());
@@ -28,7 +30,7 @@ template<int p1=31, int p2=29, int q1=(int)1e9+7, int q2=(int)1e9+9> struct Hash
   int size() const { return (int)pref.size() - 1; }
   bool operator<(const HashString &a) const { return hash() < a.hash(); }
   H substr(int l) const { return substr(l, size()-1); }
-  H substr(int l, int r) {
+  H substr(int l, int r) const {
     assert(0 <= l and l <= r and r < size());
     return sub(pref[r+1], mul(power(r-l+1), pref[l]));
   }
@@ -49,5 +51,15 @@ template<int p1=31, int p2=29, int q1=(int)1e9+7, int q2=(int)1e9+9> struct Hash
       else r = mid - 1;
     }
     return r;
+  }
+  bool is_period(int period_size) const {
+    auto hres = H(), hp = substr(0, period_size-1);
+    for (auto i = 1, p = size() / period_size; p; p >>= 1, i <<= 1) {
+      if (p&1) hres = add(mul(hres, power(i * period_size)), hp);
+      hp = add(mul(hp, power(i * period_size)), hp);
+    }
+    int remain = size() % period_size;
+    if (remain) hres = add(mul(hres, power(remain)), substr(0, remain-1));
+    return hres == hash();
   }
 };
