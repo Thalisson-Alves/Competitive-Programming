@@ -5,7 +5,7 @@ template <typename T, typename Op = T(*)(T,T)> struct BinaryLifting {
   vector<int> depth;
   const Op op;
   const T e;
-  BinaryLifting(const vector<vector<pair<int, T>>> &g, int root=0, Op f = Op(), T id = T()) : lg(32-__builtin_clz((int)size(g))), up(size(g), vector<int>(lg)), acc(size(up), vector<T>(size(up[0]), id)), depth(size(up)), op(f), e(id) {
+  BinaryLifting(const vector<vector<pair<int, T>>> &g, int root=0, Op f = Op(), T id = T()) : lg(32-__builtin_clz((int)size(g))), up(size(g), vector<int>(lg, root)), acc(size(up), vector<T>(size(up[0]), id)), depth(size(up)), op(f), e(id) {
     vector<int> q{root};
     q.reserve(size(g));
     for (int i = 0; i < (int)q.size(); i++) {
