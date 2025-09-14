@@ -4,6 +4,6 @@ struct Node {
   Node(ll x) : pref(x), suff(x), sum(x), res(x) {}
   Node(ll p, ll s, ll sm, ll mx) : pref(p), suff(s), sum(sm), res(mx) {}
 };
-Node op(Node a, Node b) {
+Node op(const Node &a, const Node &b) {
   return {max(a.pref, a.sum + b.pref), max(b.suff, b.sum + a.suff), a.sum + b.sum, max({a.res, b.res, a.suff + b.pref})};
 }
